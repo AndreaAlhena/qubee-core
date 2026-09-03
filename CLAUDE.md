@@ -34,7 +34,7 @@ no transport layer; consumers fetch however they like and hand the response body
 
 ```
 src/
-├─ drivers/      driver-registry.ts — maps DriverEnum → { request, response } strategy pair
+├─ drivers/      one <driver>.driver.ts per backend + driver-registry.ts composing them
 ├─ enums/        DriverEnum, FilterOperatorEnum, PaginationModeEnum, SortEnum
 ├─ errors/       QubeeError base + 15 concrete errors
 ├─ interfaces/   IRequestStrategy, IResponseStrategy — the only two class contracts
@@ -45,10 +45,15 @@ src/
 └─ utils/        read-header, stringify
 ```
 
-**Adding a driver:** add a `DriverEnum` member, a request strategy extending
-`AbstractRequestStrategy` (override `parts()`), a response strategy, and a `DRIVERS` entry. The
-`Record<DriverEnum, …>` registry is deliberately closed, so the compiler will tell you what's
-missing.
+**Adding a driver:** four steps — a `DriverEnum` member, a request strategy extending
+`AbstractRequestStrategy` (override `parts()`), a response strategy, and `drivers/<id>.driver.ts`
+exporting one `<ID>_DRIVER` const plus a line in `DRIVERS`. The `Record<DriverEnum, …>` registry is
+deliberately closed, so the compiler tells you what's missing. Copy any existing `*.driver.ts` as
+the template.
+
+**Bundle note:** `DRIVERS` reaches every driver by construction (~92 kB minified). A consumer that
+knows its backend at build time should `import { STRAPI_DRIVER } from '@qubee/core'` instead
+(~49 kB, of which ~43 kB is the `qs` dependency).
 
 **Reactivity:** `QubeeStore` exposes `getSnapshot()` + `subscribe()` — deliberately the
 `useSyncExternalStore` contract. The core has no Signals and no RxJS; adapters supply their own.
