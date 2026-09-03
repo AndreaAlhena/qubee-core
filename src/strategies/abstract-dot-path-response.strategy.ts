@@ -47,7 +47,7 @@ export abstract class AbstractDotPathResponseStrategy implements IResponseStrate
    * @param perPage - The number of items per page
    * @returns The "from" index, or `undefined` when neither path nor inputs suffice
    */
-   
+
   protected resolveFrom(
     response: Record<string, any>,
     options: ResponseOptions,
@@ -81,7 +81,7 @@ export abstract class AbstractDotPathResponseStrategy implements IResponseStrate
    * @param total - The total number of items
    * @returns The "to" index, or `undefined` when neither path nor inputs suffice
    */
-   
+
   protected resolveTo(
     response: Record<string, any>,
     options: ResponseOptions,
@@ -109,7 +109,7 @@ export abstract class AbstractDotPathResponseStrategy implements IResponseStrate
    * @param options - The response key name configuration (dot-notation paths supported)
    * @returns A typed PaginatedCollection instance
    */
-   
+
   public paginate<T extends IPaginatedObject>(
     response: Record<string, any>,
     options: ResponseOptions

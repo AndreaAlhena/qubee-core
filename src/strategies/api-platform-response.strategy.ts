@@ -227,7 +227,7 @@ export class ApiPlatformResponseStrategy extends AbstractDotPathResponseStrategy
    * @param options - The response key name configuration (dot-notation paths supported)
    * @returns A typed PaginatedCollection instance
    */
-   
+
   public override paginate<T extends IPaginatedObject>(
     response: Record<string, any>,
     options: ResponseOptions

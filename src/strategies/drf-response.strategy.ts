@@ -206,7 +206,7 @@ export class DrfResponseStrategy implements IResponseStrategy {
    * @param options - The response key name configuration
    * @returns A typed PaginatedCollection instance
    */
-   
+
   public paginate<T extends IPaginatedObject>(
     response: Record<string, any>,
     options: ResponseOptions

@@ -1,4 +1,4 @@
-import type { HeaderBag} from '../interfaces/header-bag.interface';
+import type { HeaderBag } from '../interfaces/header-bag.interface';
 import type { IPaginatedObject } from '../interfaces/paginated-object.interface';
 import type { IResponseStrategy } from '../interfaces/response-strategy.interface';
 import type { ResponseOptions } from '../models/response-options';

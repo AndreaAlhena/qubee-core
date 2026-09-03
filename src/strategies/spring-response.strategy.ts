@@ -70,7 +70,7 @@ export class SpringResponseStrategy extends AbstractDotPathResponseStrategy {
    * @param options - The response key name configuration
    * @returns The resolved data array (possibly empty)
    */
-   
+
   private _resolveData<T extends IPaginatedObject>(
     response: Record<string, any>,
     options: ResponseOptions
@@ -99,7 +99,7 @@ export class SpringResponseStrategy extends AbstractDotPathResponseStrategy {
    * @param options - The response key name configuration
    * @returns A typed PaginatedCollection instance
    */
-   
+
   public override paginate<T extends IPaginatedObject>(
     response: Record<string, any>,
     options: ResponseOptions
