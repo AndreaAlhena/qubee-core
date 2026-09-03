@@ -1,4 +1,4 @@
-import { FilterOperatorEnum } from '../enums/filter-operator.enum';
+import type { FilterOperatorEnum } from '../enums/filter-operator.enum';
 
 /**
  * Thrown when a filter operator receives a value array of the wrong shape

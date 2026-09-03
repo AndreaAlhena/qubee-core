@@ -1,9 +1,10 @@
+import type { IOperatorFilter } from '../interfaces/operator-filter.interface';
+import type { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
+import type { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
+import type { QueryBuilderOptions } from '../models/query-builder-options';
+
 import { SortEnum } from '../enums/sort.enum';
 import { InvalidLimitError } from '../errors/invalid-limit.error';
-import { IOperatorFilter } from '../interfaces/operator-filter.interface';
-import { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
-import { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
-import { QueryBuilderOptions } from '../models/query-builder-options';
 import { AbstractRequestStrategy } from './abstract-request.strategy';
 
 /**
@@ -34,45 +35,6 @@ export class NestjsRequestStrategy extends AbstractRequestStrategy {
     select: true,
     sort: true,
   };
-
-  /**
-   * Validate that the given limit is accepted by nestjs-paginate
-   *
-   * Accepts any integer `>= 1` as a page size, plus `-1` which nestjs-paginate
-   * interprets as "fetch all items" (server must opt-in via `maxLimit: -1`).
-   *
-   * @param limit - The limit value to validate
-   * @throws {InvalidLimitError} If the value is not an integer, or is 0, or is a negative number other than -1
-   */
-  public override validateLimit(limit: number): void {
-    if (Number.isInteger(limit) && (limit === -1 || limit >= 1)) {
-      return;
-    }
-
-    throw new InvalidLimitError(limit, true);
-  }
-
-  /**
-   * Emit NestJS-format query-string segments in canonical order:
-   * filters → operator filters → sortBy → select → search → limit → page
-   *
-   * @param state - The current query builder state
-   * @param options - The query parameter key name configuration
-   * @returns Ordered query-string fragments
-   */
-  protected parts(state: IQueryBuilderState, options: QueryBuilderOptions): string[] {
-    const out: string[] = [];
-
-    this._appendFilters(state, options, out);
-    this._appendOperatorFilters(state, options, out);
-    this._appendSort(state, options, out);
-    this._appendSelect(state, options, out);
-    this._appendSearch(state, options, out);
-    this._appendLimit(state, options, out);
-    this._appendPage(state, options, out);
-
-    return out;
-  }
 
   /**
    * Append simple filter parameters as `filter.field=value1,value2`
@@ -211,5 +173,44 @@ export class NestjsRequestStrategy extends AbstractRequestStrategy {
     );
 
     out.push(`${options.sortBy}=${pairs.join(',')}`);
+  }
+
+  /**
+   * Emit NestJS-format query-string segments in canonical order:
+   * filters → operator filters → sortBy → select → search → limit → page
+   *
+   * @param state - The current query builder state
+   * @param options - The query parameter key name configuration
+   * @returns Ordered query-string fragments
+   */
+  protected parts(state: IQueryBuilderState, options: QueryBuilderOptions): string[] {
+    const out: string[] = [];
+
+    this._appendFilters(state, options, out);
+    this._appendOperatorFilters(state, options, out);
+    this._appendSort(state, options, out);
+    this._appendSelect(state, options, out);
+    this._appendSearch(state, options, out);
+    this._appendLimit(state, options, out);
+    this._appendPage(state, options, out);
+
+    return out;
+  }
+
+  /**
+   * Validate that the given limit is accepted by nestjs-paginate
+   *
+   * Accepts any integer `>= 1` as a page size, plus `-1` which nestjs-paginate
+   * interprets as "fetch all items" (server must opt-in via `maxLimit: -1`).
+   *
+   * @param limit - The limit value to validate
+   * @throws {InvalidLimitError} If the value is not an integer, or is 0, or is a negative number other than -1
+   */
+  public override validateLimit(limit: number): void {
+    if (Number.isInteger(limit) && (limit === -1 || limit >= 1)) {
+      return;
+    }
+
+    throw new InvalidLimitError(limit, true);
   }
 }

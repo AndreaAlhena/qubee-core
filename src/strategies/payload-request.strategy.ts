@@ -3,14 +3,15 @@
    not_equals, not_in) are snake_case by server spec and emitted verbatim */
 import * as qs from 'qs';
 
+import type { IOperatorFilter } from '../interfaces/operator-filter.interface';
+import type { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
+import type { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
+import type { QueryBuilderOptions } from '../models/query-builder-options';
+
 import { FilterOperatorEnum } from '../enums/filter-operator.enum';
 import { SortEnum } from '../enums/sort.enum';
 import { InvalidFilterOperatorValueError } from '../errors/invalid-filter-operator-value.error';
 import { UnsupportedFilterOperatorError } from '../errors/unsupported-filter-operator.error';
-import { IOperatorFilter } from '../interfaces/operator-filter.interface';
-import { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
-import { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
-import { QueryBuilderOptions } from '../models/query-builder-options';
 import { AbstractRequestStrategy } from './abstract-request.strategy';
 
 /**
@@ -54,6 +55,18 @@ type PayloadFilterPayload = Record<string, PayloadFilterValue>;
  */
 export class PayloadRequestStrategy extends AbstractRequestStrategy {
   /**
+   * Payload-native names of the five hardcoded query keys
+   *
+   * Fixed by the REST endpoints and intentionally not configurable
+   * through `QueryBuilderOptions`.
+   */
+  private static readonly _limitKey = 'limit';
+
+  private static readonly _pageKey = 'page';
+  private static readonly _selectKey = 'select';
+  private static readonly _sortKey = 'sort';
+  private static readonly _whereKey = 'where';
+  /**
    * Filters, operator filters, sorts, flat field selection (`select`)
    * — no per-model fields, no includes (numeric `depth` instead), no
    * global search, no embedded resources
@@ -68,42 +81,6 @@ export class PayloadRequestStrategy extends AbstractRequestStrategy {
     select: true,
     sort: true,
   };
-
-  /**
-   * Payload-native names of the five hardcoded query keys
-   *
-   * Fixed by the REST endpoints and intentionally not configurable
-   * through `QueryBuilderOptions`.
-   */
-  private static readonly _limitKey = 'limit';
-  private static readonly _pageKey = 'page';
-  private static readonly _selectKey = 'select';
-  private static readonly _sortKey = 'sort';
-  private static readonly _whereKey = 'where';
-
-  /**
-   * Emit Payload-format query-string segments in canonical order:
-   * where (merged) → sort → select → page → limit
-   *
-   * Simple filters and operator filters share a single `where` wrapper
-   * so qs emits one ordered bracket structure rather than two duplicate
-   * top-level `where[...]` blocks.
-   *
-   * @param state - The current query builder state
-   * @param _options - The query parameter key name configuration (unused;
-   * Payload's wire keys are fixed by the server)
-   * @returns Ordered query-string fragments
-   */
-  protected parts(state: IQueryBuilderState, _options: QueryBuilderOptions): string[] {
-    const out: string[] = [];
-
-    this._appendWhere(state, out);
-    this._appendSort(state, out);
-    this._appendSelect(state, out);
-    this._appendPagination(state, out);
-
-    return out;
-  }
 
   /**
    * Append the `page=` / `limit=` pagination pair
@@ -290,5 +267,29 @@ export class PayloadRequestStrategy extends AbstractRequestStrategy {
       case FilterOperatorEnum.WFTS:
         throw new UnsupportedFilterOperatorError();
     }
+  }
+
+  /**
+   * Emit Payload-format query-string segments in canonical order:
+   * where (merged) → sort → select → page → limit
+   *
+   * Simple filters and operator filters share a single `where` wrapper
+   * so qs emits one ordered bracket structure rather than two duplicate
+   * top-level `where[...]` blocks.
+   *
+   * @param state - The current query builder state
+   * @param _options - The query parameter key name configuration (unused;
+   * Payload's wire keys are fixed by the server)
+   * @returns Ordered query-string fragments
+   */
+  protected parts(state: IQueryBuilderState, _options: QueryBuilderOptions): string[] {
+    const out: string[] = [];
+
+    this._appendWhere(state, out);
+    this._appendSort(state, out);
+    this._appendSelect(state, out);
+    this._appendPagination(state, out);
+
+    return out;
   }
 }

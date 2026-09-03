@@ -1,6 +1,7 @@
-import { IPaginatedObject } from '../interfaces/paginated-object.interface';
+import type { IPaginatedObject } from '../interfaces/paginated-object.interface';
+import type { ResponseOptions } from '../models/response-options';
+
 import { PaginatedCollection } from '../models/paginated-collection';
-import { ResponseOptions } from '../models/response-options';
 import { AbstractDotPathResponseStrategy } from './abstract-dot-path-response.strategy';
 
 /**
@@ -40,51 +41,6 @@ import { AbstractDotPathResponseStrategy } from './abstract-dot-path-response.st
  */
 export class DirectusResponseStrategy extends AbstractDotPathResponseStrategy {
   /**
-   * Parse a Directus collection response into a PaginatedCollection
-   *
-   * @param response - The raw API response body
-   * @param options - The response key name configuration (dot-notation paths supported)
-   * @returns A typed PaginatedCollection instance
-   */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public override paginate<T extends IPaginatedObject>(
-    response: Record<string, any>,
-    options: ResponseOptions
-  ): PaginatedCollection<T> {
-    const data = this.resolve(response, options.data) as T[];
-    const total = this.resolve(response, options.total) as number | undefined;
-    const currentPage = (this.resolve(response, options.currentPage) as number | undefined) ?? 1;
-    const perPage = this.resolve(response, options.perPage) as number | undefined;
-    const lastPage = this._deriveLastPage(response, options, data, total, perPage);
-
-    const from =
-      this.resolveFrom(response, options, currentPage, perPage) ??
-      this._singlePageFrom(data, total);
-    const to =
-      this.resolveTo(response, options, currentPage, perPage, total) ??
-      this._singlePageTo(data, total);
-
-    const prevPageUrl = this.resolve(response, options.prevPageUrl) as string | undefined;
-    const nextPageUrl = this.resolve(response, options.nextPageUrl) as string | undefined;
-    const firstPageUrl = this.resolve(response, options.firstPageUrl) as string | undefined;
-    const lastPageUrl = this.resolve(response, options.lastPageUrl) as string | undefined;
-
-    return new PaginatedCollection(
-      data,
-      currentPage,
-      from,
-      to,
-      total,
-      perPage,
-      prevPageUrl,
-      nextPageUrl,
-      lastPage,
-      firstPageUrl,
-      lastPageUrl
-    );
-  }
-
-  /**
    * Derive the last page number
    *
    * Resolution order: the configured `lastPage` path, then
@@ -98,7 +54,7 @@ export class DirectusResponseStrategy extends AbstractDotPathResponseStrategy {
    * @param perPage - The page size
    * @returns The last page number, or undefined when inputs insufficient
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   private _deriveLastPage(
     response: Record<string, any>,
     options: ResponseOptions,
@@ -151,5 +107,50 @@ export class DirectusResponseStrategy extends AbstractDotPathResponseStrategy {
     }
 
     return undefined;
+  }
+
+  /**
+   * Parse a Directus collection response into a PaginatedCollection
+   *
+   * @param response - The raw API response body
+   * @param options - The response key name configuration (dot-notation paths supported)
+   * @returns A typed PaginatedCollection instance
+   */
+   
+  public override paginate<T extends IPaginatedObject>(
+    response: Record<string, any>,
+    options: ResponseOptions
+  ): PaginatedCollection<T> {
+    const data = this.resolve(response, options.data) as T[];
+    const total = this.resolve(response, options.total) as number | undefined;
+    const currentPage = (this.resolve(response, options.currentPage) as number | undefined) ?? 1;
+    const perPage = this.resolve(response, options.perPage) as number | undefined;
+    const lastPage = this._deriveLastPage(response, options, data, total, perPage);
+
+    const from =
+      this.resolveFrom(response, options, currentPage, perPage) ??
+      this._singlePageFrom(data, total);
+    const to =
+      this.resolveTo(response, options, currentPage, perPage, total) ??
+      this._singlePageTo(data, total);
+
+    const prevPageUrl = this.resolve(response, options.prevPageUrl) as string | undefined;
+    const nextPageUrl = this.resolve(response, options.nextPageUrl) as string | undefined;
+    const firstPageUrl = this.resolve(response, options.firstPageUrl) as string | undefined;
+    const lastPageUrl = this.resolve(response, options.lastPageUrl) as string | undefined;
+
+    return new PaginatedCollection(
+      data,
+      currentPage,
+      from,
+      to,
+      total,
+      perPage,
+      prevPageUrl,
+      nextPageUrl,
+      lastPage,
+      firstPageUrl,
+      lastPageUrl
+    );
   }
 }

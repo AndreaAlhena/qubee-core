@@ -1,7 +1,8 @@
+import type { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
+import type { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
+import type { QueryBuilderOptions } from '../models/query-builder-options';
+
 import { SortEnum } from '../enums/sort.enum';
-import { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
-import { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
-import { QueryBuilderOptions } from '../models/query-builder-options';
 import { AbstractRequestStrategy } from './abstract-request.strategy';
 
 /**
@@ -24,6 +25,16 @@ import { AbstractRequestStrategy } from './abstract-request.strategy';
  */
 export class SpringRequestStrategy extends AbstractRequestStrategy {
   /**
+   * Spring-native name of the hardcoded page-size query key
+   *
+   * The wire format is fixed (Spring's `PageableHandlerMethodArgumentResolver`
+   * reads `size` by default); the key is intentionally not configurable
+   * through `QueryBuilderOptions` and lives as a private static so it is
+   * visible in one place.
+   */
+  private static readonly _sizeKey = 'size';
+
+  /**
    * Sorts only — Spring Data REST has no standard wire convention for
    * filters, operator filters, per-model fields, flat select, includes,
    * or global search
@@ -38,36 +49,6 @@ export class SpringRequestStrategy extends AbstractRequestStrategy {
     select: false,
     sort: true,
   };
-
-  /**
-   * Spring-native name of the hardcoded page-size query key
-   *
-   * The wire format is fixed (Spring's `PageableHandlerMethodArgumentResolver`
-   * reads `size` by default); the key is intentionally not configurable
-   * through `QueryBuilderOptions` and lives as a private static so it is
-   * visible in one place.
-   */
-  private static readonly _sizeKey = 'size';
-
-  /**
-   * Emit Spring-format query-string segments in canonical order:
-   * sort → page → size
-   *
-   * @param state - The current query builder state
-   * @param options - The query parameter key name configuration (used
-   * for `page` and `sort`, whose defaults match the wire format; the
-   * `size` key is fixed by the server)
-   * @returns Ordered query-string fragments
-   */
-  protected parts(state: IQueryBuilderState, options: QueryBuilderOptions): string[] {
-    const out: string[] = [];
-
-    this._appendSort(state, options, out);
-    this._appendPage(state, options, out);
-    this._appendSize(state, out);
-
-    return out;
-  }
 
   /**
    * Append the 0-indexed page parameter
@@ -119,5 +100,25 @@ export class SpringRequestStrategy extends AbstractRequestStrategy {
 
       out.push(`${options.sort}=${sort.field},${direction}`);
     });
+  }
+
+  /**
+   * Emit Spring-format query-string segments in canonical order:
+   * sort → page → size
+   *
+   * @param state - The current query builder state
+   * @param options - The query parameter key name configuration (used
+   * for `page` and `sort`, whose defaults match the wire format; the
+   * `size` key is fixed by the server)
+   * @returns Ordered query-string fragments
+   */
+  protected parts(state: IQueryBuilderState, options: QueryBuilderOptions): string[] {
+    const out: string[] = [];
+
+    this._appendSort(state, options, out);
+    this._appendPage(state, options, out);
+    this._appendSize(state, out);
+
+    return out;
   }
 }

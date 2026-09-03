@@ -1,7 +1,8 @@
-import { IPaginatedObject } from '../interfaces/paginated-object.interface';
-import { IResponseStrategy } from '../interfaces/response-strategy.interface';
+import type { IPaginatedObject } from '../interfaces/paginated-object.interface';
+import type { IResponseStrategy } from '../interfaces/response-strategy.interface';
+import type { ResponseOptions } from '../models/response-options';
+
 import { PaginatedCollection } from '../models/paginated-collection';
-import { ResponseOptions } from '../models/response-options';
 
 /**
  * Response strategy for the OData v4 driver
@@ -38,44 +39,6 @@ import { ResponseOptions } from '../models/response-options';
  * @see https://docs.oasis-open.org/odata/odata-json-format/v4.01/odata-json-format-v4.01.html
  */
 export class OdataResponseStrategy implements IResponseStrategy {
-  /**
-   * Parse an OData collection response into a PaginatedCollection
-   *
-   * @param response - The raw API response body
-   * @param options - The response key name configuration
-   * @returns A typed PaginatedCollection instance
-   */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public paginate<T extends IPaginatedObject>(
-    response: Record<string, any>,
-    options: ResponseOptions
-  ): PaginatedCollection<T> {
-    const data = response[options.data] as T[];
-    const total = response[options.total] as number | undefined;
-    const nextPageUrl = (response[options.nextPageUrl] ?? null) as string | null;
-
-    const perPage = this._derivePerPage(nextPageUrl, data);
-    const currentPage = this._deriveCurrentPage(nextPageUrl, perPage);
-    const lastPage = this._deriveLastPage(nextPageUrl, data, total, perPage);
-
-    const from = this._deriveFrom(nextPageUrl, data, currentPage, perPage);
-    const to = this._deriveTo(nextPageUrl, data, currentPage, perPage, total);
-
-    return new PaginatedCollection(
-      data,
-      currentPage,
-      from,
-      to,
-      total,
-      perPage,
-      undefined,
-      nextPageUrl ?? undefined,
-      lastPage,
-      undefined,
-      undefined
-    );
-  }
-
   /**
    * Derive the current page number from the `@odata.nextLink` URL
    *
@@ -254,5 +217,43 @@ export class OdataResponseStrategy implements IResponseStrategy {
     } catch {
       return undefined;
     }
+  }
+
+  /**
+   * Parse an OData collection response into a PaginatedCollection
+   *
+   * @param response - The raw API response body
+   * @param options - The response key name configuration
+   * @returns A typed PaginatedCollection instance
+   */
+   
+  public paginate<T extends IPaginatedObject>(
+    response: Record<string, any>,
+    options: ResponseOptions
+  ): PaginatedCollection<T> {
+    const data = response[options.data] as T[];
+    const total = response[options.total] as number | undefined;
+    const nextPageUrl = (response[options.nextPageUrl] ?? null) as string | null;
+
+    const perPage = this._derivePerPage(nextPageUrl, data);
+    const currentPage = this._deriveCurrentPage(nextPageUrl, perPage);
+    const lastPage = this._deriveLastPage(nextPageUrl, data, total, perPage);
+
+    const from = this._deriveFrom(nextPageUrl, data, currentPage, perPage);
+    const to = this._deriveTo(nextPageUrl, data, currentPage, perPage, total);
+
+    return new PaginatedCollection(
+      data,
+      currentPage,
+      from,
+      to,
+      total,
+      perPage,
+      undefined,
+      nextPageUrl ?? undefined,
+      lastPage,
+      undefined,
+      undefined
+    );
   }
 }

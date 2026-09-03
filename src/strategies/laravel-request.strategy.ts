@@ -1,6 +1,7 @@
-import { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
-import { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
-import { QueryBuilderOptions } from '../models/query-builder-options';
+import type { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
+import type { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
+import type { QueryBuilderOptions } from '../models/query-builder-options';
+
 import { AbstractRequestStrategy } from './abstract-request.strategy';
 
 /**

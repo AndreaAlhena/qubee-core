@@ -1,11 +1,12 @@
+import type { IOperatorFilter } from '../interfaces/operator-filter.interface';
+import type { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
+import type { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
+import type { QueryBuilderOptions } from '../models/query-builder-options';
+
 import { FilterOperatorEnum } from '../enums/filter-operator.enum';
 import { SortEnum } from '../enums/sort.enum';
 import { InvalidFilterOperatorValueError } from '../errors/invalid-filter-operator-value.error';
 import { UnsupportedFilterOperatorError } from '../errors/unsupported-filter-operator.error';
-import { IOperatorFilter } from '../interfaces/operator-filter.interface';
-import { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
-import { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
-import { QueryBuilderOptions } from '../models/query-builder-options';
 import { AbstractRequestStrategy } from './abstract-request.strategy';
 
 /**
@@ -30,6 +31,19 @@ import { AbstractRequestStrategy } from './abstract-request.strategy';
  */
 export class SieveRequestStrategy extends AbstractRequestStrategy {
   /**
+   * Sieve-native names of the three hardcoded query keys
+   *
+   * Sieve's model binder reads `filters`, `sorts`, and `pageSize` (the
+   * plural forms differ from the library-wide `filter` / `sort` /
+   * `limit` defaults); these keys are intentionally not configurable
+   * through `QueryBuilderOptions` and live as private statics so they
+   * are visible in one place.
+   */
+  private static readonly _filtersKey = 'filters';
+
+  private static readonly _pageSizeKey = 'pageSize';
+  private static readonly _sortsKey = 'sorts';
+  /**
    * Filters, operator filters, sorts — no per-model fields, no includes,
    * no flat select, no global search (use `CONTAINS` / `ILIKE` operator
    * filters for partial matches)
@@ -44,40 +58,6 @@ export class SieveRequestStrategy extends AbstractRequestStrategy {
     select: false,
     sort: true,
   };
-
-  /**
-   * Sieve-native names of the three hardcoded query keys
-   *
-   * Sieve's model binder reads `filters`, `sorts`, and `pageSize` (the
-   * plural forms differ from the library-wide `filter` / `sort` /
-   * `limit` defaults); these keys are intentionally not configurable
-   * through `QueryBuilderOptions` and live as private statics so they
-   * are visible in one place.
-   */
-  private static readonly _filtersKey = 'filters';
-  private static readonly _pageSizeKey = 'pageSize';
-  private static readonly _sortsKey = 'sorts';
-
-  /**
-   * Emit Sieve-format query-string segments in canonical order:
-   * filters → sorts → page → pageSize
-   *
-   * @param state - The current query builder state
-   * @param options - The query parameter key name configuration (used
-   * for `page`, whose default matches the wire format; the `filters` /
-   * `sorts` / `pageSize` keys are fixed by the server)
-   * @returns Ordered query-string fragments
-   */
-  protected parts(state: IQueryBuilderState, options: QueryBuilderOptions): string[] {
-    const out: string[] = [];
-
-    this._appendFilters(state, out);
-    this._appendSorts(state, out);
-    this._appendPage(state, options, out);
-    this._appendPageSize(state, out);
-
-    return out;
-  }
 
   /**
    * Append the single `filters=` parameter combining simple and operator
@@ -239,5 +219,26 @@ export class SieveRequestStrategy extends AbstractRequestStrategy {
       case FilterOperatorEnum.WFTS:
         throw new UnsupportedFilterOperatorError();
     }
+  }
+
+  /**
+   * Emit Sieve-format query-string segments in canonical order:
+   * filters → sorts → page → pageSize
+   *
+   * @param state - The current query builder state
+   * @param options - The query parameter key name configuration (used
+   * for `page`, whose default matches the wire format; the `filters` /
+   * `sorts` / `pageSize` keys are fixed by the server)
+   * @returns Ordered query-string fragments
+   */
+  protected parts(state: IQueryBuilderState, options: QueryBuilderOptions): string[] {
+    const out: string[] = [];
+
+    this._appendFilters(state, out);
+    this._appendSorts(state, out);
+    this._appendPage(state, options, out);
+    this._appendPageSize(state, out);
+
+    return out;
   }
 }

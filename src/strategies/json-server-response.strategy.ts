@@ -1,7 +1,8 @@
-import { IPaginatedObject } from '../interfaces/paginated-object.interface';
-import { IResponseStrategy } from '../interfaces/response-strategy.interface';
+import type { IPaginatedObject } from '../interfaces/paginated-object.interface';
+import type { IResponseStrategy } from '../interfaces/response-strategy.interface';
+import type { ResponseOptions } from '../models/response-options';
+
 import { PaginatedCollection } from '../models/paginated-collection';
-import { ResponseOptions } from '../models/response-options';
 
 /**
  * Response strategy for the json-server driver
@@ -48,45 +49,6 @@ export class JsonServerResponseStrategy implements IResponseStrategy {
    */
   private static readonly _nextKey = 'next';
   private static readonly _prevKey = 'prev';
-
-  /**
-   * Parse a json-server pagination response into a PaginatedCollection
-   *
-   * @param response - The raw API response body
-   * @param options - The response key name configuration
-   * @returns A typed PaginatedCollection instance
-   */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public paginate<T extends IPaginatedObject>(
-    response: Record<string, any>,
-    options: ResponseOptions
-  ): PaginatedCollection<T> {
-    const data = response[options.data] as T[];
-    const total = response[options.total] as number | undefined;
-    const lastPage = response[options.lastPage] as number | undefined;
-    const prev = (response[JsonServerResponseStrategy._prevKey] ?? null) as number | null;
-    const next = (response[JsonServerResponseStrategy._nextKey] ?? null) as number | null;
-
-    const currentPage = prev === null ? 1 : prev + 1;
-    const perPage = this._derivePerPage(next, data);
-
-    const from = this._deriveFrom(data, currentPage, next, perPage, total);
-    const to = this._deriveTo(data, currentPage, next, perPage, total);
-
-    return new PaginatedCollection(
-      data,
-      currentPage,
-      from,
-      to,
-      total,
-      perPage,
-      undefined,
-      undefined,
-      lastPage,
-      undefined,
-      undefined
-    );
-  }
 
   /**
    * Derive `from` as the 1-indexed offset of the first item on this page
@@ -168,5 +130,44 @@ export class JsonServerResponseStrategy implements IResponseStrategy {
     }
 
     return undefined;
+  }
+
+  /**
+   * Parse a json-server pagination response into a PaginatedCollection
+   *
+   * @param response - The raw API response body
+   * @param options - The response key name configuration
+   * @returns A typed PaginatedCollection instance
+   */
+   
+  public paginate<T extends IPaginatedObject>(
+    response: Record<string, any>,
+    options: ResponseOptions
+  ): PaginatedCollection<T> {
+    const data = response[options.data] as T[];
+    const total = response[options.total] as number | undefined;
+    const lastPage = response[options.lastPage] as number | undefined;
+    const prev = (response[JsonServerResponseStrategy._prevKey] ?? null) as number | null;
+    const next = (response[JsonServerResponseStrategy._nextKey] ?? null) as number | null;
+
+    const currentPage = prev === null ? 1 : prev + 1;
+    const perPage = this._derivePerPage(next, data);
+
+    const from = this._deriveFrom(data, currentPage, next, perPage, total);
+    const to = this._deriveTo(data, currentPage, next, perPage, total);
+
+    return new PaginatedCollection(
+      data,
+      currentPage,
+      from,
+      to,
+      total,
+      perPage,
+      undefined,
+      undefined,
+      lastPage,
+      undefined,
+      undefined
+    );
   }
 }

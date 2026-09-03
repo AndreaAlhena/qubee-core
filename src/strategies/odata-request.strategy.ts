@@ -1,11 +1,12 @@
+import type { IOperatorFilter } from '../interfaces/operator-filter.interface';
+import type { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
+import type { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
+import type { QueryBuilderOptions } from '../models/query-builder-options';
+
 import { FilterOperatorEnum } from '../enums/filter-operator.enum';
 import { SortEnum } from '../enums/sort.enum';
 import { InvalidFilterOperatorValueError } from '../errors/invalid-filter-operator-value.error';
 import { UnsupportedFilterOperatorError } from '../errors/unsupported-filter-operator.error';
-import { IOperatorFilter } from '../interfaces/operator-filter.interface';
-import { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
-import { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
-import { QueryBuilderOptions } from '../models/query-builder-options';
 import { AbstractRequestStrategy } from './abstract-request.strategy';
 
 /**
@@ -40,6 +41,22 @@ import { AbstractRequestStrategy } from './abstract-request.strategy';
  */
 export class OdataRequestStrategy extends AbstractRequestStrategy {
   /**
+   * OData-native names of the system query options
+   *
+   * The `$` prefix is mandated by the OData URL conventions; these keys
+   * are intentionally not configurable through `QueryBuilderOptions` and
+   * live as private statics so they are visible in one place.
+   */
+  private static readonly _countKey = '$count';
+
+  private static readonly _expandKey = '$expand';
+  private static readonly _filterKey = '$filter';
+  private static readonly _orderbyKey = '$orderby';
+  private static readonly _searchKey = '$search';
+  private static readonly _selectKey = '$select';
+  private static readonly _skipKey = '$skip';
+  private static readonly _topKey = '$top';
+  /**
    * Filters, operator filters, sorts, flat select, includes and embedded
    * (both folding into `$expand`), global search — no per-model fields
    * (OData has no JSON:API-style `fields[type]` projection)
@@ -54,46 +71,6 @@ export class OdataRequestStrategy extends AbstractRequestStrategy {
     select: true,
     sort: true,
   };
-
-  /**
-   * OData-native names of the system query options
-   *
-   * The `$` prefix is mandated by the OData URL conventions; these keys
-   * are intentionally not configurable through `QueryBuilderOptions` and
-   * live as private statics so they are visible in one place.
-   */
-  private static readonly _countKey = '$count';
-  private static readonly _expandKey = '$expand';
-  private static readonly _filterKey = '$filter';
-  private static readonly _orderbyKey = '$orderby';
-  private static readonly _searchKey = '$search';
-  private static readonly _selectKey = '$select';
-  private static readonly _skipKey = '$skip';
-  private static readonly _topKey = '$top';
-
-  /**
-   * Emit OData-format query-string segments in canonical order:
-   * $filter → $orderby → $select → $expand → $search → $count → $top → $skip
-   *
-   * @param state - The current query builder state
-   * @param _options - The query parameter key name configuration (unused —
-   * every OData system query option name is fixed by the specification)
-   * @returns Ordered query-string fragments
-   */
-  protected parts(state: IQueryBuilderState, _options: QueryBuilderOptions): string[] {
-    const out: string[] = [];
-
-    this._appendFilter(state, out);
-    this._appendOrderby(state, out);
-    this._appendSelect(state, out);
-    this._appendExpand(state, out);
-    this._appendSearch(state, out);
-    this._appendCount(out);
-    this._appendTop(state, out);
-    this._appendSkip(state, out);
-
-    return out;
-  }
 
   /**
    * Append the constant `$count=true` parameter
@@ -368,5 +345,29 @@ export class OdataRequestStrategy extends AbstractRequestStrategy {
       case FilterOperatorEnum.WFTS:
         throw new UnsupportedFilterOperatorError();
     }
+  }
+
+  /**
+   * Emit OData-format query-string segments in canonical order:
+   * $filter → $orderby → $select → $expand → $search → $count → $top → $skip
+   *
+   * @param state - The current query builder state
+   * @param _options - The query parameter key name configuration (unused —
+   * every OData system query option name is fixed by the specification)
+   * @returns Ordered query-string fragments
+   */
+  protected parts(state: IQueryBuilderState, _options: QueryBuilderOptions): string[] {
+    const out: string[] = [];
+
+    this._appendFilter(state, out);
+    this._appendOrderby(state, out);
+    this._appendSelect(state, out);
+    this._appendExpand(state, out);
+    this._appendSearch(state, out);
+    this._appendCount(out);
+    this._appendTop(state, out);
+    this._appendSkip(state, out);
+
+    return out;
   }
 }

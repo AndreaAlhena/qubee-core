@@ -1,7 +1,8 @@
-import { IPaginatedObject } from '../interfaces/paginated-object.interface';
-import { IResponseStrategy } from '../interfaces/response-strategy.interface';
+import type { IPaginatedObject } from '../interfaces/paginated-object.interface';
+import type { IResponseStrategy } from '../interfaces/response-strategy.interface';
+import type { ResponseOptions } from '../models/response-options';
+
 import { PaginatedCollection } from '../models/paginated-collection';
-import { ResponseOptions } from '../models/response-options';
 
 /**
  * Base class for response strategies whose pagination metadata is a flat
@@ -30,7 +31,7 @@ export abstract class AbstractFlatResponseStrategy implements IResponseStrategy 
    * @param options - The response key name configuration
    * @returns A typed PaginatedCollection instance
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   public paginate<T extends IPaginatedObject>(
     response: Record<string, any>,
     options: ResponseOptions

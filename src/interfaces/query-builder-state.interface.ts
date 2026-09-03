@@ -1,8 +1,8 @@
-import { IFields } from './fields.interface';
-import { IFilters } from './filters.interface';
-import { IOperatorFilter } from './operator-filter.interface';
-import { ISort } from './sort.interface';
-import { Embedded } from '../types/embedded.type';
+import type { Embedded } from '../types/embedded.type';
+import type { IFields } from './fields.interface';
+import type { IFilters } from './filters.interface';
+import type { IOperatorFilter } from './operator-filter.interface';
+import type { ISort } from './sort.interface';
 
 /**
  * Represents the complete query builder state

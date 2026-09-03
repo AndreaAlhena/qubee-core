@@ -1,7 +1,7 @@
-import { HeaderBag } from './header-bag.interface';
-import { IPaginatedObject } from './paginated-object.interface';
-import { PaginatedCollection } from '../models/paginated-collection';
-import { ResponseOptions } from '../models/response-options';
+import type { PaginatedCollection } from '../models/paginated-collection';
+import type { ResponseOptions } from '../models/response-options';
+import type { HeaderBag } from './header-bag.interface';
+import type { IPaginatedObject } from './paginated-object.interface';
 
 /**
  * Strategy interface for parsing paginated API responses

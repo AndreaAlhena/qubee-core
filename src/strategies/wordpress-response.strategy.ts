@@ -1,8 +1,10 @@
-import { HeaderBag, readHeader } from '../interfaces/header-bag.interface';
-import { IPaginatedObject } from '../interfaces/paginated-object.interface';
-import { IResponseStrategy } from '../interfaces/response-strategy.interface';
+import type { HeaderBag} from '../interfaces/header-bag.interface';
+import type { IPaginatedObject } from '../interfaces/paginated-object.interface';
+import type { IResponseStrategy } from '../interfaces/response-strategy.interface';
+import type { ResponseOptions } from '../models/response-options';
+
+import { readHeader } from '../interfaces/header-bag.interface';
 import { PaginatedCollection } from '../models/paginated-collection';
-import { ResponseOptions } from '../models/response-options';
 
 /**
  * Internal shape holding the navigation URLs parsed out of a `Link`
@@ -53,56 +55,6 @@ export class WordpressResponseStrategy implements IResponseStrategy {
   private static readonly _pageParamRegex = /[?&]page=(\d+)/;
   private static readonly _totalHeader = 'X-WP-Total';
   private static readonly _totalPagesHeader = 'X-WP-TotalPages';
-
-  /**
-   * Parse a WordPress REST response into a typed PaginatedCollection
-   *
-   * @param response - The raw response. Either the array body directly, or
-   * an object with the array at `response[options.data]`.
-   * @param options - The response key configuration (only `options.data` is
-   * consulted; all pagination metadata comes from headers).
-   * @param headers - Optional HTTP response headers. `X-WP-Total` /
-   * `X-WP-TotalPages` drive the totals and the `Link` header drives
-   * navigation and page derivation; omission is tolerated.
-   * @returns A typed PaginatedCollection instance
-   */
-  public paginate<T extends IPaginatedObject>(
-    response: Record<string, unknown>,
-    options: ResponseOptions,
-    headers?: HeaderBag
-  ): PaginatedCollection<T> {
-    // Body may be a bare array or an envelope with the array at options.data
-    const data = (Array.isArray(response) ? response : response[options.data]) as T[];
-
-    // Header-driven pagination metadata
-    const total = this._parseCount(readHeader(headers, WordpressResponseStrategy._totalHeader));
-    const lastPage = this._parseCount(
-      readHeader(headers, WordpressResponseStrategy._totalPagesHeader)
-    );
-    const { next, prev } = this._parseLinkHeader(
-      readHeader(headers, WordpressResponseStrategy._linkHeader)
-    );
-
-    const currentPage = this._deriveCurrentPage(next, prev);
-    const perPage = next !== undefined ? data?.length || undefined : undefined;
-
-    const from = this._deriveFrom(data, currentPage, next, perPage, total);
-    const to = this._deriveTo(data, currentPage, next, perPage, total);
-
-    return new PaginatedCollection(
-      data,
-      currentPage,
-      from,
-      to,
-      total,
-      perPage,
-      prev,
-      next,
-      lastPage,
-      undefined,
-      undefined
-    );
-  }
 
   /**
    * Derive the current page from the Link relations
@@ -250,5 +202,55 @@ export class WordpressResponseStrategy implements IResponseStrategy {
     }
 
     return relations;
+  }
+
+  /**
+   * Parse a WordPress REST response into a typed PaginatedCollection
+   *
+   * @param response - The raw response. Either the array body directly, or
+   * an object with the array at `response[options.data]`.
+   * @param options - The response key configuration (only `options.data` is
+   * consulted; all pagination metadata comes from headers).
+   * @param headers - Optional HTTP response headers. `X-WP-Total` /
+   * `X-WP-TotalPages` drive the totals and the `Link` header drives
+   * navigation and page derivation; omission is tolerated.
+   * @returns A typed PaginatedCollection instance
+   */
+  public paginate<T extends IPaginatedObject>(
+    response: Record<string, unknown>,
+    options: ResponseOptions,
+    headers?: HeaderBag
+  ): PaginatedCollection<T> {
+    // Body may be a bare array or an envelope with the array at options.data
+    const data = (Array.isArray(response) ? response : response[options.data]) as T[];
+
+    // Header-driven pagination metadata
+    const total = this._parseCount(readHeader(headers, WordpressResponseStrategy._totalHeader));
+    const lastPage = this._parseCount(
+      readHeader(headers, WordpressResponseStrategy._totalPagesHeader)
+    );
+    const { next, prev } = this._parseLinkHeader(
+      readHeader(headers, WordpressResponseStrategy._linkHeader)
+    );
+
+    const currentPage = this._deriveCurrentPage(next, prev);
+    const perPage = next !== undefined ? data?.length || undefined : undefined;
+
+    const from = this._deriveFrom(data, currentPage, next, perPage, total);
+    const to = this._deriveTo(data, currentPage, next, perPage, total);
+
+    return new PaginatedCollection(
+      data,
+      currentPage,
+      from,
+      to,
+      total,
+      perPage,
+      prev,
+      next,
+      lastPage,
+      undefined,
+      undefined
+    );
   }
 }

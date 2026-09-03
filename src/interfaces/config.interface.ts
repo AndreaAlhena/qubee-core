@@ -1,7 +1,7 @@
-import { DriverEnum } from '../enums/driver.enum';
-import { PaginationModeEnum } from '../enums/pagination-mode.enum';
-import { IPaginationConfig } from './pagination-config.interface';
-import { IQueryBuilderConfig } from './query-builder-config.interface';
+import type { DriverEnum } from '../enums/driver.enum';
+import type { PaginationModeEnum } from '../enums/pagination-mode.enum';
+import type { IPaginationConfig } from './pagination-config.interface';
+import type { IQueryBuilderConfig } from './query-builder-config.interface';
 
 /**
  * Main configuration interface for ng-qubee

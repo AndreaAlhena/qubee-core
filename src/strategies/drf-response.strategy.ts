@@ -1,7 +1,8 @@
-import { IPaginatedObject } from '../interfaces/paginated-object.interface';
-import { IResponseStrategy } from '../interfaces/response-strategy.interface';
+import type { IPaginatedObject } from '../interfaces/paginated-object.interface';
+import type { IResponseStrategy } from '../interfaces/response-strategy.interface';
+import type { ResponseOptions } from '../models/response-options';
+
 import { PaginatedCollection } from '../models/paginated-collection';
-import { ResponseOptions } from '../models/response-options';
 
 /**
  * Response strategy for the Django REST Framework (DRF) driver
@@ -41,45 +42,6 @@ import { ResponseOptions } from '../models/response-options';
  * @see https://www.django-rest-framework.org/api-guide/pagination/#pagenumberpagination
  */
 export class DrfResponseStrategy implements IResponseStrategy {
-  /**
-   * Parse a DRF pagination response into a PaginatedCollection
-   *
-   * @param response - The raw API response body
-   * @param options - The response key name configuration
-   * @returns A typed PaginatedCollection instance
-   */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public paginate<T extends IPaginatedObject>(
-    response: Record<string, any>,
-    options: ResponseOptions
-  ): PaginatedCollection<T> {
-    const data = response[options.data] as T[];
-    const total = response[options.total] as number | undefined;
-    const prevPageUrl = (response[options.prevPageUrl] ?? null) as string | null;
-    const nextPageUrl = (response[options.nextPageUrl] ?? null) as string | null;
-
-    const currentPage = this._deriveCurrentPage(prevPageUrl);
-    const perPage = this._derivePerPage(nextPageUrl, prevPageUrl);
-    const lastPage = this._deriveLastPage(total, perPage);
-
-    const from = this._deriveFrom(currentPage, perPage);
-    const to = this._deriveTo(currentPage, perPage, total);
-
-    return new PaginatedCollection(
-      data,
-      currentPage,
-      from,
-      to,
-      total,
-      perPage,
-      prevPageUrl ?? undefined,
-      nextPageUrl ?? undefined,
-      lastPage,
-      undefined,
-      undefined
-    );
-  }
-
   /**
    * Derive the current page number from the `previous` URL
    *
@@ -235,5 +197,44 @@ export class DrfResponseStrategy implements IResponseStrategy {
     } catch {
       return undefined;
     }
+  }
+
+  /**
+   * Parse a DRF pagination response into a PaginatedCollection
+   *
+   * @param response - The raw API response body
+   * @param options - The response key name configuration
+   * @returns A typed PaginatedCollection instance
+   */
+   
+  public paginate<T extends IPaginatedObject>(
+    response: Record<string, any>,
+    options: ResponseOptions
+  ): PaginatedCollection<T> {
+    const data = response[options.data] as T[];
+    const total = response[options.total] as number | undefined;
+    const prevPageUrl = (response[options.prevPageUrl] ?? null) as string | null;
+    const nextPageUrl = (response[options.nextPageUrl] ?? null) as string | null;
+
+    const currentPage = this._deriveCurrentPage(prevPageUrl);
+    const perPage = this._derivePerPage(nextPageUrl, prevPageUrl);
+    const lastPage = this._deriveLastPage(total, perPage);
+
+    const from = this._deriveFrom(currentPage, perPage);
+    const to = this._deriveTo(currentPage, perPage, total);
+
+    return new PaginatedCollection(
+      data,
+      currentPage,
+      from,
+      to,
+      total,
+      perPage,
+      prevPageUrl ?? undefined,
+      nextPageUrl ?? undefined,
+      lastPage,
+      undefined,
+      undefined
+    );
   }
 }

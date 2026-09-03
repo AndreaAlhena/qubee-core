@@ -1,11 +1,12 @@
+import type { IOperatorFilter } from '../interfaces/operator-filter.interface';
+import type { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
+import type { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
+import type { QueryBuilderOptions } from '../models/query-builder-options';
+
 import { FilterOperatorEnum } from '../enums/filter-operator.enum';
 import { PaginationModeEnum } from '../enums/pagination-mode.enum';
 import { SortEnum } from '../enums/sort.enum';
 import { InvalidFilterOperatorValueError } from '../errors/invalid-filter-operator-value.error';
-import { IOperatorFilter } from '../interfaces/operator-filter.interface';
-import { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
-import { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
-import { QueryBuilderOptions } from '../models/query-builder-options';
 import { AbstractRequestStrategy } from './abstract-request.strategy';
 
 /**
@@ -29,6 +30,18 @@ import { AbstractRequestStrategy } from './abstract-request.strategy';
  * @see https://supabase.com/docs/reference/javascript/select
  */
 export class PostgrestRequestStrategy extends AbstractRequestStrategy {
+  private static readonly _offsetKey = 'offset';
+
+  private static readonly _orderKey = 'order';
+  /**
+   * Active pagination mode
+   *
+   * QUERY (default) → URL emits limit/offset.
+   * RANGE → URL omits them; `buildPaginationHeaders()` returns the
+   * `Range-Unit` / `Range` HTTP headers instead.
+   */
+  private readonly _paginationMode: PaginationModeEnum;
+
   /**
    * Filters, operator filters (incl. FTS), sorts, flat select — no
    * per-model fields, no JSON:API/Spatie-style includes, no global
@@ -45,18 +58,6 @@ export class PostgrestRequestStrategy extends AbstractRequestStrategy {
     sort: true,
   };
 
-  private static readonly _offsetKey = 'offset';
-  private static readonly _orderKey = 'order';
-
-  /**
-   * Active pagination mode
-   *
-   * QUERY (default) → URL emits limit/offset.
-   * RANGE → URL omits them; `buildPaginationHeaders()` returns the
-   * `Range-Unit` / `Range` HTTP headers instead.
-   */
-  private readonly _paginationMode: PaginationModeEnum;
-
   /**
    * @param paginationMode - Wire-level pagination mechanism. Defaults to
    * `PaginationModeEnum.QUERY`; `provideNgQubee` wires this from
@@ -68,56 +69,27 @@ export class PostgrestRequestStrategy extends AbstractRequestStrategy {
   }
 
   /**
-   * Compute `Range-Unit` / `Range` HTTP headers for RANGE pagination mode
+   * Append a `BTW` operator filter as two PostgREST segments
    *
-   * In QUERY mode this returns `null` so `NgQubeeService.paginationHeaders()`
-   * conveys "no headers needed" to the consumer. In RANGE mode the method
-   * converts the 1-indexed `state.page` + `state.limit` into PostgREST's
-   * 0-indexed inclusive range (`from = (page - 1) * limit`,
-   * `to = from + limit - 1`) and returns both header values.
+   * Produces: `col=gte.min` and `col=lte.max`. Values must be exactly
+   * `[min, max]`.
    *
-   * @param state - The current query builder state
-   * @returns `{ 'Range-Unit': 'items', 'Range': 'from-to' }` or `null`
+   * @param filter - The operator filter carrying the BTW bounds
+   * @param out - The accumulator the caller joins into the URI
+   * @throws {InvalidFilterOperatorValueError} If values.length !== 2
    */
-  public buildPaginationHeaders(state: IQueryBuilderState): Record<string, string> | null {
-    if (this._paginationMode !== PaginationModeEnum.RANGE) {
-      return null;
+  private _appendBetweenFilter(filter: IOperatorFilter, out: string[]): void {
+    if (filter.values.length !== 2) {
+      throw new InvalidFilterOperatorValueError(
+        filter.operator,
+        'BTW requires exactly 2 values (min, max)'
+      );
     }
 
-    const from = (state.page - 1) * state.limit;
-    const to = from + state.limit - 1;
+    const [min, max] = filter.values;
 
-    /* eslint-disable @typescript-eslint/naming-convention */
-    return {
-      'Range-Unit': 'items',
-      Range: `${from}-${to}`,
-    };
-    /* eslint-enable @typescript-eslint/naming-convention */
-  }
-
-  /**
-   * Emit PostgREST-format query-string segments in canonical order:
-   * filters → operator filters → order → select → (limit + offset in
-   * QUERY mode only — RANGE mode passes pagination via headers instead)
-   *
-   * @param state - The current query builder state
-   * @param options - The query parameter key name configuration
-   * @returns Ordered query-string fragments
-   */
-  protected parts(state: IQueryBuilderState, options: QueryBuilderOptions): string[] {
-    const out: string[] = [];
-
-    this._appendFilters(state, out);
-    this._appendOperatorFilters(state, out);
-    this._appendOrder(state, out);
-    this._appendSelect(state, options, out);
-
-    if (this._paginationMode === PaginationModeEnum.QUERY) {
-      this._appendLimit(state, options, out);
-      this._appendOffset(state, out);
-    }
-
-    return out;
+    out.push(`${filter.field}=gte.${min}`);
+    out.push(`${filter.field}=lte.${max}`);
   }
 
   /**
@@ -219,27 +191,58 @@ export class PostgrestRequestStrategy extends AbstractRequestStrategy {
   }
 
   /**
-   * Append a `BTW` operator filter as two PostgREST segments
+   * Append the order parameter as `order=col1.asc,col2.desc`
    *
-   * Produces: `col=gte.min` and `col=lte.max`. Values must be exactly
-   * `[min, max]`.
-   *
-   * @param filter - The operator filter carrying the BTW bounds
+   * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
-   * @throws {InvalidFilterOperatorValueError} If values.length !== 2
    */
-  private _appendBetweenFilter(filter: IOperatorFilter, out: string[]): void {
-    if (filter.values.length !== 2) {
-      throw new InvalidFilterOperatorValueError(
-        filter.operator,
-        'BTW requires exactly 2 values (min, max)'
-      );
+  private _appendOrder(state: IQueryBuilderState, out: string[]): void {
+    if (!state.sorts.length) {
+      return;
     }
 
-    const [min, max] = filter.values;
+    const pairs = state.sorts.map(
+      (sort) => `${sort.field}.${sort.order === SortEnum.DESC ? 'desc' : 'asc'}`
+    );
 
-    out.push(`${filter.field}=gte.${min}`);
-    out.push(`${filter.field}=lte.${max}`);
+    out.push(`${PostgrestRequestStrategy._orderKey}=${pairs.join(',')}`);
+  }
+
+  /**
+   * Append the select parameter as `select=col1,col2,rel(col1,col2)`
+   *
+   * PostgREST uses a single `select` query param for both column pruning
+   * (matching NestJS semantics) and embedded-resource fetching — the
+   * embedded fragments from `addEmbedded` are spliced into the same
+   * param value, never emitted as a second `select`.
+   *
+   * Fragment shape per relation: `rel(col1,col2)` with explicit columns,
+   * `rel(*)` without. When embedded relations are present but no flat
+   * columns were selected, the flat part defaults to `*` so the base
+   * row's columns are not silently dropped from the projection.
+   *
+   * @param state - The current query builder state
+   * @param options - The query parameter key name configuration
+   * @param out - The accumulator the caller joins into the URI
+   */
+  private _appendSelect(
+    state: IQueryBuilderState,
+    options: QueryBuilderOptions,
+    out: string[]
+  ): void {
+    const embedded = Object.keys(state.embedded).map((relation) => {
+      const columns = state.embedded[relation];
+
+      return columns.length ? `${relation}(${columns.join(',')})` : `${relation}(*)`;
+    });
+
+    if (!state.select.length && !embedded.length) {
+      return;
+    }
+
+    const columns = state.select.length ? state.select : ['*'];
+
+    out.push(`${options.select}=${[...columns, ...embedded].join(',')}`);
   }
 
   /**
@@ -309,57 +312,55 @@ export class PostgrestRequestStrategy extends AbstractRequestStrategy {
   }
 
   /**
-   * Append the order parameter as `order=col1.asc,col2.desc`
-   *
-   * @param state - The current query builder state
-   * @param out - The accumulator the caller joins into the URI
-   */
-  private _appendOrder(state: IQueryBuilderState, out: string[]): void {
-    if (!state.sorts.length) {
-      return;
-    }
-
-    const pairs = state.sorts.map(
-      (sort) => `${sort.field}.${sort.order === SortEnum.DESC ? 'desc' : 'asc'}`
-    );
-
-    out.push(`${PostgrestRequestStrategy._orderKey}=${pairs.join(',')}`);
-  }
-
-  /**
-   * Append the select parameter as `select=col1,col2,rel(col1,col2)`
-   *
-   * PostgREST uses a single `select` query param for both column pruning
-   * (matching NestJS semantics) and embedded-resource fetching — the
-   * embedded fragments from `addEmbedded` are spliced into the same
-   * param value, never emitted as a second `select`.
-   *
-   * Fragment shape per relation: `rel(col1,col2)` with explicit columns,
-   * `rel(*)` without. When embedded relations are present but no flat
-   * columns were selected, the flat part defaults to `*` so the base
-   * row's columns are not silently dropped from the projection.
+   * Emit PostgREST-format query-string segments in canonical order:
+   * filters → operator filters → order → select → (limit + offset in
+   * QUERY mode only — RANGE mode passes pagination via headers instead)
    *
    * @param state - The current query builder state
    * @param options - The query parameter key name configuration
-   * @param out - The accumulator the caller joins into the URI
+   * @returns Ordered query-string fragments
    */
-  private _appendSelect(
-    state: IQueryBuilderState,
-    options: QueryBuilderOptions,
-    out: string[]
-  ): void {
-    const embedded = Object.keys(state.embedded).map((relation) => {
-      const columns = state.embedded[relation];
+  protected parts(state: IQueryBuilderState, options: QueryBuilderOptions): string[] {
+    const out: string[] = [];
 
-      return columns.length ? `${relation}(${columns.join(',')})` : `${relation}(*)`;
-    });
+    this._appendFilters(state, out);
+    this._appendOperatorFilters(state, out);
+    this._appendOrder(state, out);
+    this._appendSelect(state, options, out);
 
-    if (!state.select.length && !embedded.length) {
-      return;
+    if (this._paginationMode === PaginationModeEnum.QUERY) {
+      this._appendLimit(state, options, out);
+      this._appendOffset(state, out);
     }
 
-    const columns = state.select.length ? state.select : ['*'];
+    return out;
+  }
 
-    out.push(`${options.select}=${[...columns, ...embedded].join(',')}`);
+  /**
+   * Compute `Range-Unit` / `Range` HTTP headers for RANGE pagination mode
+   *
+   * In QUERY mode this returns `null` so `NgQubeeService.paginationHeaders()`
+   * conveys "no headers needed" to the consumer. In RANGE mode the method
+   * converts the 1-indexed `state.page` + `state.limit` into PostgREST's
+   * 0-indexed inclusive range (`from = (page - 1) * limit`,
+   * `to = from + limit - 1`) and returns both header values.
+   *
+   * @param state - The current query builder state
+   * @returns `{ 'Range-Unit': 'items', 'Range': 'from-to' }` or `null`
+   */
+  public buildPaginationHeaders(state: IQueryBuilderState): Record<string, string> | null {
+    if (this._paginationMode !== PaginationModeEnum.RANGE) {
+      return null;
+    }
+
+    const from = (state.page - 1) * state.limit;
+    const to = from + state.limit - 1;
+
+    /* eslint-disable @typescript-eslint/naming-convention */
+    return {
+      'Range-Unit': 'items',
+      Range: `${from}-${to}`,
+    };
+    /* eslint-enable @typescript-eslint/naming-convention */
   }
 }

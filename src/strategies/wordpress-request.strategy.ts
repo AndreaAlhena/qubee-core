@@ -1,7 +1,8 @@
+import type { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
+import type { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
+import type { QueryBuilderOptions } from '../models/query-builder-options';
+
 import { SortEnum } from '../enums/sort.enum';
-import { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
-import { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
-import { QueryBuilderOptions } from '../models/query-builder-options';
 import { AbstractRequestStrategy } from './abstract-request.strategy';
 
 /**
@@ -37,6 +38,21 @@ import { AbstractRequestStrategy } from './abstract-request.strategy';
  */
 export class WordpressRequestStrategy extends AbstractRequestStrategy {
   /**
+   * WordPress-native names of the seven hardcoded query keys
+   *
+   * The underscore prefix marks the REST API's global params apart
+   * from collection filters; all keys are fixed by the server and
+   * intentionally not configurable through `QueryBuilderOptions`.
+   */
+  private static readonly _embedKey = '_embed';
+
+  private static readonly _fieldsKey = '_fields';
+  private static readonly _orderbyKey = 'orderby';
+  private static readonly _orderKey = 'order';
+  private static readonly _pageKey = 'page';
+  private static readonly _perPageKey = 'per_page';
+  private static readonly _searchKey = 'search';
+  /**
    * Filters, sorts, global search, flat field selection (`select`),
    * embedding (`includes`) — no operator filters, no per-model fields,
    * no embedded-column projection
@@ -51,43 +67,6 @@ export class WordpressRequestStrategy extends AbstractRequestStrategy {
     select: true,
     sort: true,
   };
-
-  /**
-   * WordPress-native names of the seven hardcoded query keys
-   *
-   * The underscore prefix marks the REST API's global params apart
-   * from collection filters; all keys are fixed by the server and
-   * intentionally not configurable through `QueryBuilderOptions`.
-   */
-  private static readonly _embedKey = '_embed';
-  private static readonly _fieldsKey = '_fields';
-  private static readonly _orderbyKey = 'orderby';
-  private static readonly _orderKey = 'order';
-  private static readonly _pageKey = 'page';
-  private static readonly _perPageKey = 'per_page';
-  private static readonly _searchKey = 'search';
-
-  /**
-   * Emit WordPress-format query-string segments in canonical order:
-   * filters → orderby/order → _fields → _embed → search → page → per_page
-   *
-   * @param state - The current query builder state
-   * @param _options - The query parameter key name configuration (unused;
-   * WordPress' wire keys are fixed by the server)
-   * @returns Ordered query-string fragments
-   */
-  protected parts(state: IQueryBuilderState, _options: QueryBuilderOptions): string[] {
-    const out: string[] = [];
-
-    this._appendFilters(state, out);
-    this._appendSort(state, out);
-    this._appendFields(state, out);
-    this._appendEmbed(state, out);
-    this._appendSearch(state, out);
-    this._appendPagination(state, out);
-
-    return out;
-  }
 
   /**
    * Append the `_embed=` CSV from the includes array
@@ -187,5 +166,27 @@ export class WordpressRequestStrategy extends AbstractRequestStrategy {
     out.push(
       `${WordpressRequestStrategy._orderKey}=${first.order === SortEnum.DESC ? 'desc' : 'asc'}`
     );
+  }
+
+  /**
+   * Emit WordPress-format query-string segments in canonical order:
+   * filters → orderby/order → _fields → _embed → search → page → per_page
+   *
+   * @param state - The current query builder state
+   * @param _options - The query parameter key name configuration (unused;
+   * WordPress' wire keys are fixed by the server)
+   * @returns Ordered query-string fragments
+   */
+  protected parts(state: IQueryBuilderState, _options: QueryBuilderOptions): string[] {
+    const out: string[] = [];
+
+    this._appendFilters(state, out);
+    this._appendSort(state, out);
+    this._appendFields(state, out);
+    this._appendEmbed(state, out);
+    this._appendSearch(state, out);
+    this._appendPagination(state, out);
+
+    return out;
   }
 }

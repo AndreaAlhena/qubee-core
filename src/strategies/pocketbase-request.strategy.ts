@@ -1,11 +1,12 @@
+import type { IOperatorFilter } from '../interfaces/operator-filter.interface';
+import type { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
+import type { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
+import type { QueryBuilderOptions } from '../models/query-builder-options';
+
 import { FilterOperatorEnum } from '../enums/filter-operator.enum';
 import { SortEnum } from '../enums/sort.enum';
 import { InvalidFilterOperatorValueError } from '../errors/invalid-filter-operator-value.error';
 import { UnsupportedFilterOperatorError } from '../errors/unsupported-filter-operator.error';
-import { IOperatorFilter } from '../interfaces/operator-filter.interface';
-import { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
-import { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
-import { QueryBuilderOptions } from '../models/query-builder-options';
 import { AbstractRequestStrategy } from './abstract-request.strategy';
 
 /**
@@ -40,6 +41,20 @@ import { AbstractRequestStrategy } from './abstract-request.strategy';
  */
 export class PocketbaseRequestStrategy extends AbstractRequestStrategy {
   /**
+   * PocketBase-native names of the six hardcoded query keys
+   *
+   * The records API reads exactly these names; they are intentionally
+   * not configurable through `QueryBuilderOptions` and live as private
+   * statics so they are visible in one place.
+   */
+  private static readonly _expandKey = 'expand';
+
+  private static readonly _fieldsKey = 'fields';
+  private static readonly _filterKey = 'filter';
+  private static readonly _pageKey = 'page';
+  private static readonly _perPageKey = 'perPage';
+  private static readonly _sortKey = 'sort';
+  /**
    * Filters, operator filters, sorts, expand (`includes`), flat field
    * selection (`select`) — no per-model fields, no global search, no
    * embedded resources
@@ -54,45 +69,6 @@ export class PocketbaseRequestStrategy extends AbstractRequestStrategy {
     select: true,
     sort: true,
   };
-
-  /**
-   * PocketBase-native names of the six hardcoded query keys
-   *
-   * The records API reads exactly these names; they are intentionally
-   * not configurable through `QueryBuilderOptions` and live as private
-   * statics so they are visible in one place.
-   */
-  private static readonly _expandKey = 'expand';
-  private static readonly _fieldsKey = 'fields';
-  private static readonly _filterKey = 'filter';
-  private static readonly _pageKey = 'page';
-  private static readonly _perPageKey = 'perPage';
-  private static readonly _sortKey = 'sort';
-
-  /**
-   * Emit PocketBase-format query-string segments in canonical order:
-   * expand → fields → filter (merged) → sort → page → perPage
-   *
-   * Simple filters and operator filters share the single `filter=(...)`
-   * parameter so the server receives one combined expression rather
-   * than two conflicting `filter` params.
-   *
-   * @param state - The current query builder state
-   * @param _options - The query parameter key name configuration (unused;
-   * PocketBase's wire keys are fixed by the server)
-   * @returns Ordered query-string fragments
-   */
-  protected parts(state: IQueryBuilderState, _options: QueryBuilderOptions): string[] {
-    const out: string[] = [];
-
-    this._appendExpand(state, out);
-    this._appendFields(state, out);
-    this._appendFilter(state, out);
-    this._appendSort(state, out);
-    this._appendPagination(state, out);
-
-    return out;
-  }
 
   /**
    * Append the `expand=` CSV from the includes array
@@ -194,6 +170,16 @@ export class PocketbaseRequestStrategy extends AbstractRequestStrategy {
   }
 
   /**
+   * Backslash-escape single quotes inside a string literal
+   *
+   * @param value - The raw string value
+   * @returns The escaped string, ready to wrap in single quotes
+   */
+  private _escape(value: string): string {
+    return value.replace(/'/g, "\\'");
+  }
+
+  /**
    * Translate a `FilterOperatorEnum` operator filter into one
    * PocketBase expression clause
    *
@@ -280,16 +266,6 @@ export class PocketbaseRequestStrategy extends AbstractRequestStrategy {
   }
 
   /**
-   * Backslash-escape single quotes inside a string literal
-   *
-   * @param value - The raw string value
-   * @returns The escaped string, ready to wrap in single quotes
-   */
-  private _escape(value: string): string {
-    return value.replace(/'/g, "\\'");
-  }
-
-  /**
    * Format a filter value as a PocketBase expression literal
    *
    * Strings are single-quoted (embedded quotes backslash-escaped);
@@ -301,5 +277,30 @@ export class PocketbaseRequestStrategy extends AbstractRequestStrategy {
    */
   private _formatValue(value: string | number | boolean): string {
     return typeof value === 'string' ? `'${this._escape(value)}'` : `${value}`;
+  }
+
+  /**
+   * Emit PocketBase-format query-string segments in canonical order:
+   * expand → fields → filter (merged) → sort → page → perPage
+   *
+   * Simple filters and operator filters share the single `filter=(...)`
+   * parameter so the server receives one combined expression rather
+   * than two conflicting `filter` params.
+   *
+   * @param state - The current query builder state
+   * @param _options - The query parameter key name configuration (unused;
+   * PocketBase's wire keys are fixed by the server)
+   * @returns Ordered query-string fragments
+   */
+  protected parts(state: IQueryBuilderState, _options: QueryBuilderOptions): string[] {
+    const out: string[] = [];
+
+    this._appendExpand(state, out);
+    this._appendFields(state, out);
+    this._appendFilter(state, out);
+    this._appendSort(state, out);
+    this._appendPagination(state, out);
+
+    return out;
   }
 }

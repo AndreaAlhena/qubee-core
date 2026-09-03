@@ -1,13 +1,14 @@
 import * as qs from 'qs';
 
+import type { IOperatorFilter } from '../interfaces/operator-filter.interface';
+import type { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
+import type { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
+import type { QueryBuilderOptions } from '../models/query-builder-options';
+
 import { FilterOperatorEnum } from '../enums/filter-operator.enum';
 import { SortEnum } from '../enums/sort.enum';
 import { InvalidFilterOperatorValueError } from '../errors/invalid-filter-operator-value.error';
 import { UnsupportedFilterOperatorError } from '../errors/unsupported-filter-operator.error';
-import { IOperatorFilter } from '../interfaces/operator-filter.interface';
-import { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
-import { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
-import { QueryBuilderOptions } from '../models/query-builder-options';
 import { AbstractRequestStrategy } from './abstract-request.strategy';
 
 /**
@@ -41,6 +42,19 @@ type StrapiFilterPayload = Record<string, StrapiFilterValue | StrapiFilterValue[
  */
 export class StrapiRequestStrategy extends AbstractRequestStrategy {
   /**
+   * Strapi-native names of the four hardcoded query keys
+   *
+   * Strapi's wire format is fixed (the server reads `pagination[page]`,
+   * `populate`, `sort`, `fields`); these keys are intentionally not
+   * configurable through `QueryBuilderOptions` and live as private
+   * statics so they are visible in one place.
+   */
+  private static readonly _fieldsKey = 'fields';
+
+  private static readonly _paginationKey = 'pagination';
+  private static readonly _populateKey = 'populate';
+  private static readonly _sortKey = 'sort';
+  /**
    * Filters, operator filters, sorts, populate (`includes`), flat field
    * selection (`select`) — no per-model fields, no global search (use
    * `$contains` / `$containsi` operator filters instead)
@@ -55,44 +69,6 @@ export class StrapiRequestStrategy extends AbstractRequestStrategy {
     select: true,
     sort: true,
   };
-
-  /**
-   * Strapi-native names of the four hardcoded query keys
-   *
-   * Strapi's wire format is fixed (the server reads `pagination[page]`,
-   * `populate`, `sort`, `fields`); these keys are intentionally not
-   * configurable through `QueryBuilderOptions` and live as private
-   * statics so they are visible in one place.
-   */
-  private static readonly _fieldsKey = 'fields';
-  private static readonly _paginationKey = 'pagination';
-  private static readonly _populateKey = 'populate';
-  private static readonly _sortKey = 'sort';
-
-  /**
-   * Emit Strapi-format query-string segments in canonical order:
-   * populate → fields → filters (merged) → sort → pagination
-   *
-   * Simple filters and operator filters share a single `filters` wrapper
-   * so qs emits one ordered, deeply-nested bracket structure rather than
-   * two duplicate top-level `filters[...]` blocks.
-   *
-   * @param state - The current query builder state
-   * @param _options - The query parameter key name configuration (unused;
-   * Strapi's wire keys are fixed by the server)
-   * @returns Ordered query-string fragments
-   */
-  protected parts(state: IQueryBuilderState, _options: QueryBuilderOptions): string[] {
-    const out: string[] = [];
-
-    this._appendPopulate(state, out);
-    this._appendFields(state, out);
-    this._appendFilters(state, out);
-    this._appendSort(state, out);
-    this._appendPagination(state, out);
-
-    return out;
-  }
 
   /**
    * Append `fields[0]=col1&fields[1]=col2` from the flat select array
@@ -300,5 +276,30 @@ export class StrapiRequestStrategy extends AbstractRequestStrategy {
       case FilterOperatorEnum.WFTS:
         throw new UnsupportedFilterOperatorError();
     }
+  }
+
+  /**
+   * Emit Strapi-format query-string segments in canonical order:
+   * populate → fields → filters (merged) → sort → pagination
+   *
+   * Simple filters and operator filters share a single `filters` wrapper
+   * so qs emits one ordered, deeply-nested bracket structure rather than
+   * two duplicate top-level `filters[...]` blocks.
+   *
+   * @param state - The current query builder state
+   * @param _options - The query parameter key name configuration (unused;
+   * Strapi's wire keys are fixed by the server)
+   * @returns Ordered query-string fragments
+   */
+  protected parts(state: IQueryBuilderState, _options: QueryBuilderOptions): string[] {
+    const out: string[] = [];
+
+    this._appendPopulate(state, out);
+    this._appendFields(state, out);
+    this._appendFilters(state, out);
+    this._appendSort(state, out);
+    this._appendPagination(state, out);
+
+    return out;
   }
 }

@@ -1,6 +1,7 @@
+import type { INormalized } from '../interfaces/normalized.interface';
+import type { IPaginatedObject } from '../interfaces/paginated-object.interface';
+
 import { KeyNotFoundError } from '../errors/key-not-found.error';
-import { INormalized } from '../interfaces/normalized.interface';
-import { IPaginatedObject } from '../interfaces/paginated-object.interface';
 
 export class PaginatedCollection<T extends IPaginatedObject> {
   constructor(

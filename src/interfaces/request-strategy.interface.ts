@@ -1,6 +1,6 @@
-import { IQueryBuilderState } from './query-builder-state.interface';
-import { IStrategyCapabilities } from './strategy-capabilities.interface';
-import { QueryBuilderOptions } from '../models/query-builder-options';
+import type { QueryBuilderOptions } from '../models/query-builder-options';
+import type { IQueryBuilderState } from './query-builder-state.interface';
+import type { IStrategyCapabilities } from './strategy-capabilities.interface';
 
 /**
  * Strategy interface for building request URIs

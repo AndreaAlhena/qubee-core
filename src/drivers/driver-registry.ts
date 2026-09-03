@@ -1,8 +1,9 @@
+import type { PaginationModeEnum } from '../enums/pagination-mode.enum';
+import type { IPaginationConfig } from '../interfaces/pagination-config.interface';
+import type { IRequestStrategy } from '../interfaces/request-strategy.interface';
+import type { IResponseStrategy } from '../interfaces/response-strategy.interface';
+
 import { DriverEnum } from '../enums/driver.enum';
-import { PaginationModeEnum } from '../enums/pagination-mode.enum';
-import { IPaginationConfig } from '../interfaces/pagination-config.interface';
-import { IRequestStrategy } from '../interfaces/request-strategy.interface';
-import { IResponseStrategy } from '../interfaces/response-strategy.interface';
 import {
   ApiPlatformResponseOptions,
   DirectusResponseOptions,

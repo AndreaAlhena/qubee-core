@@ -1,13 +1,14 @@
 import * as qs from 'qs';
 
+import type { IOperatorFilter } from '../interfaces/operator-filter.interface';
+import type { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
+import type { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
+import type { QueryBuilderOptions } from '../models/query-builder-options';
+
 import { FilterOperatorEnum } from '../enums/filter-operator.enum';
 import { SortEnum } from '../enums/sort.enum';
 import { InvalidFilterOperatorValueError } from '../errors/invalid-filter-operator-value.error';
 import { UnsupportedFilterOperatorError } from '../errors/unsupported-filter-operator.error';
-import { IOperatorFilter } from '../interfaces/operator-filter.interface';
-import { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
-import { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
-import { QueryBuilderOptions } from '../models/query-builder-options';
 import { AbstractRequestStrategy } from './abstract-request.strategy';
 
 /**
@@ -50,6 +51,18 @@ type FeathersFilterPayload = Record<string, FeathersFilterValue | FeathersFilter
  */
 export class FeathersRequestStrategy extends AbstractRequestStrategy {
   /**
+   * Feathers-native names of the four hardcoded query keys
+   *
+   * The dollar prefix marks adapter-commons system params apart from
+   * filter fields; these keys are fixed by the server and intentionally
+   * not configurable through `QueryBuilderOptions`.
+   */
+  private static readonly _limitKey = '$limit';
+
+  private static readonly _selectKey = '$select';
+  private static readonly _skipKey = '$skip';
+  private static readonly _sortKey = '$sort';
+  /**
    * Filters, operator filters, sorts, flat field selection (`select`) —
    * no per-model fields, no includes, no global search, no embedded
    * resources
@@ -64,39 +77,6 @@ export class FeathersRequestStrategy extends AbstractRequestStrategy {
     select: true,
     sort: true,
   };
-
-  /**
-   * Feathers-native names of the four hardcoded query keys
-   *
-   * The dollar prefix marks adapter-commons system params apart from
-   * filter fields; these keys are fixed by the server and intentionally
-   * not configurable through `QueryBuilderOptions`.
-   */
-  private static readonly _limitKey = '$limit';
-  private static readonly _selectKey = '$select';
-  private static readonly _skipKey = '$skip';
-  private static readonly _sortKey = '$sort';
-
-  /**
-   * Emit Feathers-format query-string segments in canonical order:
-   * filters → operator filters → $sort → $select → $limit → $skip
-   *
-   * @param state - The current query builder state
-   * @param _options - The query parameter key name configuration (unused;
-   * Feathers' system keys are fixed by the server)
-   * @returns Ordered query-string fragments
-   */
-  protected parts(state: IQueryBuilderState, _options: QueryBuilderOptions): string[] {
-    const out: string[] = [];
-
-    this._appendFilters(state, out);
-    this._appendOperatorFilters(state, out);
-    this._appendSort(state, out);
-    this._appendSelect(state, out);
-    this._appendPagination(state, out);
-
-    return out;
-  }
 
   /**
    * Append simple filter parameters
@@ -262,5 +242,26 @@ export class FeathersRequestStrategy extends AbstractRequestStrategy {
       case FilterOperatorEnum.WFTS:
         throw new UnsupportedFilterOperatorError();
     }
+  }
+
+  /**
+   * Emit Feathers-format query-string segments in canonical order:
+   * filters → operator filters → $sort → $select → $limit → $skip
+   *
+   * @param state - The current query builder state
+   * @param _options - The query parameter key name configuration (unused;
+   * Feathers' system keys are fixed by the server)
+   * @returns Ordered query-string fragments
+   */
+  protected parts(state: IQueryBuilderState, _options: QueryBuilderOptions): string[] {
+    const out: string[] = [];
+
+    this._appendFilters(state, out);
+    this._appendOperatorFilters(state, out);
+    this._appendSort(state, out);
+    this._appendSelect(state, out);
+    this._appendPagination(state, out);
+
+    return out;
   }
 }

@@ -1,13 +1,14 @@
 import * as qs from 'qs';
 
+import type { IOperatorFilter } from '../interfaces/operator-filter.interface';
+import type { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
+import type { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
+import type { QueryBuilderOptions } from '../models/query-builder-options';
+
 import { FilterOperatorEnum } from '../enums/filter-operator.enum';
 import { SortEnum } from '../enums/sort.enum';
 import { InvalidFilterOperatorValueError } from '../errors/invalid-filter-operator-value.error';
 import { UnsupportedFilterOperatorError } from '../errors/unsupported-filter-operator.error';
-import { IOperatorFilter } from '../interfaces/operator-filter.interface';
-import { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
-import { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
-import { QueryBuilderOptions } from '../models/query-builder-options';
 import { AbstractRequestStrategy } from './abstract-request.strategy';
 
 /**
@@ -53,6 +54,14 @@ type DirectusFilterPayload = Record<string, DirectusFilterValue>;
  */
 export class DirectusRequestStrategy extends AbstractRequestStrategy {
   /**
+   * Directus-native name of the metadata query key
+   *
+   * `meta` has no `QueryBuilderOptions` slot and is fixed by the server,
+   * so it lives as a private static to be visible in one place.
+   */
+  private static readonly _metaKey = 'meta';
+
+  /**
    * Filters, operator filters, sorts, flat select, includes and embedded
    * (both folding into `fields=`), global search — no per-model fields
    * (Directus scopes relational projections with dot paths, not a
@@ -68,40 +77,6 @@ export class DirectusRequestStrategy extends AbstractRequestStrategy {
     select: true,
     sort: true,
   };
-
-  /**
-   * Directus-native name of the metadata query key
-   *
-   * `meta` has no `QueryBuilderOptions` slot and is fixed by the server,
-   * so it lives as a private static to be visible in one place.
-   */
-  private static readonly _metaKey = 'meta';
-
-  /**
-   * Emit Directus-format query-string segments in canonical order:
-   * filter (merged) → sort → fields → search → meta → limit → page
-   *
-   * Simple filters and operator filters share a single `filter` wrapper
-   * so qs emits one ordered, deeply-nested bracket structure rather than
-   * two duplicate top-level `filter[...]` blocks.
-   *
-   * @param state - The current query builder state
-   * @param options - The query parameter key name configuration
-   * @returns Ordered query-string fragments
-   */
-  protected parts(state: IQueryBuilderState, options: QueryBuilderOptions): string[] {
-    const out: string[] = [];
-
-    this._appendFilters(state, options, out);
-    this._appendSort(state, options, out);
-    this._appendFields(state, options, out);
-    this._appendSearch(state, options, out);
-    this._appendMeta(out);
-    this._appendLimit(state, options, out);
-    this._appendPage(state, options, out);
-
-    return out;
-  }
 
   /**
    * Append the single `fields=` CSV combining flat columns, whole
@@ -378,5 +353,31 @@ export class DirectusRequestStrategy extends AbstractRequestStrategy {
         throw new UnsupportedFilterOperatorError();
     }
     /* eslint-enable @typescript-eslint/naming-convention */
+  }
+
+  /**
+   * Emit Directus-format query-string segments in canonical order:
+   * filter (merged) → sort → fields → search → meta → limit → page
+   *
+   * Simple filters and operator filters share a single `filter` wrapper
+   * so qs emits one ordered, deeply-nested bracket structure rather than
+   * two duplicate top-level `filter[...]` blocks.
+   *
+   * @param state - The current query builder state
+   * @param options - The query parameter key name configuration
+   * @returns Ordered query-string fragments
+   */
+  protected parts(state: IQueryBuilderState, options: QueryBuilderOptions): string[] {
+    const out: string[] = [];
+
+    this._appendFilters(state, options, out);
+    this._appendSort(state, options, out);
+    this._appendFields(state, options, out);
+    this._appendSearch(state, options, out);
+    this._appendMeta(out);
+    this._appendLimit(state, options, out);
+    this._appendPage(state, options, out);
+
+    return out;
   }
 }

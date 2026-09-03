@@ -1,11 +1,12 @@
+import type { IOperatorFilter } from '../interfaces/operator-filter.interface';
+import type { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
+import type { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
+import type { QueryBuilderOptions } from '../models/query-builder-options';
+
 import { FilterOperatorEnum } from '../enums/filter-operator.enum';
 import { SortEnum } from '../enums/sort.enum';
 import { InvalidFilterOperatorValueError } from '../errors/invalid-filter-operator-value.error';
 import { UnsupportedFilterOperatorError } from '../errors/unsupported-filter-operator.error';
-import { IOperatorFilter } from '../interfaces/operator-filter.interface';
-import { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
-import { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
-import { QueryBuilderOptions } from '../models/query-builder-options';
 import { AbstractRequestStrategy } from './abstract-request.strategy';
 
 /**
@@ -43,6 +44,18 @@ type DrfLookupSuffix = string;
  */
 export class DrfRequestStrategy extends AbstractRequestStrategy {
   /**
+   * DRF-native names of the three hardcoded query keys
+   *
+   * `ordering` and `page_size` are DRF/django-filter conventions and are
+   * intentionally not configurable through `QueryBuilderOptions`. `page`
+   * matches the default `QueryBuilderOptions.page`, and `search` matches
+   * the default `QueryBuilderOptions.search`, so those flow through the
+   * shared options object.
+   */
+  private static readonly _orderingKey = 'ordering';
+
+  private static readonly _pageSizeKey = 'page_size';
+  /**
    * Simple filters, operator filters (django-filter lookups), sorts, and
    * global search — no per-model fields, no relation includes, no flat
    * select (django-restql adds it but is not core DRF)
@@ -57,38 +70,6 @@ export class DrfRequestStrategy extends AbstractRequestStrategy {
     select: false,
     sort: true,
   };
-
-  /**
-   * DRF-native names of the three hardcoded query keys
-   *
-   * `ordering` and `page_size` are DRF/django-filter conventions and are
-   * intentionally not configurable through `QueryBuilderOptions`. `page`
-   * matches the default `QueryBuilderOptions.page`, and `search` matches
-   * the default `QueryBuilderOptions.search`, so those flow through the
-   * shared options object.
-   */
-  private static readonly _orderingKey = 'ordering';
-  private static readonly _pageSizeKey = 'page_size';
-
-  /**
-   * Emit DRF-format query-string segments in canonical order:
-   * filters → operator filters → ordering → search → pagination
-   *
-   * @param state - The current query builder state
-   * @param options - The query parameter key name configuration
-   * @returns Ordered query-string fragments
-   */
-  protected parts(state: IQueryBuilderState, options: QueryBuilderOptions): string[] {
-    const out: string[] = [];
-
-    this._appendFilters(state, out);
-    this._appendOperatorFilters(state, out);
-    this._appendOrdering(state, out);
-    this._appendSearch(state, options, out);
-    this._appendPagination(state, options, out);
-
-    return out;
-  }
 
   /**
    * Append simple filter parameters
@@ -288,5 +269,25 @@ export class DrfRequestStrategy extends AbstractRequestStrategy {
       case FilterOperatorEnum.WFTS:
         throw new UnsupportedFilterOperatorError();
     }
+  }
+
+  /**
+   * Emit DRF-format query-string segments in canonical order:
+   * filters → operator filters → ordering → search → pagination
+   *
+   * @param state - The current query builder state
+   * @param options - The query parameter key name configuration
+   * @returns Ordered query-string fragments
+   */
+  protected parts(state: IQueryBuilderState, options: QueryBuilderOptions): string[] {
+    const out: string[] = [];
+
+    this._appendFilters(state, out);
+    this._appendOperatorFilters(state, out);
+    this._appendOrdering(state, out);
+    this._appendSearch(state, options, out);
+    this._appendPagination(state, options, out);
+
+    return out;
   }
 }

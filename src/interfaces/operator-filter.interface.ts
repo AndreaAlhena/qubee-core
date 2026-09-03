@@ -1,4 +1,4 @@
-import { FilterOperatorEnum } from '../enums/filter-operator.enum';
+import type { FilterOperatorEnum } from '../enums/filter-operator.enum';
 
 /**
  * Represents a filter with an explicit operator for the NestJS driver

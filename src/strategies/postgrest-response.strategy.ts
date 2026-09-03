@@ -1,8 +1,10 @@
-import { HeaderBag, readHeader } from '../interfaces/header-bag.interface';
-import { IPaginatedObject } from '../interfaces/paginated-object.interface';
-import { IResponseStrategy } from '../interfaces/response-strategy.interface';
+import type { HeaderBag} from '../interfaces/header-bag.interface';
+import type { IPaginatedObject } from '../interfaces/paginated-object.interface';
+import type { IResponseStrategy } from '../interfaces/response-strategy.interface';
+import type { ResponseOptions } from '../models/response-options';
+
+import { readHeader } from '../interfaces/header-bag.interface';
 import { PaginatedCollection } from '../models/paginated-collection';
-import { ResponseOptions } from '../models/response-options';
 
 /**
  * Internal shape holding the three values parsed out of a `Content-Range`
@@ -35,6 +37,33 @@ interface IContentRangeParts {
 export class PostgrestResponseStrategy implements IResponseStrategy {
   private static readonly _contentRangeHeader = 'Content-Range';
   private static readonly _contentRangeRegex = /^(\d+)-(\d+)\/(\*|\d+)$/;
+
+  /**
+   * Extract `{from, to, total}` from a PostgREST `Content-Range` value
+   *
+   * Expected format: `<from>-<to>/<total|*>`. Any shape mismatch returns
+   * an empty object; `*` as the total yields `total: undefined`.
+   *
+   * @param value - Raw header value (possibly null/undefined)
+   * @returns Parsed integers; missing fields indicate an unparseable header
+   */
+  private _parseContentRange(value: string | null | undefined): IContentRangeParts {
+    if (!value) {
+      return {};
+    }
+
+    const match = value.trim().match(PostgrestResponseStrategy._contentRangeRegex);
+
+    if (!match) {
+      return {};
+    }
+
+    const from = parseInt(match[1], 10);
+    const to = parseInt(match[2], 10);
+    const total = match[3] === '*' ? undefined : parseInt(match[3], 10);
+
+    return { from, to, total };
+  }
 
   /**
    * Parse a PostgREST response into a typed PaginatedCollection
@@ -84,32 +113,5 @@ export class PostgrestResponseStrategy implements IResponseStrategy {
       undefined,
       lastPage
     );
-  }
-
-  /**
-   * Extract `{from, to, total}` from a PostgREST `Content-Range` value
-   *
-   * Expected format: `<from>-<to>/<total|*>`. Any shape mismatch returns
-   * an empty object; `*` as the total yields `total: undefined`.
-   *
-   * @param value - Raw header value (possibly null/undefined)
-   * @returns Parsed integers; missing fields indicate an unparseable header
-   */
-  private _parseContentRange(value: string | null | undefined): IContentRangeParts {
-    if (!value) {
-      return {};
-    }
-
-    const match = value.trim().match(PostgrestResponseStrategy._contentRangeRegex);
-
-    if (!match) {
-      return {};
-    }
-
-    const from = parseInt(match[1], 10);
-    const to = parseInt(match[2], 10);
-    const total = match[3] === '*' ? undefined : parseInt(match[3], 10);
-
-    return { from, to, total };
   }
 }

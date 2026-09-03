@@ -1,4 +1,4 @@
-import { IPaginationConfig } from '../interfaces/pagination-config.interface';
+import type { IPaginationConfig } from '../interfaces/pagination-config.interface';
 
 /**
  * Resolved response field key names with defaults applied

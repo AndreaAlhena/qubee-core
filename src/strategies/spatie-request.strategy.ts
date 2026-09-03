@@ -1,10 +1,11 @@
 import * as qs from 'qs';
 
+import type { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
+import type { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
+import type { QueryBuilderOptions } from '../models/query-builder-options';
+
 import { SortEnum } from '../enums/sort.enum';
 import { UnselectableModelError } from '../errors/unselectable-model.error';
-import { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
-import { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
-import { QueryBuilderOptions } from '../models/query-builder-options';
 import { AbstractRequestStrategy } from './abstract-request.strategy';
 
 /**
@@ -34,27 +35,6 @@ export class SpatieRequestStrategy extends AbstractRequestStrategy {
     select: false,
     sort: true,
   };
-
-  /**
-   * Emit Spatie-format query-string segments in canonical order:
-   * include → fields → filters → limit → page → sort
-   *
-   * @param state - The current query builder state
-   * @param options - The query parameter key name configuration
-   * @returns Ordered query-string fragments
-   */
-  protected parts(state: IQueryBuilderState, options: QueryBuilderOptions): string[] {
-    const out: string[] = [];
-
-    this._appendIncludes(state, options, out);
-    this._appendFields(state, options, out);
-    this._appendFilters(state, options, out);
-    this._appendLimit(state, options, out);
-    this._appendPage(state, options, out);
-    this._appendSort(state, options, out);
-
-    return out;
-  }
 
   /**
    * Append per-model field selection in bracket notation
@@ -195,5 +175,26 @@ export class SpatieRequestStrategy extends AbstractRequestStrategy {
     );
 
     out.push(`${options.sort}=${pairs.join(',')}`);
+  }
+
+  /**
+   * Emit Spatie-format query-string segments in canonical order:
+   * include → fields → filters → limit → page → sort
+   *
+   * @param state - The current query builder state
+   * @param options - The query parameter key name configuration
+   * @returns Ordered query-string fragments
+   */
+  protected parts(state: IQueryBuilderState, options: QueryBuilderOptions): string[] {
+    const out: string[] = [];
+
+    this._appendIncludes(state, options, out);
+    this._appendFields(state, options, out);
+    this._appendFilters(state, options, out);
+    this._appendLimit(state, options, out);
+    this._appendPage(state, options, out);
+    this._appendSort(state, options, out);
+
+    return out;
   }
 }

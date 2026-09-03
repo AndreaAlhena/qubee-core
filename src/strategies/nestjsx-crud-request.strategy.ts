@@ -1,11 +1,12 @@
+import type { IOperatorFilter } from '../interfaces/operator-filter.interface';
+import type { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
+import type { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
+import type { QueryBuilderOptions } from '../models/query-builder-options';
+
 import { FilterOperatorEnum } from '../enums/filter-operator.enum';
 import { SortEnum } from '../enums/sort.enum';
 import { InvalidFilterOperatorValueError } from '../errors/invalid-filter-operator-value.error';
 import { UnsupportedFilterOperatorError } from '../errors/unsupported-filter-operator.error';
-import { IOperatorFilter } from '../interfaces/operator-filter.interface';
-import { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
-import { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
-import { QueryBuilderOptions } from '../models/query-builder-options';
 import { AbstractRequestStrategy } from './abstract-request.strategy';
 
 /**
@@ -33,6 +34,24 @@ import { AbstractRequestStrategy } from './abstract-request.strategy';
  */
 export class NestjsxCrudRequestStrategy extends AbstractRequestStrategy {
   /**
+   * @nestjsx/crud-native names of the four hardcoded query keys
+   *
+   * The wire format is fixed (the server's `CrudRequestInterceptor`
+   * reads `fields`, `filter`, `join`, and `sort`); these keys are
+   * intentionally not configurable through `QueryBuilderOptions` and
+   * live as private statics so they are visible in one place.
+   */
+  private static readonly _fieldsKey = 'fields';
+
+  private static readonly _filterKey = 'filter';
+  private static readonly _joinKey = 'join';
+  /**
+   * Pipe delimiter separating field, operator, and value segments
+   */
+  private static readonly _separator = '||';
+  private static readonly _sortKey = 'sort';
+
+  /**
    * Filters, operator filters, joins (`includes`), flat field selection
    * (`select`), sorts — no per-model fields, no global search (the `s`
    * parameter is JSON-shaped, not a plain term)
@@ -47,48 +66,6 @@ export class NestjsxCrudRequestStrategy extends AbstractRequestStrategy {
     select: true,
     sort: true,
   };
-
-  /**
-   * @nestjsx/crud-native names of the four hardcoded query keys
-   *
-   * The wire format is fixed (the server's `CrudRequestInterceptor`
-   * reads `fields`, `filter`, `join`, and `sort`); these keys are
-   * intentionally not configurable through `QueryBuilderOptions` and
-   * live as private statics so they are visible in one place.
-   */
-  private static readonly _fieldsKey = 'fields';
-  private static readonly _filterKey = 'filter';
-  private static readonly _joinKey = 'join';
-  private static readonly _sortKey = 'sort';
-
-  /**
-   * Pipe delimiter separating field, operator, and value segments
-   */
-  private static readonly _separator = '||';
-
-  /**
-   * Emit @nestjsx/crud-format query-string segments in canonical order:
-   * fields → filters → operator filters → join → sort → limit → page
-   *
-   * @param state - The current query builder state
-   * @param options - The query parameter key name configuration (used
-   * for `page` / `limit`, whose defaults match the wire format; the
-   * `fields` / `filter` / `join` / `sort` keys are fixed by the server)
-   * @returns Ordered query-string fragments
-   */
-  protected parts(state: IQueryBuilderState, options: QueryBuilderOptions): string[] {
-    const out: string[] = [];
-
-    this._appendFields(state, out);
-    this._appendFilters(state, out);
-    this._appendOperatorFilters(state, out);
-    this._appendJoin(state, out);
-    this._appendSort(state, out);
-    this._appendLimit(state, options, out);
-    this._appendPage(state, options, out);
-
-    return out;
-  }
 
   /**
    * Append `fields=col1,col2` from the flat select array
@@ -285,5 +262,29 @@ export class NestjsxCrudRequestStrategy extends AbstractRequestStrategy {
       case FilterOperatorEnum.WFTS:
         throw new UnsupportedFilterOperatorError();
     }
+  }
+
+  /**
+   * Emit @nestjsx/crud-format query-string segments in canonical order:
+   * fields → filters → operator filters → join → sort → limit → page
+   *
+   * @param state - The current query builder state
+   * @param options - The query parameter key name configuration (used
+   * for `page` / `limit`, whose defaults match the wire format; the
+   * `fields` / `filter` / `join` / `sort` keys are fixed by the server)
+   * @returns Ordered query-string fragments
+   */
+  protected parts(state: IQueryBuilderState, options: QueryBuilderOptions): string[] {
+    const out: string[] = [];
+
+    this._appendFields(state, out);
+    this._appendFilters(state, out);
+    this._appendOperatorFilters(state, out);
+    this._appendJoin(state, out);
+    this._appendSort(state, out);
+    this._appendLimit(state, options, out);
+    this._appendPage(state, options, out);
+
+    return out;
   }
 }

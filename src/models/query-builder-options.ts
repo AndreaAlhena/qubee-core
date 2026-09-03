@@ -1,4 +1,4 @@
-import { IQueryBuilderConfig } from '../interfaces/query-builder-config.interface';
+import type { IQueryBuilderConfig } from '../interfaces/query-builder-config.interface';
 
 /**
  * Resolved query parameter key names with defaults applied

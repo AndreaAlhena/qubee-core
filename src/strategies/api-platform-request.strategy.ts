@@ -1,11 +1,12 @@
+import type { IOperatorFilter } from '../interfaces/operator-filter.interface';
+import type { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
+import type { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
+import type { QueryBuilderOptions } from '../models/query-builder-options';
+
 import { FilterOperatorEnum } from '../enums/filter-operator.enum';
 import { SortEnum } from '../enums/sort.enum';
 import { InvalidFilterOperatorValueError } from '../errors/invalid-filter-operator-value.error';
 import { UnsupportedFilterOperatorError } from '../errors/unsupported-filter-operator.error';
-import { IOperatorFilter } from '../interfaces/operator-filter.interface';
-import { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
-import { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
-import { QueryBuilderOptions } from '../models/query-builder-options';
 import { AbstractRequestStrategy } from './abstract-request.strategy';
 
 /**
@@ -40,6 +41,17 @@ import { AbstractRequestStrategy } from './abstract-request.strategy';
  */
 export class ApiPlatformRequestStrategy extends AbstractRequestStrategy {
   /**
+   * API Platform-native names of the two hardcoded query keys
+   *
+   * `order[...]` and `itemsPerPage` are fixed conventions of API
+   * Platform's OrderFilter and pagination; they are intentionally not
+   * configurable through `QueryBuilderOptions` and live as private
+   * statics so they are visible in one place.
+   */
+  private static readonly _itemsPerPageKey = 'itemsPerPage';
+
+  private static readonly _orderKey = 'order';
+  /**
    * Filters, operator filters, sorts — no per-model fields, no
    * includes (relations embed via serialization groups server-side),
    * no flat select, no global search parameter
@@ -54,38 +66,6 @@ export class ApiPlatformRequestStrategy extends AbstractRequestStrategy {
     select: false,
     sort: true,
   };
-
-  /**
-   * API Platform-native names of the two hardcoded query keys
-   *
-   * `order[...]` and `itemsPerPage` are fixed conventions of API
-   * Platform's OrderFilter and pagination; they are intentionally not
-   * configurable through `QueryBuilderOptions` and live as private
-   * statics so they are visible in one place.
-   */
-  private static readonly _itemsPerPageKey = 'itemsPerPage';
-  private static readonly _orderKey = 'order';
-
-  /**
-   * Emit API Platform-format query-string segments in canonical order:
-   * filters → operator filters → order → page → itemsPerPage
-   *
-   * @param state - The current query builder state
-   * @param options - The query parameter key name configuration (used
-   * for `page`, whose default matches the wire format)
-   * @returns Ordered query-string fragments
-   */
-  protected parts(state: IQueryBuilderState, options: QueryBuilderOptions): string[] {
-    const out: string[] = [];
-
-    this._appendFilters(state, out);
-    this._appendOperatorFilters(state, out);
-    this._appendOrder(state, out);
-    this._appendPage(state, options, out);
-    this._appendItemsPerPage(state, out);
-
-    return out;
-  }
 
   /**
    * Append simple filter parameters
@@ -247,5 +227,26 @@ export class ApiPlatformRequestStrategy extends AbstractRequestStrategy {
       case FilterOperatorEnum.WFTS:
         throw new UnsupportedFilterOperatorError();
     }
+  }
+
+  /**
+   * Emit API Platform-format query-string segments in canonical order:
+   * filters → operator filters → order → page → itemsPerPage
+   *
+   * @param state - The current query builder state
+   * @param options - The query parameter key name configuration (used
+   * for `page`, whose default matches the wire format)
+   * @returns Ordered query-string fragments
+   */
+  protected parts(state: IQueryBuilderState, options: QueryBuilderOptions): string[] {
+    const out: string[] = [];
+
+    this._appendFilters(state, out);
+    this._appendOperatorFilters(state, out);
+    this._appendOrder(state, out);
+    this._appendPage(state, options, out);
+    this._appendItemsPerPage(state, out);
+
+    return out;
   }
 }

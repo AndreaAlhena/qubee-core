@@ -1,11 +1,12 @@
+import type { IOperatorFilter } from '../interfaces/operator-filter.interface';
+import type { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
+import type { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
+import type { QueryBuilderOptions } from '../models/query-builder-options';
+
 import { FilterOperatorEnum } from '../enums/filter-operator.enum';
 import { SortEnum } from '../enums/sort.enum';
 import { InvalidFilterOperatorValueError } from '../errors/invalid-filter-operator-value.error';
 import { UnsupportedFilterOperatorError } from '../errors/unsupported-filter-operator.error';
-import { IOperatorFilter } from '../interfaces/operator-filter.interface';
-import { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
-import { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
-import { QueryBuilderOptions } from '../models/query-builder-options';
 import { AbstractRequestStrategy } from './abstract-request.strategy';
 
 /**
@@ -37,6 +38,18 @@ import { AbstractRequestStrategy } from './abstract-request.strategy';
  */
 export class JsonServerRequestStrategy extends AbstractRequestStrategy {
   /**
+   * json-server-native names of the four hardcoded query keys
+   *
+   * The underscore prefix marks system params apart from filter fields;
+   * these keys are fixed by the server and intentionally not
+   * configurable through `QueryBuilderOptions`.
+   */
+  private static readonly _pageKey = '_page';
+
+  private static readonly _perPageKey = '_per_page';
+  private static readonly _qKey = 'q';
+  private static readonly _sortKey = '_sort';
+  /**
    * Filters, operator filters, sorts, global search — no per-model
    * fields, no includes, no flat select, no embedded resources
    */
@@ -50,40 +63,6 @@ export class JsonServerRequestStrategy extends AbstractRequestStrategy {
     select: false,
     sort: true,
   };
-
-  /**
-   * json-server-native names of the four hardcoded query keys
-   *
-   * The underscore prefix marks system params apart from filter fields;
-   * these keys are fixed by the server and intentionally not
-   * configurable through `QueryBuilderOptions`.
-   */
-  private static readonly _pageKey = '_page';
-  private static readonly _perPageKey = '_per_page';
-  private static readonly _qKey = 'q';
-  private static readonly _sortKey = '_sort';
-
-  /**
-   * Emit json-server-format query-string segments in canonical order:
-   * filters → operator filters → _sort → q → _page → _per_page
-   *
-   * @param state - The current query builder state
-   * @param _options - The query parameter key name configuration (unused;
-   * json-server's system keys are fixed by the server)
-   * @returns Ordered query-string fragments
-   */
-  protected parts(state: IQueryBuilderState, _options: QueryBuilderOptions): string[] {
-    const out: string[] = [];
-
-    this._appendFilters(state, out);
-    this._appendOperatorFilters(state, out);
-    this._appendSort(state, out);
-    this._appendSearch(state, out);
-    this._appendPage(state, out);
-    this._appendPerPage(state, out);
-
-    return out;
-  }
 
   /**
    * Append simple filter parameters
@@ -239,5 +218,27 @@ export class JsonServerRequestStrategy extends AbstractRequestStrategy {
       case FilterOperatorEnum.WFTS:
         throw new UnsupportedFilterOperatorError();
     }
+  }
+
+  /**
+   * Emit json-server-format query-string segments in canonical order:
+   * filters → operator filters → _sort → q → _page → _per_page
+   *
+   * @param state - The current query builder state
+   * @param _options - The query parameter key name configuration (unused;
+   * json-server's system keys are fixed by the server)
+   * @returns Ordered query-string fragments
+   */
+  protected parts(state: IQueryBuilderState, _options: QueryBuilderOptions): string[] {
+    const out: string[] = [];
+
+    this._appendFilters(state, out);
+    this._appendOperatorFilters(state, out);
+    this._appendSort(state, out);
+    this._appendSearch(state, out);
+    this._appendPage(state, out);
+    this._appendPerPage(state, out);
+
+    return out;
   }
 }
