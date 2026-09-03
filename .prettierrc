@@ -7,6 +7,7 @@
     {
       "files": "package.json",
       "options": {
+        "jsonRecursiveSort": false,
         "parser": "json"
       }
     }

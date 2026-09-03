@@ -4,6 +4,8 @@
     "emitDeclarationOnly": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
+    // tsup injects a `baseUrl` for its dts worker; TS 6 errors on it as deprecated.
+    "ignoreDeprecations": "6.0",
     "isolatedModules": true,
     // DOM is present only for the WHATWG `URL` global (3 link-parsing sites).
     // Verified: no DOM-only API (document/window/fetch) is used anywhere in src/.

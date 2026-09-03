@@ -12,7 +12,7 @@ export default tseslint.config(
   ...tseslint.configs.recommendedTypeChecked,
 
   {
-    files: ['src/**/*.ts'],
+    files: ['src/**/*.ts', 'test/**/*.ts'],
     languageOptions: {
       parserOptions: {
         projectService: true,
@@ -111,7 +111,7 @@ export default tseslint.config(
   },
 
   {
-    files: ['src/**/*.spec.ts'],
+    files: ['src/**/*.spec.ts', 'test/**/*.spec.ts'],
     rules: {
       '@typescript-eslint/naming-convention': 'off',
       'jsdoc/require-jsdoc': 'off',
