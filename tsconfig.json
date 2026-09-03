@@ -30,6 +30,7 @@
     "isolatedModules": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
+    "types": ["vitest/globals"],
     "verbatimModuleSyntax": true
   },
   "include": ["src/**/*.ts"],
