@@ -29,7 +29,6 @@ import { AbstractRequestStrategy } from './abstract-request.strategy';
  * @see https://supabase.com/docs/reference/javascript/select
  */
 export class PostgrestRequestStrategy extends AbstractRequestStrategy {
-
   /**
    * Filters, operator filters (incl. FTS), sorts, flat select — no
    * per-model fields, no JSON:API/Spatie-style includes, no global
@@ -43,7 +42,7 @@ export class PostgrestRequestStrategy extends AbstractRequestStrategy {
     operatorFilters: true,
     search: false,
     select: true,
-    sort: true
+    sort: true,
   };
 
   private static readonly _offsetKey = 'offset';
@@ -91,7 +90,7 @@ export class PostgrestRequestStrategy extends AbstractRequestStrategy {
     /* eslint-disable @typescript-eslint/naming-convention */
     return {
       'Range-Unit': 'items',
-      'Range': `${from}-${to}`
+      Range: `${from}-${to}`,
     };
     /* eslint-enable @typescript-eslint/naming-convention */
   }
@@ -138,7 +137,7 @@ export class PostgrestRequestStrategy extends AbstractRequestStrategy {
       return;
     }
 
-    keys.forEach(key => {
+    keys.forEach((key) => {
       const values = state.filters[key];
 
       if (!values.length) {
@@ -147,9 +146,7 @@ export class PostgrestRequestStrategy extends AbstractRequestStrategy {
 
       // single-value → eq.<val>
       // multi-value → in.(v1,v2,v3)
-      const rhs = values.length === 1
-        ? `eq.${values[0]}`
-        : `in.(${values.join(',')})`;
+      const rhs = values.length === 1 ? `eq.${values[0]}` : `in.(${values.join(',')})`;
 
       out.push(`${key}=${rhs}`);
     });
@@ -162,7 +159,11 @@ export class PostgrestRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendLimit(state: IQueryBuilderState, options: QueryBuilderOptions, out: string[]): void {
+  private _appendLimit(
+    state: IQueryBuilderState,
+    options: QueryBuilderOptions,
+    out: string[]
+  ): void {
     out.push(`${options.limit}=${state.limit}`);
   }
 
@@ -205,7 +206,7 @@ export class PostgrestRequestStrategy extends AbstractRequestStrategy {
       return;
     }
 
-    state.operatorFilters.forEach(filter => {
+    state.operatorFilters.forEach((filter) => {
       // BTW expands to two segments: col=gte.min and col=lte.max
       if (filter.operator === FilterOperatorEnum.BTW) {
         this._appendBetweenFilter(filter, out);
@@ -257,24 +258,35 @@ export class PostgrestRequestStrategy extends AbstractRequestStrategy {
     const first = values[0];
 
     switch (operator) {
-      case FilterOperatorEnum.EQ: return `eq.${first}`;
-      case FilterOperatorEnum.GT: return `gt.${first}`;
-      case FilterOperatorEnum.GTE: return `gte.${first}`;
-      case FilterOperatorEnum.LT: return `lt.${first}`;
-      case FilterOperatorEnum.LTE: return `lte.${first}`;
-      case FilterOperatorEnum.ILIKE: return `ilike.${first}`;
-      case FilterOperatorEnum.IN: return `in.(${values.join(',')})`;
-      case FilterOperatorEnum.SW: return `like.${first}*`;
-      case FilterOperatorEnum.CONTAINS: return `ilike.%${first}%`;
-      case FilterOperatorEnum.FTS: return `fts.${first}`;
-      case FilterOperatorEnum.PLFTS: return `plfts.${first}`;
-      case FilterOperatorEnum.PHFTS: return `phfts.${first}`;
-      case FilterOperatorEnum.WFTS: return `wfts.${first}`;
+      case FilterOperatorEnum.EQ:
+        return `eq.${first}`;
+      case FilterOperatorEnum.GT:
+        return `gt.${first}`;
+      case FilterOperatorEnum.GTE:
+        return `gte.${first}`;
+      case FilterOperatorEnum.LT:
+        return `lt.${first}`;
+      case FilterOperatorEnum.LTE:
+        return `lte.${first}`;
+      case FilterOperatorEnum.ILIKE:
+        return `ilike.${first}`;
+      case FilterOperatorEnum.IN:
+        return `in.(${values.join(',')})`;
+      case FilterOperatorEnum.SW:
+        return `like.${first}*`;
+      case FilterOperatorEnum.CONTAINS:
+        return `ilike.%${first}%`;
+      case FilterOperatorEnum.FTS:
+        return `fts.${first}`;
+      case FilterOperatorEnum.PLFTS:
+        return `plfts.${first}`;
+      case FilterOperatorEnum.PHFTS:
+        return `phfts.${first}`;
+      case FilterOperatorEnum.WFTS:
+        return `wfts.${first}`;
 
       case FilterOperatorEnum.NOT:
-        return values.length === 1
-          ? `not.eq.${first}`
-          : `not.in.(${values.join(',')})`;
+        return values.length === 1 ? `not.eq.${first}` : `not.in.(${values.join(',')})`;
 
       case FilterOperatorEnum.NULL: {
         if (values.length !== 1 || typeof first !== 'boolean') {
@@ -307,8 +319,8 @@ export class PostgrestRequestStrategy extends AbstractRequestStrategy {
       return;
     }
 
-    const pairs = state.sorts.map(sort =>
-      `${sort.field}.${sort.order === SortEnum.DESC ? 'desc' : 'asc'}`
+    const pairs = state.sorts.map(
+      (sort) => `${sort.field}.${sort.order === SortEnum.DESC ? 'desc' : 'asc'}`
     );
 
     out.push(`${PostgrestRequestStrategy._orderKey}=${pairs.join(',')}`);
@@ -331,8 +343,12 @@ export class PostgrestRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendSelect(state: IQueryBuilderState, options: QueryBuilderOptions, out: string[]): void {
-    const embedded = Object.keys(state.embedded).map(relation => {
+  private _appendSelect(
+    state: IQueryBuilderState,
+    options: QueryBuilderOptions,
+    out: string[]
+  ): void {
+    const embedded = Object.keys(state.embedded).map((relation) => {
       const columns = state.embedded[relation];
 
       return columns.length ? `${relation}(${columns.join(',')})` : `${relation}(*)`;

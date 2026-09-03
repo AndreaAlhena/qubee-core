@@ -1,3 +1,3 @@
 export interface IFields {
-    [model: string]: string[];
+  [model: string]: string[];
 }

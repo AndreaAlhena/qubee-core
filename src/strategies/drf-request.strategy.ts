@@ -42,7 +42,6 @@ type DrfLookupSuffix = string;
  * @see https://django-filter.readthedocs.io/
  */
 export class DrfRequestStrategy extends AbstractRequestStrategy {
-
   /**
    * Simple filters, operator filters (django-filter lookups), sorts, and
    * global search — no per-model fields, no relation includes, no flat
@@ -56,7 +55,7 @@ export class DrfRequestStrategy extends AbstractRequestStrategy {
     operatorFilters: true,
     search: true,
     select: false,
-    sort: true
+    sort: true,
   };
 
   /**
@@ -109,7 +108,7 @@ export class DrfRequestStrategy extends AbstractRequestStrategy {
       return;
     }
 
-    keys.forEach(key => {
+    keys.forEach((key) => {
       const values = state.filters[key];
 
       if (!values.length) {
@@ -164,8 +163,8 @@ export class DrfRequestStrategy extends AbstractRequestStrategy {
       return;
     }
 
-    const pairs = state.sorts.map(sort =>
-      `${sort.order === SortEnum.DESC ? '-' : ''}${sort.field}`
+    const pairs = state.sorts.map(
+      (sort) => `${sort.order === SortEnum.DESC ? '-' : ''}${sort.field}`
     );
 
     out.push(`${DrfRequestStrategy._orderingKey}=${pairs.join(',')}`);
@@ -181,7 +180,11 @@ export class DrfRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendPagination(state: IQueryBuilderState, options: QueryBuilderOptions, out: string[]): void {
+  private _appendPagination(
+    state: IQueryBuilderState,
+    options: QueryBuilderOptions,
+    out: string[]
+  ): void {
     out.push(`${options.page}=${state.page}`);
     out.push(`${DrfRequestStrategy._pageSizeKey}=${state.limit}`);
   }
@@ -193,7 +196,11 @@ export class DrfRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendSearch(state: IQueryBuilderState, options: QueryBuilderOptions, out: string[]): void {
+  private _appendSearch(
+    state: IQueryBuilderState,
+    options: QueryBuilderOptions,
+    out: string[]
+  ): void {
     if (!state.search) {
       return;
     }
@@ -233,15 +240,24 @@ export class DrfRequestStrategy extends AbstractRequestStrategy {
     const first = values[0];
 
     switch (operator) {
-      case FilterOperatorEnum.EQ: return ['', String(first)];
-      case FilterOperatorEnum.GT: return ['gt', String(first)];
-      case FilterOperatorEnum.GTE: return ['gte', String(first)];
-      case FilterOperatorEnum.LT: return ['lt', String(first)];
-      case FilterOperatorEnum.LTE: return ['lte', String(first)];
-      case FilterOperatorEnum.CONTAINS: return ['contains', String(first)];
-      case FilterOperatorEnum.ILIKE: return ['icontains', String(first)];
-      case FilterOperatorEnum.IN: return ['in', values.join(',')];
-      case FilterOperatorEnum.SW: return ['startswith', String(first)];
+      case FilterOperatorEnum.EQ:
+        return ['', String(first)];
+      case FilterOperatorEnum.GT:
+        return ['gt', String(first)];
+      case FilterOperatorEnum.GTE:
+        return ['gte', String(first)];
+      case FilterOperatorEnum.LT:
+        return ['lt', String(first)];
+      case FilterOperatorEnum.LTE:
+        return ['lte', String(first)];
+      case FilterOperatorEnum.CONTAINS:
+        return ['contains', String(first)];
+      case FilterOperatorEnum.ILIKE:
+        return ['icontains', String(first)];
+      case FilterOperatorEnum.IN:
+        return ['in', values.join(',')];
+      case FilterOperatorEnum.SW:
+        return ['startswith', String(first)];
 
       case FilterOperatorEnum.BTW: {
         if (values.length !== 2) {

@@ -6,7 +6,9 @@
  */
 export class UnsupportedFieldSelectionError extends Error {
   constructor() {
-    super('Per-model field selection is only supported by the Spatie driver. Use addSelect() for NestJS.');
+    super(
+      'Per-model field selection is only supported by the Spatie driver. Use addSelect() for NestJS.'
+    );
     this.name = 'UnsupportedFieldSelectionError';
   }
 }

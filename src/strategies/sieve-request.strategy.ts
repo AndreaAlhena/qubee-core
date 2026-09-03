@@ -29,7 +29,6 @@ import { AbstractRequestStrategy } from './abstract-request.strategy';
  * @see https://github.com/Biarity/Sieve
  */
 export class SieveRequestStrategy extends AbstractRequestStrategy {
-
   /**
    * Filters, operator filters, sorts — no per-model fields, no includes,
    * no flat select, no global search (use `CONTAINS` / `ILIKE` operator
@@ -43,7 +42,7 @@ export class SieveRequestStrategy extends AbstractRequestStrategy {
     operatorFilters: true,
     search: false,
     select: false,
-    sort: true
+    sort: true,
   };
 
   /**
@@ -95,7 +94,7 @@ export class SieveRequestStrategy extends AbstractRequestStrategy {
   private _appendFilters(state: IQueryBuilderState, out: string[]): void {
     const terms: string[] = [];
 
-    Object.keys(state.filters).forEach(field => {
+    Object.keys(state.filters).forEach((field) => {
       const values = state.filters[field];
 
       if (!values.length) {
@@ -123,7 +122,11 @@ export class SieveRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendPage(state: IQueryBuilderState, options: QueryBuilderOptions, out: string[]): void {
+  private _appendPage(
+    state: IQueryBuilderState,
+    options: QueryBuilderOptions,
+    out: string[]
+  ): void {
     out.push(`${options.page}=${state.page}`);
   }
 
@@ -148,7 +151,7 @@ export class SieveRequestStrategy extends AbstractRequestStrategy {
       return;
     }
 
-    const fields = state.sorts.map(sort =>
+    const fields = state.sorts.map((sort) =>
       sort.order === SortEnum.DESC ? `-${sort.field}` : sort.field
     );
 
@@ -186,15 +189,24 @@ export class SieveRequestStrategy extends AbstractRequestStrategy {
     const first = values[0];
 
     switch (operator) {
-      case FilterOperatorEnum.EQ: return [`${field}==${first}`];
-      case FilterOperatorEnum.GT: return [`${field}>${first}`];
-      case FilterOperatorEnum.GTE: return [`${field}>=${first}`];
-      case FilterOperatorEnum.LT: return [`${field}<${first}`];
-      case FilterOperatorEnum.LTE: return [`${field}<=${first}`];
-      case FilterOperatorEnum.CONTAINS: return [`${field}@=${first}`];
-      case FilterOperatorEnum.ILIKE: return [`${field}@=*${first}`];
-      case FilterOperatorEnum.SW: return [`${field}_=${first}`];
-      case FilterOperatorEnum.IN: return [`${field}==${values.join('|')}`];
+      case FilterOperatorEnum.EQ:
+        return [`${field}==${first}`];
+      case FilterOperatorEnum.GT:
+        return [`${field}>${first}`];
+      case FilterOperatorEnum.GTE:
+        return [`${field}>=${first}`];
+      case FilterOperatorEnum.LT:
+        return [`${field}<${first}`];
+      case FilterOperatorEnum.LTE:
+        return [`${field}<=${first}`];
+      case FilterOperatorEnum.CONTAINS:
+        return [`${field}@=${first}`];
+      case FilterOperatorEnum.ILIKE:
+        return [`${field}@=*${first}`];
+      case FilterOperatorEnum.SW:
+        return [`${field}_=${first}`];
+      case FilterOperatorEnum.IN:
+        return [`${field}==${values.join('|')}`];
 
       case FilterOperatorEnum.BTW: {
         if (values.length !== 2) {
@@ -208,7 +220,7 @@ export class SieveRequestStrategy extends AbstractRequestStrategy {
       }
 
       case FilterOperatorEnum.NOT:
-        return values.map(value => `${field}!=${value}`);
+        return values.map((value) => `${field}!=${value}`);
 
       case FilterOperatorEnum.NULL: {
         if (values.length !== 1 || typeof first !== 'boolean') {

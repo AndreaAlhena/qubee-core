@@ -35,7 +35,6 @@ import { ResponseOptions } from '../models/response-options';
  * @see https://feathersjs.com/api/databases/common#pagination
  */
 export class FeathersResponseStrategy implements IResponseStrategy {
-
   /**
    * Feathers-native name of the offset key
    *
@@ -51,14 +50,17 @@ export class FeathersResponseStrategy implements IResponseStrategy {
    * @returns A typed PaginatedCollection instance
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public paginate<T extends IPaginatedObject>(response: Record<string, any>, options: ResponseOptions): PaginatedCollection<T> {
+  public paginate<T extends IPaginatedObject>(
+    response: Record<string, any>,
+    options: ResponseOptions
+  ): PaginatedCollection<T> {
     const data = response[options.data] as T[];
     const total = response[options.total] as number | undefined;
     const perPage = response[options.perPage] as number | undefined;
     const skip = (response[FeathersResponseStrategy._skipKey] ?? 0) as number;
 
     const currentPage = perPage ? Math.floor(skip / perPage) + 1 : 1;
-    const lastPage = (total !== undefined && perPage) ? Math.ceil(total / perPage) : undefined;
+    const lastPage = total !== undefined && perPage ? Math.ceil(total / perPage) : undefined;
 
     const from = data?.length ? skip + 1 : undefined;
     const to = data?.length ? skip + data.length : undefined;

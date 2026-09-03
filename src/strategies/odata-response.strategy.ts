@@ -38,7 +38,6 @@ import { ResponseOptions } from '../models/response-options';
  * @see https://docs.oasis-open.org/odata/odata-json-format/v4.01/odata-json-format-v4.01.html
  */
 export class OdataResponseStrategy implements IResponseStrategy {
-
   /**
    * Parse an OData collection response into a PaginatedCollection
    *
@@ -47,7 +46,10 @@ export class OdataResponseStrategy implements IResponseStrategy {
    * @returns A typed PaginatedCollection instance
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public paginate<T extends IPaginatedObject>(response: Record<string, any>, options: ResponseOptions): PaginatedCollection<T> {
+  public paginate<T extends IPaginatedObject>(
+    response: Record<string, any>,
+    options: ResponseOptions
+  ): PaginatedCollection<T> {
     const data = response[options.data] as T[];
     const total = response[options.total] as number | undefined;
     const nextPageUrl = (response[options.nextPageUrl] ?? null) as string | null;
@@ -113,7 +115,12 @@ export class OdataResponseStrategy implements IResponseStrategy {
    * @param perPage - The page size (may be undefined)
    * @returns The 1-indexed `from` index, or undefined when inputs insufficient
    */
-  private _deriveFrom(nextPageUrl: string | null, data: unknown[] | undefined, currentPage: number, perPage?: number): number | undefined {
+  private _deriveFrom(
+    nextPageUrl: string | null,
+    data: unknown[] | undefined,
+    currentPage: number,
+    perPage?: number
+  ): number | undefined {
     if (perPage) {
       return (currentPage - 1) * perPage + 1;
     }
@@ -137,7 +144,12 @@ export class OdataResponseStrategy implements IResponseStrategy {
    * @param perPage - The page size
    * @returns The last page number, or undefined when inputs insufficient
    */
-  private _deriveLastPage(nextPageUrl: string | null, data: unknown[] | undefined, total?: number, perPage?: number): number | undefined {
+  private _deriveLastPage(
+    nextPageUrl: string | null,
+    data: unknown[] | undefined,
+    total?: number,
+    perPage?: number
+  ): number | undefined {
     if (total !== undefined && perPage !== undefined && perPage > 0) {
       return Math.ceil(total / perPage);
     }
@@ -161,7 +173,10 @@ export class OdataResponseStrategy implements IResponseStrategy {
    * @param data - The items on the current page
    * @returns The page size, or undefined
    */
-  private _derivePerPage(nextPageUrl: string | null, data: unknown[] | undefined): number | undefined {
+  private _derivePerPage(
+    nextPageUrl: string | null,
+    data: unknown[] | undefined
+  ): number | undefined {
     if (nextPageUrl === null) {
       return undefined;
     }
@@ -182,7 +197,13 @@ export class OdataResponseStrategy implements IResponseStrategy {
    * @param total - The total item count (may be undefined)
    * @returns The 1-indexed `to` index, or undefined when inputs insufficient
    */
-  private _deriveTo(nextPageUrl: string | null, data: unknown[] | undefined, currentPage: number, perPage?: number, total?: number): number | undefined {
+  private _deriveTo(
+    nextPageUrl: string | null,
+    data: unknown[] | undefined,
+    currentPage: number,
+    perPage?: number,
+    total?: number
+  ): number | undefined {
     if (perPage !== undefined && total !== undefined) {
       return Math.min(currentPage * perPage, total);
     }

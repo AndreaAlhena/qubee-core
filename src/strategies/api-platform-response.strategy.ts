@@ -48,7 +48,6 @@ import { AbstractDotPathResponseStrategy } from './abstract-dot-path-response.st
  * @see https://api-platform.com/docs/core/pagination/
  */
 export class ApiPlatformResponseStrategy extends AbstractDotPathResponseStrategy {
-
   /**
    * Parse a Hydra collection response into a PaginatedCollection
    *
@@ -57,7 +56,10 @@ export class ApiPlatformResponseStrategy extends AbstractDotPathResponseStrategy
    * @returns A typed PaginatedCollection instance
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public override paginate<T extends IPaginatedObject>(response: Record<string, any>, options: ResponseOptions): PaginatedCollection<T> {
+  public override paginate<T extends IPaginatedObject>(
+    response: Record<string, any>,
+    options: ResponseOptions
+  ): PaginatedCollection<T> {
     const data = this.resolve(response, options.data) as T[];
     const total = this.resolve(response, options.total) as number | undefined;
     const viewUrl = (this.resolve(response, options.path) ?? null) as string | null;
@@ -71,8 +73,12 @@ export class ApiPlatformResponseStrategy extends AbstractDotPathResponseStrategy
     const perPage = this._derivePerPage(viewUrl, nextPageUrl, data);
     const lastPage = this._deriveLastPage(lastPageUrl, viewUrl, data, total, perPage);
 
-    const from = this.resolveFrom(response, options, currentPage, perPage) ?? this._wholeSetFrom(viewUrl, data, total);
-    const to = this.resolveTo(response, options, currentPage, perPage, total) ?? this._wholeSetTo(viewUrl, data, total);
+    const from =
+      this.resolveFrom(response, options, currentPage, perPage) ??
+      this._wholeSetFrom(viewUrl, data, total);
+    const to =
+      this.resolveTo(response, options, currentPage, perPage, total) ??
+      this._wholeSetTo(viewUrl, data, total);
 
     return new PaginatedCollection(
       data,
@@ -121,7 +127,13 @@ export class ApiPlatformResponseStrategy extends AbstractDotPathResponseStrategy
    * @param perPage - The page size
    * @returns The last page number, or undefined when inputs insufficient
    */
-  private _deriveLastPage(lastPageUrl: string | undefined, viewUrl: string | null, data: unknown[] | undefined, total?: number, perPage?: number): number | undefined {
+  private _deriveLastPage(
+    lastPageUrl: string | undefined,
+    viewUrl: string | null,
+    data: unknown[] | undefined,
+    total?: number,
+    perPage?: number
+  ): number | undefined {
     if (lastPageUrl !== undefined) {
       const direct = this._extractNumberParam(lastPageUrl, 'page');
 
@@ -153,7 +165,11 @@ export class ApiPlatformResponseStrategy extends AbstractDotPathResponseStrategy
    * @param data - The items on the current page
    * @returns The page size, or undefined
    */
-  private _derivePerPage(viewUrl: string | null, nextPageUrl: string | undefined, data: unknown[] | undefined): number | undefined {
+  private _derivePerPage(
+    viewUrl: string | null,
+    nextPageUrl: string | undefined,
+    data: unknown[] | undefined
+  ): number | undefined {
     if (viewUrl !== null) {
       const direct = this._extractNumberParam(viewUrl, 'itemsPerPage');
 
@@ -218,7 +234,11 @@ export class ApiPlatformResponseStrategy extends AbstractDotPathResponseStrategy
    * @param total - The total item count
    * @returns 1 when the response provably holds all items, undefined otherwise
    */
-  private _wholeSetFrom(viewUrl: string | null, data: unknown[] | undefined, total?: number): number | undefined {
+  private _wholeSetFrom(
+    viewUrl: string | null,
+    data: unknown[] | undefined,
+    total?: number
+  ): number | undefined {
     if (viewUrl === null && total !== undefined && data?.length && data.length >= total) {
       return 1;
     }
@@ -234,7 +254,11 @@ export class ApiPlatformResponseStrategy extends AbstractDotPathResponseStrategy
    * @param total - The total item count
    * @returns The item count when the response provably holds all items, undefined otherwise
    */
-  private _wholeSetTo(viewUrl: string | null, data: unknown[] | undefined, total?: number): number | undefined {
+  private _wholeSetTo(
+    viewUrl: string | null,
+    data: unknown[] | undefined,
+    total?: number
+  ): number | undefined {
     if (viewUrl === null && total !== undefined && data?.length && data.length >= total) {
       return data.length;
     }

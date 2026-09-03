@@ -32,7 +32,6 @@ import { AbstractRequestStrategy } from './abstract-request.strategy';
  * @see https://github.com/nestjsx/crud/wiki/Requests
  */
 export class NestjsxCrudRequestStrategy extends AbstractRequestStrategy {
-
   /**
    * Filters, operator filters, joins (`includes`), flat field selection
    * (`select`), sorts — no per-model fields, no global search (the `s`
@@ -46,7 +45,7 @@ export class NestjsxCrudRequestStrategy extends AbstractRequestStrategy {
     operatorFilters: true,
     search: false,
     select: true,
-    sort: true
+    sort: true,
   };
 
   /**
@@ -117,16 +116,15 @@ export class NestjsxCrudRequestStrategy extends AbstractRequestStrategy {
   private _appendFilters(state: IQueryBuilderState, out: string[]): void {
     const sep = NestjsxCrudRequestStrategy._separator;
 
-    Object.keys(state.filters).forEach(field => {
+    Object.keys(state.filters).forEach((field) => {
       const values = state.filters[field];
 
       if (!values.length) {
         return;
       }
 
-      const condition = values.length === 1
-        ? `$eq${sep}${values[0]}`
-        : `$in${sep}${values.join(',')}`;
+      const condition =
+        values.length === 1 ? `$eq${sep}${values[0]}` : `$in${sep}${values.join(',')}`;
 
       out.push(`${NestjsxCrudRequestStrategy._filterKey}=${field}${sep}${condition}`);
     });
@@ -142,7 +140,7 @@ export class NestjsxCrudRequestStrategy extends AbstractRequestStrategy {
    * @param out - The accumulator the caller joins into the URI
    */
   private _appendJoin(state: IQueryBuilderState, out: string[]): void {
-    state.includes.forEach(relation => {
+    state.includes.forEach((relation) => {
       out.push(`${NestjsxCrudRequestStrategy._joinKey}=${relation}`);
     });
   }
@@ -154,7 +152,11 @@ export class NestjsxCrudRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendLimit(state: IQueryBuilderState, options: QueryBuilderOptions, out: string[]): void {
+  private _appendLimit(
+    state: IQueryBuilderState,
+    options: QueryBuilderOptions,
+    out: string[]
+  ): void {
     out.push(`${options.limit}=${state.limit}`);
   }
 
@@ -181,7 +183,11 @@ export class NestjsxCrudRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendPage(state: IQueryBuilderState, options: QueryBuilderOptions, out: string[]): void {
+  private _appendPage(
+    state: IQueryBuilderState,
+    options: QueryBuilderOptions,
+    out: string[]
+  ): void {
     out.push(`${options.page}=${state.page}`);
   }
 
@@ -192,7 +198,7 @@ export class NestjsxCrudRequestStrategy extends AbstractRequestStrategy {
    * @param out - The accumulator the caller joins into the URI
    */
   private _appendSort(state: IQueryBuilderState, out: string[]): void {
-    state.sorts.forEach(sort => {
+    state.sorts.forEach((sort) => {
       const direction = sort.order === SortEnum.DESC ? 'DESC' : 'ASC';
 
       out.push(`${NestjsxCrudRequestStrategy._sortKey}=${sort.field},${direction}`);
@@ -229,15 +235,24 @@ export class NestjsxCrudRequestStrategy extends AbstractRequestStrategy {
     const first = values[0];
 
     switch (operator) {
-      case FilterOperatorEnum.EQ: return `$eq${sep}${first}`;
-      case FilterOperatorEnum.GT: return `$gt${sep}${first}`;
-      case FilterOperatorEnum.GTE: return `$gte${sep}${first}`;
-      case FilterOperatorEnum.LT: return `$lt${sep}${first}`;
-      case FilterOperatorEnum.LTE: return `$lte${sep}${first}`;
-      case FilterOperatorEnum.CONTAINS: return `$cont${sep}${first}`;
-      case FilterOperatorEnum.ILIKE: return `$contL${sep}${first}`;
-      case FilterOperatorEnum.IN: return `$in${sep}${values.join(',')}`;
-      case FilterOperatorEnum.SW: return `$starts${sep}${first}`;
+      case FilterOperatorEnum.EQ:
+        return `$eq${sep}${first}`;
+      case FilterOperatorEnum.GT:
+        return `$gt${sep}${first}`;
+      case FilterOperatorEnum.GTE:
+        return `$gte${sep}${first}`;
+      case FilterOperatorEnum.LT:
+        return `$lt${sep}${first}`;
+      case FilterOperatorEnum.LTE:
+        return `$lte${sep}${first}`;
+      case FilterOperatorEnum.CONTAINS:
+        return `$cont${sep}${first}`;
+      case FilterOperatorEnum.ILIKE:
+        return `$contL${sep}${first}`;
+      case FilterOperatorEnum.IN:
+        return `$in${sep}${values.join(',')}`;
+      case FilterOperatorEnum.SW:
+        return `$starts${sep}${first}`;
 
       case FilterOperatorEnum.BTW: {
         if (values.length !== 2) {
@@ -251,9 +266,7 @@ export class NestjsxCrudRequestStrategy extends AbstractRequestStrategy {
       }
 
       case FilterOperatorEnum.NOT:
-        return values.length === 1
-          ? `$ne${sep}${first}`
-          : `$notin${sep}${values.join(',')}`;
+        return values.length === 1 ? `$ne${sep}${first}` : `$notin${sep}${values.join(',')}`;
 
       case FilterOperatorEnum.NULL: {
         if (values.length !== 1 || typeof first !== 'boolean') {

@@ -12,5 +12,5 @@
  */
 export enum PaginationModeEnum {
   QUERY = 'query',
-  RANGE = 'range'
+  RANGE = 'range',
 }

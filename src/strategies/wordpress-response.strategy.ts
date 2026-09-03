@@ -48,7 +48,6 @@ interface ILinkRelations {
  * @see https://developer.wordpress.org/rest-api/using-the-rest-api/pagination/
  */
 export class WordpressResponseStrategy implements IResponseStrategy {
-
   private static readonly _linkHeader = 'Link';
   private static readonly _linkRegex = /<([^>]+)>\s*;\s*rel="(next|prev)"/g;
   private static readonly _pageParamRegex = /[?&]page=(\d+)/;
@@ -77,11 +76,15 @@ export class WordpressResponseStrategy implements IResponseStrategy {
 
     // Header-driven pagination metadata
     const total = this._parseCount(readHeader(headers, WordpressResponseStrategy._totalHeader));
-    const lastPage = this._parseCount(readHeader(headers, WordpressResponseStrategy._totalPagesHeader));
-    const { next, prev } = this._parseLinkHeader(readHeader(headers, WordpressResponseStrategy._linkHeader));
+    const lastPage = this._parseCount(
+      readHeader(headers, WordpressResponseStrategy._totalPagesHeader)
+    );
+    const { next, prev } = this._parseLinkHeader(
+      readHeader(headers, WordpressResponseStrategy._linkHeader)
+    );
 
     const currentPage = this._deriveCurrentPage(next, prev);
-    const perPage = next !== undefined ? (data?.length || undefined) : undefined;
+    const perPage = next !== undefined ? data?.length || undefined : undefined;
 
     const from = this._deriveFrom(data, currentPage, next, perPage, total);
     const to = this._deriveTo(data, currentPage, next, perPage, total);
@@ -142,7 +145,13 @@ export class WordpressResponseStrategy implements IResponseStrategy {
    * @param total - The total item count (may be undefined)
    * @returns The 1-indexed `from` index, or undefined when inputs insufficient
    */
-  private _deriveFrom(data: unknown[] | undefined, currentPage: number, next?: string, perPage?: number, total?: number): number | undefined {
+  private _deriveFrom(
+    data: unknown[] | undefined,
+    currentPage: number,
+    next?: string,
+    perPage?: number,
+    total?: number
+  ): number | undefined {
     if (perPage) {
       return (currentPage - 1) * perPage + 1;
     }
@@ -167,7 +176,13 @@ export class WordpressResponseStrategy implements IResponseStrategy {
    * @param total - The total item count (may be undefined)
    * @returns The 1-indexed `to` index, or undefined when inputs insufficient
    */
-  private _deriveTo(data: unknown[] | undefined, currentPage: number, next?: string, perPage?: number, total?: number): number | undefined {
+  private _deriveTo(
+    data: unknown[] | undefined,
+    currentPage: number,
+    next?: string,
+    perPage?: number,
+    total?: number
+  ): number | undefined {
     if (perPage !== undefined && total !== undefined) {
       return Math.min(currentPage * perPage, total);
     }

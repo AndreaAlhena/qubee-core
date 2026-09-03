@@ -40,7 +40,6 @@ type StrapiFilterPayload = Record<string, StrapiFilterValue | StrapiFilterValue[
  * @see https://docs.strapi.io/dev-docs/api/rest/filters-locale-publication
  */
 export class StrapiRequestStrategy extends AbstractRequestStrategy {
-
   /**
    * Filters, operator filters, sorts, populate (`includes`), flat field
    * selection (`select`) — no per-model fields, no global search (use
@@ -54,7 +53,7 @@ export class StrapiRequestStrategy extends AbstractRequestStrategy {
     operatorFilters: true,
     search: false,
     select: true,
-    sort: true
+    sort: true,
   };
 
   /**
@@ -135,16 +134,14 @@ export class StrapiRequestStrategy extends AbstractRequestStrategy {
 
     const filters: Record<string, StrapiFilterPayload> = {};
 
-    simpleKeys.forEach(key => {
+    simpleKeys.forEach((key) => {
       const values = state.filters[key];
 
       if (!values.length) {
         return;
       }
 
-      filters[key] = values.length === 1
-        ? { $eq: values[0] }
-        : { $in: values };
+      filters[key] = values.length === 1 ? { $eq: values[0] } : { $in: values };
     });
 
     state.operatorFilters.forEach((filter: IOperatorFilter) => {
@@ -152,7 +149,7 @@ export class StrapiRequestStrategy extends AbstractRequestStrategy {
 
       filters[filter.field] = {
         ...(filters[filter.field] ?? {}),
-        ...payload
+        ...payload,
       };
     });
 
@@ -177,8 +174,8 @@ export class StrapiRequestStrategy extends AbstractRequestStrategy {
     const wrapper = {
       [StrapiRequestStrategy._paginationKey]: {
         page: state.page,
-        pageSize: state.limit
-      }
+        pageSize: state.limit,
+      },
     };
 
     out.push(qs.stringify(wrapper, { encode: false }));
@@ -199,7 +196,9 @@ export class StrapiRequestStrategy extends AbstractRequestStrategy {
       return;
     }
 
-    out.push(qs.stringify({ [StrapiRequestStrategy._populateKey]: state.includes }, { encode: false }));
+    out.push(
+      qs.stringify({ [StrapiRequestStrategy._populateKey]: state.includes }, { encode: false })
+    );
   }
 
   /**
@@ -213,8 +212,8 @@ export class StrapiRequestStrategy extends AbstractRequestStrategy {
       return;
     }
 
-    const pairs = state.sorts.map(sort =>
-      `${sort.field}:${sort.order === SortEnum.DESC ? 'desc' : 'asc'}`
+    const pairs = state.sorts.map(
+      (sort) => `${sort.field}:${sort.order === SortEnum.DESC ? 'desc' : 'asc'}`
     );
 
     out.push(qs.stringify({ [StrapiRequestStrategy._sortKey]: pairs }, { encode: false }));
@@ -251,15 +250,24 @@ export class StrapiRequestStrategy extends AbstractRequestStrategy {
     const first = values[0];
 
     switch (operator) {
-      case FilterOperatorEnum.EQ: return { $eq: first };
-      case FilterOperatorEnum.GT: return { $gt: first };
-      case FilterOperatorEnum.GTE: return { $gte: first };
-      case FilterOperatorEnum.LT: return { $lt: first };
-      case FilterOperatorEnum.LTE: return { $lte: first };
-      case FilterOperatorEnum.CONTAINS: return { $contains: first };
-      case FilterOperatorEnum.ILIKE: return { $containsi: first };
-      case FilterOperatorEnum.IN: return { $in: values };
-      case FilterOperatorEnum.SW: return { $startsWith: first };
+      case FilterOperatorEnum.EQ:
+        return { $eq: first };
+      case FilterOperatorEnum.GT:
+        return { $gt: first };
+      case FilterOperatorEnum.GTE:
+        return { $gte: first };
+      case FilterOperatorEnum.LT:
+        return { $lt: first };
+      case FilterOperatorEnum.LTE:
+        return { $lte: first };
+      case FilterOperatorEnum.CONTAINS:
+        return { $contains: first };
+      case FilterOperatorEnum.ILIKE:
+        return { $containsi: first };
+      case FilterOperatorEnum.IN:
+        return { $in: values };
+      case FilterOperatorEnum.SW:
+        return { $startsWith: first };
 
       case FilterOperatorEnum.BTW: {
         if (values.length !== 2) {
@@ -273,9 +281,7 @@ export class StrapiRequestStrategy extends AbstractRequestStrategy {
       }
 
       case FilterOperatorEnum.NOT:
-        return values.length === 1
-          ? { $ne: first }
-          : { $notIn: values };
+        return values.length === 1 ? { $ne: first } : { $notIn: values };
 
       case FilterOperatorEnum.NULL: {
         if (values.length !== 1 || typeof first !== 'boolean') {

@@ -6,7 +6,9 @@
  */
 export class UnsupportedSelectError extends Error {
   constructor() {
-    super('Flat field selection is only supported by the NestJS driver. Use addFields() for Spatie.');
+    super(
+      'Flat field selection is only supported by the NestJS driver. Use addFields() for Spatie.'
+    );
     this.name = 'UnsupportedSelectError';
   }
 }

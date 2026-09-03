@@ -20,7 +20,6 @@ import { AbstractRequestStrategy } from './abstract-request.strategy';
  * @see https://spatie.be/docs/laravel-query-builder
  */
 export class SpatieRequestStrategy extends AbstractRequestStrategy {
-
   /**
    * Filters, sorts, includes, per-model fields — no operators, no flat
    * select, no global search
@@ -33,7 +32,7 @@ export class SpatieRequestStrategy extends AbstractRequestStrategy {
     operatorFilters: false,
     search: false,
     select: false,
-    sort: true
+    sort: true,
   };
 
   /**
@@ -69,7 +68,11 @@ export class SpatieRequestStrategy extends AbstractRequestStrategy {
    * @throws Error if the resource is required but not set
    * @throws UnselectableModelError if a field model is not in resource or includes
    */
-  private _appendFields(state: IQueryBuilderState, options: QueryBuilderOptions, out: string[]): void {
+  private _appendFields(
+    state: IQueryBuilderState,
+    options: QueryBuilderOptions,
+    out: string[]
+  ): void {
     if (!Object.keys(state.fields).length) {
       return;
     }
@@ -102,7 +105,11 @@ export class SpatieRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendFilters(state: IQueryBuilderState, options: QueryBuilderOptions, out: string[]): void {
+  private _appendFilters(
+    state: IQueryBuilderState,
+    options: QueryBuilderOptions,
+    out: string[]
+  ): void {
     const keys = Object.keys(state.filters);
 
     if (!keys.length) {
@@ -112,7 +119,7 @@ export class SpatieRequestStrategy extends AbstractRequestStrategy {
     const wrapper = {
       [options.filters]: keys.reduce((acc: Record<string, string>, key: string) => {
         return Object.assign(acc, { [key]: state.filters[key].join(',') });
-      }, {})
+      }, {}),
     };
 
     out.push(qs.stringify(wrapper, { encode: false }));
@@ -125,7 +132,11 @@ export class SpatieRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendIncludes(state: IQueryBuilderState, options: QueryBuilderOptions, out: string[]): void {
+  private _appendIncludes(
+    state: IQueryBuilderState,
+    options: QueryBuilderOptions,
+    out: string[]
+  ): void {
     if (!state.includes.length) {
       return;
     }
@@ -140,7 +151,11 @@ export class SpatieRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendLimit(state: IQueryBuilderState, options: QueryBuilderOptions, out: string[]): void {
+  private _appendLimit(
+    state: IQueryBuilderState,
+    options: QueryBuilderOptions,
+    out: string[]
+  ): void {
     out.push(`${options.limit}=${state.limit}`);
   }
 
@@ -151,7 +166,11 @@ export class SpatieRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendPage(state: IQueryBuilderState, options: QueryBuilderOptions, out: string[]): void {
+  private _appendPage(
+    state: IQueryBuilderState,
+    options: QueryBuilderOptions,
+    out: string[]
+  ): void {
     out.push(`${options.page}=${state.page}`);
   }
 
@@ -162,13 +181,17 @@ export class SpatieRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendSort(state: IQueryBuilderState, options: QueryBuilderOptions, out: string[]): void {
+  private _appendSort(
+    state: IQueryBuilderState,
+    options: QueryBuilderOptions,
+    out: string[]
+  ): void {
     if (!state.sorts.length) {
       return;
     }
 
-    const pairs = state.sorts.map(sort =>
-      `${sort.order === SortEnum.DESC ? '-' : ''}${sort.field}`
+    const pairs = state.sorts.map(
+      (sort) => `${sort.order === SortEnum.DESC ? '-' : ''}${sort.field}`
     );
 
     out.push(`${options.sort}=${pairs.join(',')}`);

@@ -15,33 +15,33 @@ import { IPaginationConfig } from '../interfaces/pagination-config.interface';
  * ```
  */
 export class ResponseOptions {
-    public readonly currentPage: string;
-    public readonly data: string;
-    public readonly firstPageUrl: string;
-    public readonly from: string;
-    public readonly lastPage: string;
-    public readonly lastPageUrl: string;
-    public readonly nextPageUrl: string;
-    public readonly path: string;
-    public readonly perPage: string;
-    public readonly prevPageUrl: string;
-    public readonly to: string;
-    public readonly total: string;
+  public readonly currentPage: string;
+  public readonly data: string;
+  public readonly firstPageUrl: string;
+  public readonly from: string;
+  public readonly lastPage: string;
+  public readonly lastPageUrl: string;
+  public readonly nextPageUrl: string;
+  public readonly path: string;
+  public readonly perPage: string;
+  public readonly prevPageUrl: string;
+  public readonly to: string;
+  public readonly total: string;
 
-    constructor(options: IPaginationConfig) {
-        this.currentPage = options.currentPage || 'current_page';
-        this.data = options.data || 'data';
-        this.firstPageUrl = options.firstPageUrl || 'first_page_url';
-        this.from = options.from || 'from';
-        this.lastPage = options.lastPage || 'last_page';
-        this.lastPageUrl = options.lastPageUrl || 'last_page_url';
-        this.nextPageUrl = options.nextPageUrl || 'next_page_url';
-        this.path = options.path || 'path';
-        this.perPage = options.perPage || 'per_page';
-        this.prevPageUrl = options.prevPageUrl || 'prev_page_url';
-        this.to = options.to || 'to';
-        this.total = options.total || 'total';
-    }
+  constructor(options: IPaginationConfig) {
+    this.currentPage = options.currentPage || 'current_page';
+    this.data = options.data || 'data';
+    this.firstPageUrl = options.firstPageUrl || 'first_page_url';
+    this.from = options.from || 'from';
+    this.lastPage = options.lastPage || 'last_page';
+    this.lastPageUrl = options.lastPageUrl || 'last_page_url';
+    this.nextPageUrl = options.nextPageUrl || 'next_page_url';
+    this.path = options.path || 'path';
+    this.perPage = options.perPage || 'per_page';
+    this.prevPageUrl = options.prevPageUrl || 'prev_page_url';
+    this.to = options.to || 'to';
+    this.total = options.total || 'total';
+  }
 }
 
 /**
@@ -55,22 +55,22 @@ export class ResponseOptions {
  * default to empty paths (derived from the view URLs instead).
  */
 export class ApiPlatformResponseOptions extends ResponseOptions {
-    constructor(options: IPaginationConfig) {
-        super({
-            currentPage: options.currentPage || '',
-            data: options.data || 'hydra:member',
-            firstPageUrl: options.firstPageUrl || 'hydra:view.hydra:first',
-            from: options.from || '',
-            lastPage: options.lastPage || '',
-            lastPageUrl: options.lastPageUrl || 'hydra:view.hydra:last',
-            nextPageUrl: options.nextPageUrl || 'hydra:view.hydra:next',
-            path: options.path || 'hydra:view.@id',
-            perPage: options.perPage || '',
-            prevPageUrl: options.prevPageUrl || 'hydra:view.hydra:previous',
-            to: options.to || '',
-            total: options.total || 'hydra:totalItems'
-        });
-    }
+  constructor(options: IPaginationConfig) {
+    super({
+      currentPage: options.currentPage || '',
+      data: options.data || 'hydra:member',
+      firstPageUrl: options.firstPageUrl || 'hydra:view.hydra:first',
+      from: options.from || '',
+      lastPage: options.lastPage || '',
+      lastPageUrl: options.lastPageUrl || 'hydra:view.hydra:last',
+      nextPageUrl: options.nextPageUrl || 'hydra:view.hydra:next',
+      path: options.path || 'hydra:view.@id',
+      perPage: options.perPage || '',
+      prevPageUrl: options.prevPageUrl || 'hydra:view.hydra:previous',
+      to: options.to || '',
+      total: options.total || 'hydra:totalItems',
+    });
+  }
 }
 
 /**
@@ -88,22 +88,22 @@ export class ApiPlatformResponseOptions extends ResponseOptions {
  * supported) for custom wrappers that do include paging fields.
  */
 export class DirectusResponseOptions extends ResponseOptions {
-    constructor(options: IPaginationConfig) {
-        super({
-            currentPage: options.currentPage || '',
-            data: options.data || 'data',
-            firstPageUrl: options.firstPageUrl || '',
-            from: options.from || '',
-            lastPage: options.lastPage || '',
-            lastPageUrl: options.lastPageUrl || '',
-            nextPageUrl: options.nextPageUrl || '',
-            path: options.path || '',
-            perPage: options.perPage || '',
-            prevPageUrl: options.prevPageUrl || '',
-            to: options.to || '',
-            total: options.total || 'meta.filter_count'
-        });
-    }
+  constructor(options: IPaginationConfig) {
+    super({
+      currentPage: options.currentPage || '',
+      data: options.data || 'data',
+      firstPageUrl: options.firstPageUrl || '',
+      from: options.from || '',
+      lastPage: options.lastPage || '',
+      lastPageUrl: options.lastPageUrl || '',
+      nextPageUrl: options.nextPageUrl || '',
+      path: options.path || '',
+      perPage: options.perPage || '',
+      prevPageUrl: options.prevPageUrl || '',
+      to: options.to || '',
+      total: options.total || 'meta.filter_count',
+    });
+  }
 }
 
 /**
@@ -118,22 +118,22 @@ export class DirectusResponseOptions extends ResponseOptions {
  * `options.firstPageUrl`, and `options.lastPageUrl`.
  */
 export class DrfResponseOptions extends ResponseOptions {
-    constructor(options: IPaginationConfig) {
-        super({
-            currentPage: options.currentPage || '',
-            data: options.data || 'results',
-            firstPageUrl: options.firstPageUrl || '',
-            from: options.from || '',
-            lastPage: options.lastPage || '',
-            lastPageUrl: options.lastPageUrl || '',
-            nextPageUrl: options.nextPageUrl || 'next',
-            path: options.path || '',
-            perPage: options.perPage || '',
-            prevPageUrl: options.prevPageUrl || 'previous',
-            to: options.to || '',
-            total: options.total || 'count'
-        });
-    }
+  constructor(options: IPaginationConfig) {
+    super({
+      currentPage: options.currentPage || '',
+      data: options.data || 'results',
+      firstPageUrl: options.firstPageUrl || '',
+      from: options.from || '',
+      lastPage: options.lastPage || '',
+      lastPageUrl: options.lastPageUrl || '',
+      nextPageUrl: options.nextPageUrl || 'next',
+      path: options.path || '',
+      perPage: options.perPage || '',
+      prevPageUrl: options.prevPageUrl || 'previous',
+      to: options.to || '',
+      total: options.total || 'count',
+    });
+  }
 }
 
 /**
@@ -148,22 +148,22 @@ export class DrfResponseOptions extends ResponseOptions {
  * directly by the strategy).
  */
 export class FeathersResponseOptions extends ResponseOptions {
-    constructor(options: IPaginationConfig) {
-        super({
-            currentPage: options.currentPage || '',
-            data: options.data || 'data',
-            firstPageUrl: options.firstPageUrl || '',
-            from: options.from || '',
-            lastPage: options.lastPage || '',
-            lastPageUrl: options.lastPageUrl || '',
-            nextPageUrl: options.nextPageUrl || '',
-            path: options.path || '',
-            perPage: options.perPage || 'limit',
-            prevPageUrl: options.prevPageUrl || '',
-            to: options.to || '',
-            total: options.total || 'total'
-        });
-    }
+  constructor(options: IPaginationConfig) {
+    super({
+      currentPage: options.currentPage || '',
+      data: options.data || 'data',
+      firstPageUrl: options.firstPageUrl || '',
+      from: options.from || '',
+      lastPage: options.lastPage || '',
+      lastPageUrl: options.lastPageUrl || '',
+      nextPageUrl: options.nextPageUrl || '',
+      path: options.path || '',
+      perPage: options.perPage || 'limit',
+      prevPageUrl: options.prevPageUrl || '',
+      to: options.to || '',
+      total: options.total || 'total',
+    });
+  }
 }
 
 /**
@@ -174,22 +174,22 @@ export class FeathersResponseOptions extends ResponseOptions {
  * common conventions and can be fully customised via `IPaginationConfig`.
  */
 export class JsonApiResponseOptions extends ResponseOptions {
-    constructor(options: IPaginationConfig) {
-        super({
-            currentPage: options.currentPage || 'meta.current-page',
-            data: options.data || 'data',
-            firstPageUrl: options.firstPageUrl || 'links.first',
-            from: options.from || 'meta.from',
-            lastPage: options.lastPage || 'meta.page-count',
-            lastPageUrl: options.lastPageUrl || 'links.last',
-            nextPageUrl: options.nextPageUrl || 'links.next',
-            path: options.path || 'path',
-            perPage: options.perPage || 'meta.per-page',
-            prevPageUrl: options.prevPageUrl || 'links.prev',
-            to: options.to || 'meta.to',
-            total: options.total || 'meta.total'
-        });
-    }
+  constructor(options: IPaginationConfig) {
+    super({
+      currentPage: options.currentPage || 'meta.current-page',
+      data: options.data || 'data',
+      firstPageUrl: options.firstPageUrl || 'links.first',
+      from: options.from || 'meta.from',
+      lastPage: options.lastPage || 'meta.page-count',
+      lastPageUrl: options.lastPageUrl || 'links.last',
+      nextPageUrl: options.nextPageUrl || 'links.next',
+      path: options.path || 'path',
+      perPage: options.perPage || 'meta.per-page',
+      prevPageUrl: options.prevPageUrl || 'links.prev',
+      to: options.to || 'meta.to',
+      total: options.total || 'meta.total',
+    });
+  }
 }
 
 /**
@@ -204,22 +204,22 @@ export class JsonApiResponseOptions extends ResponseOptions {
  * no body field and are derived.
  */
 export class JsonServerResponseOptions extends ResponseOptions {
-    constructor(options: IPaginationConfig) {
-        super({
-            currentPage: options.currentPage || '',
-            data: options.data || 'data',
-            firstPageUrl: options.firstPageUrl || '',
-            from: options.from || '',
-            lastPage: options.lastPage || 'pages',
-            lastPageUrl: options.lastPageUrl || '',
-            nextPageUrl: options.nextPageUrl || '',
-            path: options.path || '',
-            perPage: options.perPage || '',
-            prevPageUrl: options.prevPageUrl || '',
-            to: options.to || '',
-            total: options.total || 'items'
-        });
-    }
+  constructor(options: IPaginationConfig) {
+    super({
+      currentPage: options.currentPage || '',
+      data: options.data || 'data',
+      firstPageUrl: options.firstPageUrl || '',
+      from: options.from || '',
+      lastPage: options.lastPage || 'pages',
+      lastPageUrl: options.lastPageUrl || '',
+      nextPageUrl: options.nextPageUrl || '',
+      path: options.path || '',
+      perPage: options.perPage || '',
+      prevPageUrl: options.prevPageUrl || '',
+      to: options.to || '',
+      total: options.total || 'items',
+    });
+  }
 }
 
 /**
@@ -228,22 +228,22 @@ export class JsonServerResponseOptions extends ResponseOptions {
  * Uses dot-notation paths to access nested values in the NestJS response format.
  */
 export class NestjsResponseOptions extends ResponseOptions {
-    constructor(options: IPaginationConfig) {
-        super({
-            currentPage: options.currentPage || 'meta.currentPage',
-            data: options.data || 'data',
-            firstPageUrl: options.firstPageUrl || 'links.first',
-            from: options.from || 'meta.from',
-            lastPage: options.lastPage || 'meta.totalPages',
-            lastPageUrl: options.lastPageUrl || 'links.last',
-            nextPageUrl: options.nextPageUrl || 'links.next',
-            path: options.path || 'path',
-            perPage: options.perPage || 'meta.itemsPerPage',
-            prevPageUrl: options.prevPageUrl || 'links.previous',
-            to: options.to || 'meta.to',
-            total: options.total || 'meta.totalItems'
-        });
-    }
+  constructor(options: IPaginationConfig) {
+    super({
+      currentPage: options.currentPage || 'meta.currentPage',
+      data: options.data || 'data',
+      firstPageUrl: options.firstPageUrl || 'links.first',
+      from: options.from || 'meta.from',
+      lastPage: options.lastPage || 'meta.totalPages',
+      lastPageUrl: options.lastPageUrl || 'links.last',
+      nextPageUrl: options.nextPageUrl || 'links.next',
+      path: options.path || 'path',
+      perPage: options.perPage || 'meta.itemsPerPage',
+      prevPageUrl: options.prevPageUrl || 'links.previous',
+      to: options.to || 'meta.to',
+      total: options.total || 'meta.totalItems',
+    });
+  }
 }
 
 /**
@@ -258,22 +258,22 @@ export class NestjsResponseOptions extends ResponseOptions {
  * `undefined`); consumers can override any path via `IPaginationConfig`.
  */
 export class NestjsxCrudResponseOptions extends ResponseOptions {
-    constructor(options: IPaginationConfig) {
-        super({
-            currentPage: options.currentPage || 'page',
-            data: options.data || 'data',
-            firstPageUrl: options.firstPageUrl || '',
-            from: options.from || '',
-            lastPage: options.lastPage || 'pageCount',
-            lastPageUrl: options.lastPageUrl || '',
-            nextPageUrl: options.nextPageUrl || '',
-            path: options.path || '',
-            perPage: options.perPage || 'count',
-            prevPageUrl: options.prevPageUrl || '',
-            to: options.to || '',
-            total: options.total || 'total'
-        });
-    }
+  constructor(options: IPaginationConfig) {
+    super({
+      currentPage: options.currentPage || 'page',
+      data: options.data || 'data',
+      firstPageUrl: options.firstPageUrl || '',
+      from: options.from || '',
+      lastPage: options.lastPage || 'pageCount',
+      lastPageUrl: options.lastPageUrl || '',
+      nextPageUrl: options.nextPageUrl || '',
+      path: options.path || '',
+      perPage: options.perPage || 'count',
+      prevPageUrl: options.prevPageUrl || '',
+      to: options.to || '',
+      total: options.total || 'total',
+    });
+  }
 }
 
 /**
@@ -288,22 +288,22 @@ export class NestjsxCrudResponseOptions extends ResponseOptions {
  * are ignored.
  */
 export class OdataResponseOptions extends ResponseOptions {
-    constructor(options: IPaginationConfig) {
-        super({
-            currentPage: options.currentPage || '',
-            data: options.data || 'value',
-            firstPageUrl: options.firstPageUrl || '',
-            from: options.from || '',
-            lastPage: options.lastPage || '',
-            lastPageUrl: options.lastPageUrl || '',
-            nextPageUrl: options.nextPageUrl || '@odata.nextLink',
-            path: options.path || '',
-            perPage: options.perPage || '',
-            prevPageUrl: options.prevPageUrl || '',
-            to: options.to || '',
-            total: options.total || '@odata.count'
-        });
-    }
+  constructor(options: IPaginationConfig) {
+    super({
+      currentPage: options.currentPage || '',
+      data: options.data || 'value',
+      firstPageUrl: options.firstPageUrl || '',
+      from: options.from || '',
+      lastPage: options.lastPage || '',
+      lastPageUrl: options.lastPageUrl || '',
+      nextPageUrl: options.nextPageUrl || '@odata.nextLink',
+      path: options.path || '',
+      perPage: options.perPage || '',
+      prevPageUrl: options.prevPageUrl || '',
+      to: options.to || '',
+      total: options.total || '@odata.count',
+    });
+  }
 }
 
 /**
@@ -319,22 +319,22 @@ export class OdataResponseOptions extends ResponseOptions {
  * supported) for custom wrappers.
  */
 export class PayloadResponseOptions extends ResponseOptions {
-    constructor(options: IPaginationConfig) {
-        super({
-            currentPage: options.currentPage || 'page',
-            data: options.data || 'docs',
-            firstPageUrl: options.firstPageUrl || '',
-            from: options.from || 'pagingCounter',
-            lastPage: options.lastPage || 'totalPages',
-            lastPageUrl: options.lastPageUrl || '',
-            nextPageUrl: options.nextPageUrl || '',
-            path: options.path || '',
-            perPage: options.perPage || 'limit',
-            prevPageUrl: options.prevPageUrl || '',
-            to: options.to || '',
-            total: options.total || 'totalDocs'
-        });
-    }
+  constructor(options: IPaginationConfig) {
+    super({
+      currentPage: options.currentPage || 'page',
+      data: options.data || 'docs',
+      firstPageUrl: options.firstPageUrl || '',
+      from: options.from || 'pagingCounter',
+      lastPage: options.lastPage || 'totalPages',
+      lastPageUrl: options.lastPageUrl || '',
+      nextPageUrl: options.nextPageUrl || '',
+      path: options.path || '',
+      perPage: options.perPage || 'limit',
+      prevPageUrl: options.prevPageUrl || '',
+      to: options.to || '',
+      total: options.total || 'totalDocs',
+    });
+  }
 }
 
 /**
@@ -348,22 +348,22 @@ export class PayloadResponseOptions extends ResponseOptions {
  * (dot notation supported) for custom wrappers.
  */
 export class PocketbaseResponseOptions extends ResponseOptions {
-    constructor(options: IPaginationConfig) {
-        super({
-            currentPage: options.currentPage || 'page',
-            data: options.data || 'items',
-            firstPageUrl: options.firstPageUrl || '',
-            from: options.from || '',
-            lastPage: options.lastPage || 'totalPages',
-            lastPageUrl: options.lastPageUrl || '',
-            nextPageUrl: options.nextPageUrl || '',
-            path: options.path || '',
-            perPage: options.perPage || 'perPage',
-            prevPageUrl: options.prevPageUrl || '',
-            to: options.to || '',
-            total: options.total || 'totalItems'
-        });
-    }
+  constructor(options: IPaginationConfig) {
+    super({
+      currentPage: options.currentPage || 'page',
+      data: options.data || 'items',
+      firstPageUrl: options.firstPageUrl || '',
+      from: options.from || '',
+      lastPage: options.lastPage || 'totalPages',
+      lastPageUrl: options.lastPageUrl || '',
+      nextPageUrl: options.nextPageUrl || '',
+      path: options.path || '',
+      perPage: options.perPage || 'perPage',
+      prevPageUrl: options.prevPageUrl || '',
+      to: options.to || '',
+      total: options.total || 'totalItems',
+    });
+  }
 }
 
 /**
@@ -379,22 +379,22 @@ export class PocketbaseResponseOptions extends ResponseOptions {
  * are provided.
  */
 export class SieveResponseOptions extends ResponseOptions {
-    constructor(options: IPaginationConfig) {
-        super({
-            currentPage: options.currentPage || 'page',
-            data: options.data || 'data',
-            firstPageUrl: options.firstPageUrl || '',
-            from: options.from || '',
-            lastPage: options.lastPage || 'totalPages',
-            lastPageUrl: options.lastPageUrl || '',
-            nextPageUrl: options.nextPageUrl || '',
-            path: options.path || '',
-            perPage: options.perPage || 'pageSize',
-            prevPageUrl: options.prevPageUrl || '',
-            to: options.to || '',
-            total: options.total || 'total'
-        });
-    }
+  constructor(options: IPaginationConfig) {
+    super({
+      currentPage: options.currentPage || 'page',
+      data: options.data || 'data',
+      firstPageUrl: options.firstPageUrl || '',
+      from: options.from || '',
+      lastPage: options.lastPage || 'totalPages',
+      lastPageUrl: options.lastPageUrl || '',
+      nextPageUrl: options.nextPageUrl || '',
+      path: options.path || '',
+      perPage: options.perPage || 'pageSize',
+      prevPageUrl: options.prevPageUrl || '',
+      to: options.to || '',
+      total: options.total || 'total',
+    });
+  }
 }
 
 /**
@@ -410,22 +410,22 @@ export class SieveResponseOptions extends ResponseOptions {
  * needed. `from`/`to` default to empty paths and are derived.
  */
 export class SpringResponseOptions extends ResponseOptions {
-    constructor(options: IPaginationConfig) {
-        super({
-            currentPage: options.currentPage || 'page.number',
-            data: options.data || '_embedded',
-            firstPageUrl: options.firstPageUrl || '_links.first.href',
-            from: options.from || '',
-            lastPage: options.lastPage || 'page.totalPages',
-            lastPageUrl: options.lastPageUrl || '_links.last.href',
-            nextPageUrl: options.nextPageUrl || '_links.next.href',
-            path: options.path || '',
-            perPage: options.perPage || 'page.size',
-            prevPageUrl: options.prevPageUrl || '_links.prev.href',
-            to: options.to || '',
-            total: options.total || 'page.totalElements'
-        });
-    }
+  constructor(options: IPaginationConfig) {
+    super({
+      currentPage: options.currentPage || 'page.number',
+      data: options.data || '_embedded',
+      firstPageUrl: options.firstPageUrl || '_links.first.href',
+      from: options.from || '',
+      lastPage: options.lastPage || 'page.totalPages',
+      lastPageUrl: options.lastPageUrl || '_links.last.href',
+      nextPageUrl: options.nextPageUrl || '_links.next.href',
+      path: options.path || '',
+      perPage: options.perPage || 'page.size',
+      prevPageUrl: options.prevPageUrl || '_links.prev.href',
+      to: options.to || '',
+      total: options.total || 'page.totalElements',
+    });
+  }
 }
 
 /**
@@ -437,20 +437,20 @@ export class SpringResponseOptions extends ResponseOptions {
  * unless the consumer overrides them.
  */
 export class StrapiResponseOptions extends ResponseOptions {
-    constructor(options: IPaginationConfig) {
-        super({
-            currentPage: options.currentPage || 'meta.pagination.page',
-            data: options.data || 'data',
-            firstPageUrl: options.firstPageUrl || 'links.first',
-            from: options.from || 'meta.pagination.from',
-            lastPage: options.lastPage || 'meta.pagination.pageCount',
-            lastPageUrl: options.lastPageUrl || 'links.last',
-            nextPageUrl: options.nextPageUrl || 'links.next',
-            path: options.path || 'path',
-            perPage: options.perPage || 'meta.pagination.pageSize',
-            prevPageUrl: options.prevPageUrl || 'links.prev',
-            to: options.to || 'meta.pagination.to',
-            total: options.total || 'meta.pagination.total'
-        });
-    }
+  constructor(options: IPaginationConfig) {
+    super({
+      currentPage: options.currentPage || 'meta.pagination.page',
+      data: options.data || 'data',
+      firstPageUrl: options.firstPageUrl || 'links.first',
+      from: options.from || 'meta.pagination.from',
+      lastPage: options.lastPage || 'meta.pagination.pageCount',
+      lastPageUrl: options.lastPageUrl || 'links.last',
+      nextPageUrl: options.nextPageUrl || 'links.next',
+      path: options.path || 'path',
+      perPage: options.perPage || 'meta.pagination.pageSize',
+      prevPageUrl: options.prevPageUrl || 'links.prev',
+      to: options.to || 'meta.pagination.to',
+      total: options.total || 'meta.pagination.total',
+    });
+  }
 }

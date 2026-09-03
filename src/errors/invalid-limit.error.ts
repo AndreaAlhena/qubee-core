@@ -7,7 +7,6 @@
  * the caller understands which values are permitted.
  */
 export class InvalidLimitError extends Error {
-
   /**
    * @param limit - The rejected limit value
    * @param allowFetchAll - Whether the active driver accepts `-1` (fetch all)

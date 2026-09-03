@@ -8,14 +8,15 @@
  * throw and return conservative defaults instead.
  */
 export class PaginationNotSyncedError extends Error {
-
   /**
    * @param action - Short imperative describing what the caller was trying
    * to do (e.g. "navigate to last page", "read totalPages"). Surfaced in
    * the error message so the cause is obvious at the call site.
    */
   constructor(action: string) {
-    super(`Cannot ${action}: no paginated response has been synced yet. Call PaginationService.paginate() at least once first.`);
+    super(
+      `Cannot ${action}: no paginated response has been synced yet. Call PaginationService.paginate() at least once first.`
+    );
     this.name = 'PaginationNotSyncedError';
   }
 }

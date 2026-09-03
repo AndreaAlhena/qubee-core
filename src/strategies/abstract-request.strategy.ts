@@ -18,7 +18,6 @@ import { QueryBuilderOptions } from '../models/query-builder-options';
  * accepts `-1` as a fetch-all sentinel) override that method directly.
  */
 export abstract class AbstractRequestStrategy implements IRequestStrategy {
-
   /**
    * Capability declaration for this driver
    *
@@ -88,7 +87,9 @@ export abstract class AbstractRequestStrategy implements IRequestStrategy {
    */
   protected assertResource(state: IQueryBuilderState): void {
     if (!state.resource) {
-      throw new Error('Set the resource property BEFORE adding filters or calling the url() / get() methods');
+      throw new Error(
+        'Set the resource property BEFORE adding filters or calling the url() / get() methods'
+      );
     }
   }
 

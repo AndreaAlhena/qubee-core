@@ -49,7 +49,6 @@ type FeathersFilterPayload = Record<string, FeathersFilterValue | FeathersFilter
  * @see https://feathersjs.com/api/databases/querying
  */
 export class FeathersRequestStrategy extends AbstractRequestStrategy {
-
   /**
    * Filters, operator filters, sorts, flat field selection (`select`) —
    * no per-model fields, no includes, no global search, no embedded
@@ -63,7 +62,7 @@ export class FeathersRequestStrategy extends AbstractRequestStrategy {
     operatorFilters: true,
     search: false,
     select: true,
-    sort: true
+    sort: true,
   };
 
   /**
@@ -110,16 +109,18 @@ export class FeathersRequestStrategy extends AbstractRequestStrategy {
    * @param out - The accumulator the caller joins into the URI
    */
   private _appendFilters(state: IQueryBuilderState, out: string[]): void {
-    Object.keys(state.filters).forEach(field => {
+    Object.keys(state.filters).forEach((field) => {
       const values = state.filters[field];
 
       if (!values.length) {
         return;
       }
 
-      out.push(values.length === 1
-        ? `${field}=${values[0]}`
-        : qs.stringify({ [field]: { $in: values } }, { encode: false }));
+      out.push(
+        values.length === 1
+          ? `${field}=${values[0]}`
+          : qs.stringify({ [field]: { $in: values } }, { encode: false })
+      );
     });
   }
 
@@ -133,9 +134,11 @@ export class FeathersRequestStrategy extends AbstractRequestStrategy {
     state.operatorFilters.forEach((filter: IOperatorFilter) => {
       const payload = this._formatOperatorPayload(filter);
 
-      out.push(typeof payload === 'object'
-        ? qs.stringify({ [filter.field]: payload }, { encode: false })
-        : `${filter.field}=${payload}`);
+      out.push(
+        typeof payload === 'object'
+          ? qs.stringify({ [filter.field]: payload }, { encode: false })
+          : `${filter.field}=${payload}`
+      );
     });
   }
 
@@ -165,7 +168,9 @@ export class FeathersRequestStrategy extends AbstractRequestStrategy {
       return;
     }
 
-    out.push(qs.stringify({ [FeathersRequestStrategy._selectKey]: state.select }, { encode: false }));
+    out.push(
+      qs.stringify({ [FeathersRequestStrategy._selectKey]: state.select }, { encode: false })
+    );
   }
 
   /**
@@ -181,7 +186,7 @@ export class FeathersRequestStrategy extends AbstractRequestStrategy {
 
     const map: Record<string, number> = {};
 
-    state.sorts.forEach(sort => {
+    state.sorts.forEach((sort) => {
       map[sort.field] = sort.order === SortEnum.DESC ? -1 : 1;
     });
 
@@ -213,17 +218,25 @@ export class FeathersRequestStrategy extends AbstractRequestStrategy {
    * @throws {UnsupportedFilterOperatorError} If the operator has no
    * Feathers equivalent
    */
-  private _formatOperatorPayload(filter: IOperatorFilter): FeathersFilterPayload | FeathersFilterValue {
+  private _formatOperatorPayload(
+    filter: IOperatorFilter
+  ): FeathersFilterPayload | FeathersFilterValue {
     const { operator, values } = filter;
     const first = values[0];
 
     switch (operator) {
-      case FilterOperatorEnum.EQ: return first;
-      case FilterOperatorEnum.GT: return { $gt: first };
-      case FilterOperatorEnum.GTE: return { $gte: first };
-      case FilterOperatorEnum.LT: return { $lt: first };
-      case FilterOperatorEnum.LTE: return { $lte: first };
-      case FilterOperatorEnum.IN: return { $in: values };
+      case FilterOperatorEnum.EQ:
+        return first;
+      case FilterOperatorEnum.GT:
+        return { $gt: first };
+      case FilterOperatorEnum.GTE:
+        return { $gte: first };
+      case FilterOperatorEnum.LT:
+        return { $lt: first };
+      case FilterOperatorEnum.LTE:
+        return { $lte: first };
+      case FilterOperatorEnum.IN:
+        return { $in: values };
 
       case FilterOperatorEnum.BTW: {
         if (values.length !== 2) {
@@ -237,9 +250,7 @@ export class FeathersRequestStrategy extends AbstractRequestStrategy {
       }
 
       case FilterOperatorEnum.NOT:
-        return values.length === 1
-          ? { $ne: first }
-          : { $nin: values };
+        return values.length === 1 ? { $ne: first } : { $nin: values };
 
       case FilterOperatorEnum.CONTAINS:
       case FilterOperatorEnum.ILIKE:

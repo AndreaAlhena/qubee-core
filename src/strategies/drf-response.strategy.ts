@@ -41,7 +41,6 @@ import { ResponseOptions } from '../models/response-options';
  * @see https://www.django-rest-framework.org/api-guide/pagination/#pagenumberpagination
  */
 export class DrfResponseStrategy implements IResponseStrategy {
-
   /**
    * Parse a DRF pagination response into a PaginatedCollection
    *
@@ -50,7 +49,10 @@ export class DrfResponseStrategy implements IResponseStrategy {
    * @returns A typed PaginatedCollection instance
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public paginate<T extends IPaginatedObject>(response: Record<string, any>, options: ResponseOptions): PaginatedCollection<T> {
+  public paginate<T extends IPaginatedObject>(
+    response: Record<string, any>,
+    options: ResponseOptions
+  ): PaginatedCollection<T> {
     const data = response[options.data] as T[];
     const total = response[options.total] as number | undefined;
     const prevPageUrl = (response[options.prevPageUrl] ?? null) as string | null;
@@ -145,7 +147,10 @@ export class DrfResponseStrategy implements IResponseStrategy {
    * @param prevPageUrl - The `previous` link from the response, or null
    * @returns The page size, or undefined
    */
-  private _derivePerPage(nextPageUrl: string | null, prevPageUrl: string | null): number | undefined {
+  private _derivePerPage(
+    nextPageUrl: string | null,
+    prevPageUrl: string | null
+  ): number | undefined {
     return this._extractPageSizeParam(nextPageUrl) ?? this._extractPageSizeParam(prevPageUrl);
   }
 

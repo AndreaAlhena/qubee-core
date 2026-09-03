@@ -1,3 +1,3 @@
 export interface INormalized {
-    [k: number | string]: number[] | string[]
+  [k: number | string]: number[] | string[];
 }

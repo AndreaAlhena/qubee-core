@@ -36,7 +36,6 @@ import { AbstractRequestStrategy } from './abstract-request.strategy';
  * @see https://developer.wordpress.org/rest-api/reference/posts/#list-posts
  */
 export class WordpressRequestStrategy extends AbstractRequestStrategy {
-
   /**
    * Filters, sorts, global search, flat field selection (`select`),
    * embedding (`includes`) — no operator filters, no per-model fields,
@@ -50,7 +49,7 @@ export class WordpressRequestStrategy extends AbstractRequestStrategy {
     operatorFilters: false,
     search: true,
     select: true,
-    sort: true
+    sort: true,
   };
 
   /**
@@ -131,7 +130,7 @@ export class WordpressRequestStrategy extends AbstractRequestStrategy {
    * @param out - The accumulator the caller joins into the URI
    */
   private _appendFilters(state: IQueryBuilderState, out: string[]): void {
-    Object.keys(state.filters).forEach(field => {
+    Object.keys(state.filters).forEach((field) => {
       const values = state.filters[field];
 
       if (!values.length) {
@@ -185,6 +184,8 @@ export class WordpressRequestStrategy extends AbstractRequestStrategy {
     const [first] = state.sorts;
 
     out.push(`${WordpressRequestStrategy._orderbyKey}=${first.field}`);
-    out.push(`${WordpressRequestStrategy._orderKey}=${first.order === SortEnum.DESC ? 'desc' : 'asc'}`);
+    out.push(
+      `${WordpressRequestStrategy._orderKey}=${first.order === SortEnum.DESC ? 'desc' : 'asc'}`
+    );
   }
 }

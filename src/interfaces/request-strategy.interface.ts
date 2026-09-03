@@ -9,7 +9,6 @@ import { QueryBuilderOptions } from '../models/query-builder-options';
  * in the format expected by the corresponding backend.
  */
 export interface IRequestStrategy {
-
   /**
    * Capability flags declared by this driver
    *

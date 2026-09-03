@@ -52,7 +52,6 @@ type DirectusFilterPayload = Record<string, DirectusFilterValue>;
  * @see https://docs.directus.io/reference/filter-rules.html
  */
 export class DirectusRequestStrategy extends AbstractRequestStrategy {
-
   /**
    * Filters, operator filters, sorts, flat select, includes and embedded
    * (both folding into `fields=`), global search — no per-model fields
@@ -67,7 +66,7 @@ export class DirectusRequestStrategy extends AbstractRequestStrategy {
     operatorFilters: true,
     search: true,
     select: true,
-    sort: true
+    sort: true,
   };
 
   /**
@@ -120,10 +119,14 @@ export class DirectusRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendFields(state: IQueryBuilderState, options: QueryBuilderOptions, out: string[]): void {
+  private _appendFields(
+    state: IQueryBuilderState,
+    options: QueryBuilderOptions,
+    out: string[]
+  ): void {
     const relations: string[] = [];
 
-    state.includes.forEach(relation => {
+    state.includes.forEach((relation) => {
       if (relation in state.embedded) {
         return;
       }
@@ -131,7 +134,7 @@ export class DirectusRequestStrategy extends AbstractRequestStrategy {
       relations.push(`${relation}.*`);
     });
 
-    Object.keys(state.embedded).forEach(relation => {
+    Object.keys(state.embedded).forEach((relation) => {
       const columns = state.embedded[relation];
 
       if (!columns.length) {
@@ -139,7 +142,7 @@ export class DirectusRequestStrategy extends AbstractRequestStrategy {
         return;
       }
 
-      relations.push(...columns.map(column => `${relation}.${column}`));
+      relations.push(...columns.map((column) => `${relation}.${column}`));
     });
 
     if (!state.select.length && !relations.length) {
@@ -165,7 +168,11 @@ export class DirectusRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendFilters(state: IQueryBuilderState, options: QueryBuilderOptions, out: string[]): void {
+  private _appendFilters(
+    state: IQueryBuilderState,
+    options: QueryBuilderOptions,
+    out: string[]
+  ): void {
     const simpleKeys = Object.keys(state.filters);
 
     if (!simpleKeys.length && !state.operatorFilters.length) {
@@ -174,7 +181,7 @@ export class DirectusRequestStrategy extends AbstractRequestStrategy {
 
     const filter: Record<string, DirectusFilterPayload> = {};
 
-    simpleKeys.forEach(key => {
+    simpleKeys.forEach((key) => {
       const values = state.filters[key];
 
       if (!values.length) {
@@ -182,9 +189,7 @@ export class DirectusRequestStrategy extends AbstractRequestStrategy {
       }
 
       /* eslint-disable @typescript-eslint/naming-convention -- `_eq` / `_in` are fixed by the Directus wire format */
-      filter[key] = values.length === 1
-        ? { _eq: values[0] }
-        : { _in: values.join(',') };
+      filter[key] = values.length === 1 ? { _eq: values[0] } : { _in: values.join(',') };
       /* eslint-enable @typescript-eslint/naming-convention */
     });
 
@@ -193,7 +198,7 @@ export class DirectusRequestStrategy extends AbstractRequestStrategy {
 
       filter[operatorFilter.field] = {
         ...(filter[operatorFilter.field] ?? {}),
-        ...payload
+        ...payload,
       };
     });
 
@@ -211,7 +216,11 @@ export class DirectusRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendLimit(state: IQueryBuilderState, options: QueryBuilderOptions, out: string[]): void {
+  private _appendLimit(
+    state: IQueryBuilderState,
+    options: QueryBuilderOptions,
+    out: string[]
+  ): void {
     out.push(`${options.limit}=${state.limit}`);
   }
 
@@ -236,7 +245,11 @@ export class DirectusRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendPage(state: IQueryBuilderState, options: QueryBuilderOptions, out: string[]): void {
+  private _appendPage(
+    state: IQueryBuilderState,
+    options: QueryBuilderOptions,
+    out: string[]
+  ): void {
     out.push(`${options.page}=${state.page}`);
   }
 
@@ -247,7 +260,11 @@ export class DirectusRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendSearch(state: IQueryBuilderState, options: QueryBuilderOptions, out: string[]): void {
+  private _appendSearch(
+    state: IQueryBuilderState,
+    options: QueryBuilderOptions,
+    out: string[]
+  ): void {
     if (!state.search) {
       return;
     }
@@ -262,12 +279,16 @@ export class DirectusRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendSort(state: IQueryBuilderState, options: QueryBuilderOptions, out: string[]): void {
+  private _appendSort(
+    state: IQueryBuilderState,
+    options: QueryBuilderOptions,
+    out: string[]
+  ): void {
     if (!state.sorts.length) {
       return;
     }
 
-    const fields = state.sorts.map(sort =>
+    const fields = state.sorts.map((sort) =>
       sort.order === SortEnum.DESC ? `-${sort.field}` : sort.field
     );
 
@@ -306,15 +327,24 @@ export class DirectusRequestStrategy extends AbstractRequestStrategy {
 
     /* eslint-disable @typescript-eslint/naming-convention -- `_operator` keys are fixed by the Directus wire format */
     switch (operator) {
-      case FilterOperatorEnum.EQ: return { _eq: first };
-      case FilterOperatorEnum.GT: return { _gt: first };
-      case FilterOperatorEnum.GTE: return { _gte: first };
-      case FilterOperatorEnum.LT: return { _lt: first };
-      case FilterOperatorEnum.LTE: return { _lte: first };
-      case FilterOperatorEnum.CONTAINS: return { _contains: first };
-      case FilterOperatorEnum.ILIKE: return { _icontains: first };
-      case FilterOperatorEnum.IN: return { _in: values.join(',') };
-      case FilterOperatorEnum.SW: return { _starts_with: first };
+      case FilterOperatorEnum.EQ:
+        return { _eq: first };
+      case FilterOperatorEnum.GT:
+        return { _gt: first };
+      case FilterOperatorEnum.GTE:
+        return { _gte: first };
+      case FilterOperatorEnum.LT:
+        return { _lt: first };
+      case FilterOperatorEnum.LTE:
+        return { _lte: first };
+      case FilterOperatorEnum.CONTAINS:
+        return { _contains: first };
+      case FilterOperatorEnum.ILIKE:
+        return { _icontains: first };
+      case FilterOperatorEnum.IN:
+        return { _in: values.join(',') };
+      case FilterOperatorEnum.SW:
+        return { _starts_with: first };
 
       case FilterOperatorEnum.BTW: {
         if (values.length !== 2) {
@@ -328,9 +358,7 @@ export class DirectusRequestStrategy extends AbstractRequestStrategy {
       }
 
       case FilterOperatorEnum.NOT:
-        return values.length === 1
-          ? { _neq: first }
-          : { _nin: values.join(',') };
+        return values.length === 1 ? { _neq: first } : { _nin: values.join(',') };
 
       case FilterOperatorEnum.NULL: {
         if (values.length !== 1 || typeof first !== 'boolean') {

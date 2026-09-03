@@ -9,7 +9,9 @@
  */
 export class UnsupportedEmbeddedError extends Error {
   constructor() {
-    super('Embedded resources are only supported by the PostgREST driver. Use addIncludes() for drivers with a standalone relation parameter.');
+    super(
+      'Embedded resources are only supported by the PostgREST driver. Use addIncludes() for drivers with a standalone relation parameter.'
+    );
     this.name = 'UnsupportedEmbeddedError';
   }
 }

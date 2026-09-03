@@ -53,7 +53,6 @@ type PayloadFilterPayload = Record<string, PayloadFilterValue>;
  * @see https://payloadcms.com/docs/queries/overview
  */
 export class PayloadRequestStrategy extends AbstractRequestStrategy {
-
   /**
    * Filters, operator filters, sorts, flat field selection (`select`)
    * — no per-model fields, no includes (numeric `depth` instead), no
@@ -67,7 +66,7 @@ export class PayloadRequestStrategy extends AbstractRequestStrategy {
     operatorFilters: true,
     search: false,
     select: true,
-    sort: true
+    sort: true,
   };
 
   /**
@@ -134,7 +133,7 @@ export class PayloadRequestStrategy extends AbstractRequestStrategy {
 
     const flags: Record<string, boolean> = {};
 
-    state.select.forEach(column => {
+    state.select.forEach((column) => {
       flags[column] = true;
     });
 
@@ -152,7 +151,7 @@ export class PayloadRequestStrategy extends AbstractRequestStrategy {
       return;
     }
 
-    const fields = state.sorts.map(sort =>
+    const fields = state.sorts.map((sort) =>
       sort.order === SortEnum.DESC ? `-${sort.field}` : sort.field
     );
 
@@ -181,16 +180,14 @@ export class PayloadRequestStrategy extends AbstractRequestStrategy {
 
     const where: Record<string, PayloadFilterPayload> = {};
 
-    simpleKeys.forEach(key => {
+    simpleKeys.forEach((key) => {
       const values = state.filters[key];
 
       if (!values.length) {
         return;
       }
 
-      where[key] = values.length === 1
-        ? { equals: values[0] }
-        : { in: values.join(',') };
+      where[key] = values.length === 1 ? { equals: values[0] } : { in: values.join(',') };
     });
 
     state.operatorFilters.forEach((filter: IOperatorFilter) => {
@@ -198,7 +195,7 @@ export class PayloadRequestStrategy extends AbstractRequestStrategy {
 
       where[filter.field] = {
         ...(where[filter.field] ?? {}),
-        ...payload
+        ...payload,
       };
     });
 
@@ -243,14 +240,22 @@ export class PayloadRequestStrategy extends AbstractRequestStrategy {
     const first = values[0];
 
     switch (operator) {
-      case FilterOperatorEnum.EQ: return { equals: first };
-      case FilterOperatorEnum.GT: return { greater_than: first };
-      case FilterOperatorEnum.GTE: return { greater_than_equal: first };
-      case FilterOperatorEnum.LT: return { less_than: first };
-      case FilterOperatorEnum.LTE: return { less_than_equal: first };
-      case FilterOperatorEnum.CONTAINS: return { contains: first };
-      case FilterOperatorEnum.ILIKE: return { like: first };
-      case FilterOperatorEnum.IN: return { in: values.join(',') };
+      case FilterOperatorEnum.EQ:
+        return { equals: first };
+      case FilterOperatorEnum.GT:
+        return { greater_than: first };
+      case FilterOperatorEnum.GTE:
+        return { greater_than_equal: first };
+      case FilterOperatorEnum.LT:
+        return { less_than: first };
+      case FilterOperatorEnum.LTE:
+        return { less_than_equal: first };
+      case FilterOperatorEnum.CONTAINS:
+        return { contains: first };
+      case FilterOperatorEnum.ILIKE:
+        return { like: first };
+      case FilterOperatorEnum.IN:
+        return { in: values.join(',') };
 
       case FilterOperatorEnum.BTW: {
         if (values.length !== 2) {
@@ -264,9 +269,7 @@ export class PayloadRequestStrategy extends AbstractRequestStrategy {
       }
 
       case FilterOperatorEnum.NOT:
-        return values.length === 1
-          ? { not_equals: first }
-          : { not_in: values.join(',') };
+        return values.length === 1 ? { not_equals: first } : { not_in: values.join(',') };
 
       case FilterOperatorEnum.NULL: {
         if (values.length !== 1 || typeof first !== 'boolean') {

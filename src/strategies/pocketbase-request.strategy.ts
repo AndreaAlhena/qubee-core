@@ -39,7 +39,6 @@ import { AbstractRequestStrategy } from './abstract-request.strategy';
  * @see https://pocketbase.io/docs/api-records/
  */
 export class PocketbaseRequestStrategy extends AbstractRequestStrategy {
-
   /**
    * Filters, operator filters, sorts, expand (`includes`), flat field
    * selection (`select`) — no per-model fields, no global search, no
@@ -53,7 +52,7 @@ export class PocketbaseRequestStrategy extends AbstractRequestStrategy {
     operatorFilters: true,
     search: false,
     select: true,
-    sort: true
+    sort: true,
   };
 
   /**
@@ -140,16 +139,18 @@ export class PocketbaseRequestStrategy extends AbstractRequestStrategy {
   private _appendFilter(state: IQueryBuilderState, out: string[]): void {
     const clauses: string[] = [];
 
-    Object.keys(state.filters).forEach(field => {
+    Object.keys(state.filters).forEach((field) => {
       const values = state.filters[field];
 
       if (!values.length) {
         return;
       }
 
-      clauses.push(values.length === 1
-        ? `${field}=${this._formatValue(values[0])}`
-        : `(${values.map(value => `${field}=${this._formatValue(value)}`).join(' || ')})`);
+      clauses.push(
+        values.length === 1
+          ? `${field}=${this._formatValue(values[0])}`
+          : `(${values.map((value) => `${field}=${this._formatValue(value)}`).join(' || ')})`
+      );
     });
 
     state.operatorFilters.forEach((filter: IOperatorFilter) => {
@@ -185,7 +186,7 @@ export class PocketbaseRequestStrategy extends AbstractRequestStrategy {
       return;
     }
 
-    const fields = state.sorts.map(sort =>
+    const fields = state.sorts.map((sort) =>
       sort.order === SortEnum.DESC ? `-${sort.field}` : sort.field
     );
 
@@ -224,15 +225,24 @@ export class PocketbaseRequestStrategy extends AbstractRequestStrategy {
     const first = values[0];
 
     switch (operator) {
-      case FilterOperatorEnum.EQ: return `${field}=${this._formatValue(first)}`;
-      case FilterOperatorEnum.GT: return `${field}>${this._formatValue(first)}`;
-      case FilterOperatorEnum.GTE: return `${field}>=${this._formatValue(first)}`;
-      case FilterOperatorEnum.LT: return `${field}<${this._formatValue(first)}`;
-      case FilterOperatorEnum.LTE: return `${field}<=${this._formatValue(first)}`;
-      case FilterOperatorEnum.CONTAINS: return `${field}~${this._formatValue(first)}`;
-      case FilterOperatorEnum.ILIKE: return `${field}~${this._formatValue(first)}`;
-      case FilterOperatorEnum.SW: return `${field}~'${this._escape(String(first))}%'`;
-      case FilterOperatorEnum.IN: return `(${values.map(value => `${field}=${this._formatValue(value)}`).join(' || ')})`;
+      case FilterOperatorEnum.EQ:
+        return `${field}=${this._formatValue(first)}`;
+      case FilterOperatorEnum.GT:
+        return `${field}>${this._formatValue(first)}`;
+      case FilterOperatorEnum.GTE:
+        return `${field}>=${this._formatValue(first)}`;
+      case FilterOperatorEnum.LT:
+        return `${field}<${this._formatValue(first)}`;
+      case FilterOperatorEnum.LTE:
+        return `${field}<=${this._formatValue(first)}`;
+      case FilterOperatorEnum.CONTAINS:
+        return `${field}~${this._formatValue(first)}`;
+      case FilterOperatorEnum.ILIKE:
+        return `${field}~${this._formatValue(first)}`;
+      case FilterOperatorEnum.SW:
+        return `${field}~'${this._escape(String(first))}%'`;
+      case FilterOperatorEnum.IN:
+        return `(${values.map((value) => `${field}=${this._formatValue(value)}`).join(' || ')})`;
 
       case FilterOperatorEnum.BTW: {
         if (values.length !== 2) {
@@ -248,7 +258,7 @@ export class PocketbaseRequestStrategy extends AbstractRequestStrategy {
       case FilterOperatorEnum.NOT:
         return values.length === 1
           ? `${field}!=${this._formatValue(first)}`
-          : `(${values.map(value => `${field}!=${this._formatValue(value)}`).join(' && ')})`;
+          : `(${values.map((value) => `${field}!=${this._formatValue(value)}`).join(' && ')})`;
 
       case FilterOperatorEnum.NULL: {
         if (values.length !== 1 || typeof first !== 'boolean') {
@@ -276,7 +286,7 @@ export class PocketbaseRequestStrategy extends AbstractRequestStrategy {
    * @returns The escaped string, ready to wrap in single quotes
    */
   private _escape(value: string): string {
-    return value.replace(/'/g, '\\\'');
+    return value.replace(/'/g, "\\'");
   }
 
   /**

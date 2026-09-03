@@ -38,7 +38,6 @@ import { AbstractDotPathResponseStrategy } from './abstract-dot-path-response.st
  * @see https://docs.spring.io/spring-data/rest/reference/paging-and-sorting.html
  */
 export class SpringResponseStrategy extends AbstractDotPathResponseStrategy {
-
   /**
    * Parse a Spring Data REST HAL response into a PaginatedCollection
    *
@@ -47,7 +46,10 @@ export class SpringResponseStrategy extends AbstractDotPathResponseStrategy {
    * @returns A typed PaginatedCollection instance
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public override paginate<T extends IPaginatedObject>(response: Record<string, any>, options: ResponseOptions): PaginatedCollection<T> {
+  public override paginate<T extends IPaginatedObject>(
+    response: Record<string, any>,
+    options: ResponseOptions
+  ): PaginatedCollection<T> {
     const data = this._resolveData<T>(response, options);
     const currentPage = this._resolveCurrentPage(response, options);
     const total = this.resolve(response, options.total) as number | undefined;
@@ -109,7 +111,10 @@ export class SpringResponseStrategy extends AbstractDotPathResponseStrategy {
    * @returns The resolved data array (possibly empty)
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private _resolveData<T extends IPaginatedObject>(response: Record<string, any>, options: ResponseOptions): T[] {
+  private _resolveData<T extends IPaginatedObject>(
+    response: Record<string, any>,
+    options: ResponseOptions
+  ): T[] {
     const raw = this.resolve(response, options.data);
 
     if (Array.isArray(raw)) {
@@ -117,7 +122,7 @@ export class SpringResponseStrategy extends AbstractDotPathResponseStrategy {
     }
 
     if (raw && typeof raw === 'object') {
-      const firstArray = Object.values(raw).find(value => Array.isArray(value));
+      const firstArray = Object.values(raw).find((value) => Array.isArray(value));
 
       if (firstArray) {
         return firstArray as T[];

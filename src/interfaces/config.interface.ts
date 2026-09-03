@@ -19,16 +19,16 @@ import { IQueryBuilderConfig } from './query-builder-config.interface';
  * ```
  */
 export interface IConfig {
-    /** The pagination driver to use */
-    driver: DriverEnum;
-    /**
-     * Wire-level pagination mechanism. Defaults to `PaginationModeEnum.QUERY`
-     * when omitted. Currently honoured only by the PostgREST driver; other
-     * drivers ignore it.
-     */
-    pagination?: PaginationModeEnum;
-    /** Custom key names for request query parameters */
-    request?: IQueryBuilderConfig;
-    /** Custom key names for response field mapping */
-    response?: IPaginationConfig;
+  /** The pagination driver to use */
+  driver: DriverEnum;
+  /**
+   * Wire-level pagination mechanism. Defaults to `PaginationModeEnum.QUERY`
+   * when omitted. Currently honoured only by the PostgREST driver; other
+   * drivers ignore it.
+   */
+  pagination?: PaginationModeEnum;
+  /** Custom key names for request query parameters */
+  request?: IQueryBuilderConfig;
+  /** Custom key names for response field mapping */
+  response?: IPaginationConfig;
 }

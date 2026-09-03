@@ -36,7 +36,6 @@ import { AbstractRequestStrategy } from './abstract-request.strategy';
  * @see https://github.com/typicode/json-server
  */
 export class JsonServerRequestStrategy extends AbstractRequestStrategy {
-
   /**
    * Filters, operator filters, sorts, global search — no per-model
    * fields, no includes, no flat select, no embedded resources
@@ -49,7 +48,7 @@ export class JsonServerRequestStrategy extends AbstractRequestStrategy {
     operatorFilters: true,
     search: true,
     select: false,
-    sort: true
+    sort: true,
   };
 
   /**
@@ -96,16 +95,14 @@ export class JsonServerRequestStrategy extends AbstractRequestStrategy {
    * @param out - The accumulator the caller joins into the URI
    */
   private _appendFilters(state: IQueryBuilderState, out: string[]): void {
-    Object.keys(state.filters).forEach(field => {
+    Object.keys(state.filters).forEach((field) => {
       const values = state.filters[field];
 
       if (!values.length) {
         return;
       }
 
-      out.push(values.length === 1
-        ? `${field}=${values[0]}`
-        : `${field}:in=${values.join(',')}`);
+      out.push(values.length === 1 ? `${field}=${values[0]}` : `${field}:in=${values.join(',')}`);
     });
   }
 
@@ -166,7 +163,7 @@ export class JsonServerRequestStrategy extends AbstractRequestStrategy {
       return;
     }
 
-    const fields = state.sorts.map(sort =>
+    const fields = state.sorts.map((sort) =>
       sort.order === SortEnum.DESC ? `-${sort.field}` : sort.field
     );
 
@@ -203,14 +200,22 @@ export class JsonServerRequestStrategy extends AbstractRequestStrategy {
     const first = values[0];
 
     switch (operator) {
-      case FilterOperatorEnum.EQ: return [`${field}:eq=${first}`];
-      case FilterOperatorEnum.GT: return [`${field}:gt=${first}`];
-      case FilterOperatorEnum.GTE: return [`${field}:gte=${first}`];
-      case FilterOperatorEnum.LT: return [`${field}:lt=${first}`];
-      case FilterOperatorEnum.LTE: return [`${field}:lte=${first}`];
-      case FilterOperatorEnum.CONTAINS: return [`${field}:contains=${first}`];
-      case FilterOperatorEnum.SW: return [`${field}:startsWith=${first}`];
-      case FilterOperatorEnum.IN: return [`${field}:in=${values.join(',')}`];
+      case FilterOperatorEnum.EQ:
+        return [`${field}:eq=${first}`];
+      case FilterOperatorEnum.GT:
+        return [`${field}:gt=${first}`];
+      case FilterOperatorEnum.GTE:
+        return [`${field}:gte=${first}`];
+      case FilterOperatorEnum.LT:
+        return [`${field}:lt=${first}`];
+      case FilterOperatorEnum.LTE:
+        return [`${field}:lte=${first}`];
+      case FilterOperatorEnum.CONTAINS:
+        return [`${field}:contains=${first}`];
+      case FilterOperatorEnum.SW:
+        return [`${field}:startsWith=${first}`];
+      case FilterOperatorEnum.IN:
+        return [`${field}:in=${values.join(',')}`];
 
       case FilterOperatorEnum.BTW: {
         if (values.length !== 2) {
@@ -224,7 +229,7 @@ export class JsonServerRequestStrategy extends AbstractRequestStrategy {
       }
 
       case FilterOperatorEnum.NOT:
-        return values.map(value => `${field}:ne=${value}`);
+        return values.map((value) => `${field}:ne=${value}`);
 
       case FilterOperatorEnum.ILIKE:
       case FilterOperatorEnum.NULL:

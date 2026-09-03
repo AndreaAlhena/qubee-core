@@ -10,7 +10,6 @@ import { ResponseOptions } from '../models/response-options';
  * from the corresponding backend format into a PaginatedCollection.
  */
 export interface IResponseStrategy {
-
   /**
    * Parse a raw API response into a typed PaginatedCollection
    *

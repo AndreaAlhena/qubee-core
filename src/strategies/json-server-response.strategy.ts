@@ -40,7 +40,6 @@ import { ResponseOptions } from '../models/response-options';
  * @see https://github.com/typicode/json-server
  */
 export class JsonServerResponseStrategy implements IResponseStrategy {
-
   /**
    * json-server-native names of the page-number navigation keys
    *
@@ -58,7 +57,10 @@ export class JsonServerResponseStrategy implements IResponseStrategy {
    * @returns A typed PaginatedCollection instance
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public paginate<T extends IPaginatedObject>(response: Record<string, any>, options: ResponseOptions): PaginatedCollection<T> {
+  public paginate<T extends IPaginatedObject>(
+    response: Record<string, any>,
+    options: ResponseOptions
+  ): PaginatedCollection<T> {
     const data = response[options.data] as T[];
     const total = response[options.total] as number | undefined;
     const lastPage = response[options.lastPage] as number | undefined;
@@ -100,7 +102,13 @@ export class JsonServerResponseStrategy implements IResponseStrategy {
    * @param total - The total item count (may be undefined)
    * @returns The 1-indexed `from` index, or undefined when inputs insufficient
    */
-  private _deriveFrom(data: unknown[] | undefined, currentPage: number, next: number | null, perPage?: number, total?: number): number | undefined {
+  private _deriveFrom(
+    data: unknown[] | undefined,
+    currentPage: number,
+    next: number | null,
+    perPage?: number,
+    total?: number
+  ): number | undefined {
     if (perPage) {
       return (currentPage - 1) * perPage + 1;
     }
@@ -144,7 +152,13 @@ export class JsonServerResponseStrategy implements IResponseStrategy {
    * @param total - The total item count (may be undefined)
    * @returns The 1-indexed `to` index, or undefined when inputs insufficient
    */
-  private _deriveTo(data: unknown[] | undefined, currentPage: number, next: number | null, perPage?: number, total?: number): number | undefined {
+  private _deriveTo(
+    data: unknown[] | undefined,
+    currentPage: number,
+    next: number | null,
+    perPage?: number,
+    total?: number
+  ): number | undefined {
     if (perPage !== undefined && total !== undefined) {
       return Math.min(currentPage * perPage, total);
     }

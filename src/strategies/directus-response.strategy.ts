@@ -39,7 +39,6 @@ import { AbstractDotPathResponseStrategy } from './abstract-dot-path-response.st
  * @see https://docs.directus.io/reference/query.html#meta
  */
 export class DirectusResponseStrategy extends AbstractDotPathResponseStrategy {
-
   /**
    * Parse a Directus collection response into a PaginatedCollection
    *
@@ -48,15 +47,22 @@ export class DirectusResponseStrategy extends AbstractDotPathResponseStrategy {
    * @returns A typed PaginatedCollection instance
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public override paginate<T extends IPaginatedObject>(response: Record<string, any>, options: ResponseOptions): PaginatedCollection<T> {
+  public override paginate<T extends IPaginatedObject>(
+    response: Record<string, any>,
+    options: ResponseOptions
+  ): PaginatedCollection<T> {
     const data = this.resolve(response, options.data) as T[];
     const total = this.resolve(response, options.total) as number | undefined;
     const currentPage = (this.resolve(response, options.currentPage) as number | undefined) ?? 1;
     const perPage = this.resolve(response, options.perPage) as number | undefined;
     const lastPage = this._deriveLastPage(response, options, data, total, perPage);
 
-    const from = this.resolveFrom(response, options, currentPage, perPage) ?? this._singlePageFrom(data, total);
-    const to = this.resolveTo(response, options, currentPage, perPage, total) ?? this._singlePageTo(data, total);
+    const from =
+      this.resolveFrom(response, options, currentPage, perPage) ??
+      this._singlePageFrom(data, total);
+    const to =
+      this.resolveTo(response, options, currentPage, perPage, total) ??
+      this._singlePageTo(data, total);
 
     const prevPageUrl = this.resolve(response, options.prevPageUrl) as string | undefined;
     const nextPageUrl = this.resolve(response, options.nextPageUrl) as string | undefined;
@@ -93,7 +99,13 @@ export class DirectusResponseStrategy extends AbstractDotPathResponseStrategy {
    * @returns The last page number, or undefined when inputs insufficient
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private _deriveLastPage(response: Record<string, any>, options: ResponseOptions, data: unknown[] | undefined, total?: number, perPage?: number): number | undefined {
+  private _deriveLastPage(
+    response: Record<string, any>,
+    options: ResponseOptions,
+    data: unknown[] | undefined,
+    total?: number,
+    perPage?: number
+  ): number | undefined {
     const direct = this.resolve(response, options.lastPage) as number | undefined;
 
     if (direct !== undefined) {

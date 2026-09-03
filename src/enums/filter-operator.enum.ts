@@ -31,5 +31,5 @@ export enum FilterOperatorEnum {
   PHFTS = '$phfts',
   PLFTS = '$plfts',
   SW = '$sw',
-  WFTS = '$wfts'
+  WFTS = '$wfts',
 }

@@ -7,8 +7,7 @@
  * keyed by header name. Consumers should not need to convert between them.
  */
 export type HeaderBag =
-  | { get(name: string): string | null }
-  | Record<string, string | null | undefined>;
+  { get(name: string): string | null } | Record<string, string | null | undefined>;
 
 /**
  * Read a header value by name from a `HeaderBag`, regardless of whether the

@@ -16,7 +16,6 @@ import { FilterOperatorEnum } from '../enums/filter-operator.enum';
  * problem unambiguously from the call site.
  */
 export class InvalidFilterOperatorValueError extends Error {
-
   /**
    * @param operator - The operator that rejected the values
    * @param reason - Short human-readable explanation of the constraint

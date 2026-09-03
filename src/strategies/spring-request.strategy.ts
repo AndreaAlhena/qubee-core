@@ -23,7 +23,6 @@ import { AbstractRequestStrategy } from './abstract-request.strategy';
  * @see https://docs.spring.io/spring-data/rest/reference/paging-and-sorting.html
  */
 export class SpringRequestStrategy extends AbstractRequestStrategy {
-
   /**
    * Sorts only — Spring Data REST has no standard wire convention for
    * filters, operator filters, per-model fields, flat select, includes,
@@ -37,7 +36,7 @@ export class SpringRequestStrategy extends AbstractRequestStrategy {
     operatorFilters: false,
     search: false,
     select: false,
-    sort: true
+    sort: true,
   };
 
   /**
@@ -81,7 +80,11 @@ export class SpringRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendPage(state: IQueryBuilderState, options: QueryBuilderOptions, out: string[]): void {
+  private _appendPage(
+    state: IQueryBuilderState,
+    options: QueryBuilderOptions,
+    out: string[]
+  ): void {
     out.push(`${options.page}=${state.page - 1}`);
   }
 
@@ -106,8 +109,12 @@ export class SpringRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendSort(state: IQueryBuilderState, options: QueryBuilderOptions, out: string[]): void {
-    state.sorts.forEach(sort => {
+  private _appendSort(
+    state: IQueryBuilderState,
+    options: QueryBuilderOptions,
+    out: string[]
+  ): void {
+    state.sorts.forEach((sort) => {
       const direction = sort.order === SortEnum.DESC ? 'desc' : 'asc';
 
       out.push(`${options.sort}=${sort.field},${direction}`);

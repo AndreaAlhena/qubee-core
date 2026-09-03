@@ -23,7 +23,6 @@ import { ResponseOptions } from '../models/response-options';
  * directly.
  */
 export abstract class AbstractFlatResponseStrategy implements IResponseStrategy {
-
   /**
    * Parse a flat-envelope pagination response into a PaginatedCollection
    *
@@ -32,7 +31,10 @@ export abstract class AbstractFlatResponseStrategy implements IResponseStrategy 
    * @returns A typed PaginatedCollection instance
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public paginate<T extends IPaginatedObject>(response: Record<string, any>, options: ResponseOptions): PaginatedCollection<T> {
+  public paginate<T extends IPaginatedObject>(
+    response: Record<string, any>,
+    options: ResponseOptions
+  ): PaginatedCollection<T> {
     return new PaginatedCollection(
       response[options.data],
       response[options.currentPage],

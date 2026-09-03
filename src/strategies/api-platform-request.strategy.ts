@@ -39,7 +39,6 @@ import { AbstractRequestStrategy } from './abstract-request.strategy';
  * @see https://api-platform.com/docs/core/filters/
  */
 export class ApiPlatformRequestStrategy extends AbstractRequestStrategy {
-
   /**
    * Filters, operator filters, sorts — no per-model fields, no
    * includes (relations embed via serialization groups server-side),
@@ -53,7 +52,7 @@ export class ApiPlatformRequestStrategy extends AbstractRequestStrategy {
     operatorFilters: true,
     search: false,
     select: false,
-    sort: true
+    sort: true,
   };
 
   /**
@@ -99,7 +98,7 @@ export class ApiPlatformRequestStrategy extends AbstractRequestStrategy {
    * @param out - The accumulator the caller joins into the URI
    */
   private _appendFilters(state: IQueryBuilderState, out: string[]): void {
-    Object.keys(state.filters).forEach(field => {
+    Object.keys(state.filters).forEach((field) => {
       const values = state.filters[field];
 
       if (!values.length) {
@@ -111,7 +110,7 @@ export class ApiPlatformRequestStrategy extends AbstractRequestStrategy {
         return;
       }
 
-      values.forEach(value => out.push(`${field}[]=${value}`));
+      values.forEach((value) => out.push(`${field}[]=${value}`));
     });
   }
 
@@ -144,7 +143,7 @@ export class ApiPlatformRequestStrategy extends AbstractRequestStrategy {
    * @param out - The accumulator the caller joins into the URI
    */
   private _appendOrder(state: IQueryBuilderState, out: string[]): void {
-    state.sorts.forEach(sort => {
+    state.sorts.forEach((sort) => {
       const direction = sort.order === SortEnum.DESC ? 'desc' : 'asc';
 
       out.push(`${ApiPlatformRequestStrategy._orderKey}[${sort.field}]=${direction}`);
@@ -158,7 +157,11 @@ export class ApiPlatformRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendPage(state: IQueryBuilderState, options: QueryBuilderOptions, out: string[]): void {
+  private _appendPage(
+    state: IQueryBuilderState,
+    options: QueryBuilderOptions,
+    out: string[]
+  ): void {
     out.push(`${options.page}=${state.page}`);
   }
 
@@ -195,15 +198,24 @@ export class ApiPlatformRequestStrategy extends AbstractRequestStrategy {
     const first = values[0];
 
     switch (operator) {
-      case FilterOperatorEnum.EQ: return [`${field}=${first}`];
-      case FilterOperatorEnum.GT: return [`${field}[gt]=${first}`];
-      case FilterOperatorEnum.GTE: return [`${field}[gte]=${first}`];
-      case FilterOperatorEnum.LT: return [`${field}[lt]=${first}`];
-      case FilterOperatorEnum.LTE: return [`${field}[lte]=${first}`];
-      case FilterOperatorEnum.CONTAINS: return [`${field}[partial]=${first}`];
-      case FilterOperatorEnum.ILIKE: return [`${field}[ipartial]=${first}`];
-      case FilterOperatorEnum.SW: return [`${field}[start]=${first}`];
-      case FilterOperatorEnum.IN: return values.map(value => `${field}[]=${value}`);
+      case FilterOperatorEnum.EQ:
+        return [`${field}=${first}`];
+      case FilterOperatorEnum.GT:
+        return [`${field}[gt]=${first}`];
+      case FilterOperatorEnum.GTE:
+        return [`${field}[gte]=${first}`];
+      case FilterOperatorEnum.LT:
+        return [`${field}[lt]=${first}`];
+      case FilterOperatorEnum.LTE:
+        return [`${field}[lte]=${first}`];
+      case FilterOperatorEnum.CONTAINS:
+        return [`${field}[partial]=${first}`];
+      case FilterOperatorEnum.ILIKE:
+        return [`${field}[ipartial]=${first}`];
+      case FilterOperatorEnum.SW:
+        return [`${field}[start]=${first}`];
+      case FilterOperatorEnum.IN:
+        return values.map((value) => `${field}[]=${value}`);
 
       case FilterOperatorEnum.BTW: {
         if (values.length !== 2) {

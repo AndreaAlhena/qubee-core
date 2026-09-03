@@ -3,7 +3,23 @@ import { PaginationModeEnum } from '../enums/pagination-mode.enum';
 import { IPaginationConfig } from '../interfaces/pagination-config.interface';
 import { IRequestStrategy } from '../interfaces/request-strategy.interface';
 import { IResponseStrategy } from '../interfaces/response-strategy.interface';
-import { ApiPlatformResponseOptions, DirectusResponseOptions, DrfResponseOptions, FeathersResponseOptions, JsonApiResponseOptions, JsonServerResponseOptions, NestjsResponseOptions, NestjsxCrudResponseOptions, OdataResponseOptions, PayloadResponseOptions, PocketbaseResponseOptions, ResponseOptions, SieveResponseOptions, SpringResponseOptions, StrapiResponseOptions } from '../models/response-options';
+import {
+  ApiPlatformResponseOptions,
+  DirectusResponseOptions,
+  DrfResponseOptions,
+  FeathersResponseOptions,
+  JsonApiResponseOptions,
+  JsonServerResponseOptions,
+  NestjsResponseOptions,
+  NestjsxCrudResponseOptions,
+  OdataResponseOptions,
+  PayloadResponseOptions,
+  PocketbaseResponseOptions,
+  ResponseOptions,
+  SieveResponseOptions,
+  SpringResponseOptions,
+  StrapiResponseOptions,
+} from '../models/response-options';
 import { ApiPlatformRequestStrategy } from '../strategies/api-platform-request.strategy';
 import { ApiPlatformResponseStrategy } from '../strategies/api-platform-response.strategy';
 import { DirectusRequestStrategy } from '../strategies/directus-request.strategy';
@@ -50,7 +66,6 @@ import { WordpressResponseStrategy } from '../strategies/wordpress-response.stra
  * builder.
  */
 export interface IDriverDefinition {
-
   /**
    * Build the request strategy for this driver
    *
@@ -95,108 +110,108 @@ export const DRIVERS: Record<DriverEnum, IDriverDefinition> = {
   [DriverEnum.API_PLATFORM]: {
     createRequestStrategy: () => new ApiPlatformRequestStrategy(),
     createResponseStrategy: () => new ApiPlatformResponseStrategy(),
-    createResponseOptions: (config) => new ApiPlatformResponseOptions(config)
+    createResponseOptions: (config) => new ApiPlatformResponseOptions(config),
   },
 
   [DriverEnum.DIRECTUS]: {
     createRequestStrategy: () => new DirectusRequestStrategy(),
     createResponseStrategy: () => new DirectusResponseStrategy(),
-    createResponseOptions: (config) => new DirectusResponseOptions(config)
+    createResponseOptions: (config) => new DirectusResponseOptions(config),
   },
 
   [DriverEnum.DRF]: {
     createRequestStrategy: () => new DrfRequestStrategy(),
     createResponseStrategy: () => new DrfResponseStrategy(),
-    createResponseOptions: (config) => new DrfResponseOptions(config)
+    createResponseOptions: (config) => new DrfResponseOptions(config),
   },
 
   [DriverEnum.FEATHERS]: {
     createRequestStrategy: () => new FeathersRequestStrategy(),
     createResponseStrategy: () => new FeathersResponseStrategy(),
-    createResponseOptions: (config) => new FeathersResponseOptions(config)
+    createResponseOptions: (config) => new FeathersResponseOptions(config),
   },
 
   [DriverEnum.JSON_API]: {
     createRequestStrategy: () => new JsonApiRequestStrategy(),
     createResponseStrategy: () => new JsonApiResponseStrategy(),
-    createResponseOptions: (config) => new JsonApiResponseOptions(config)
+    createResponseOptions: (config) => new JsonApiResponseOptions(config),
   },
 
   [DriverEnum.JSON_SERVER]: {
     createRequestStrategy: () => new JsonServerRequestStrategy(),
     createResponseStrategy: () => new JsonServerResponseStrategy(),
-    createResponseOptions: (config) => new JsonServerResponseOptions(config)
+    createResponseOptions: (config) => new JsonServerResponseOptions(config),
   },
 
   [DriverEnum.LARAVEL]: {
     createRequestStrategy: () => new LaravelRequestStrategy(),
     createResponseStrategy: () => new LaravelResponseStrategy(),
-    createResponseOptions: (config) => new ResponseOptions(config)
+    createResponseOptions: (config) => new ResponseOptions(config),
   },
 
   [DriverEnum.NESTJS]: {
     createRequestStrategy: () => new NestjsRequestStrategy(),
     createResponseStrategy: () => new NestjsResponseStrategy(),
-    createResponseOptions: (config) => new NestjsResponseOptions(config)
+    createResponseOptions: (config) => new NestjsResponseOptions(config),
   },
 
   [DriverEnum.NESTJSX_CRUD]: {
     createRequestStrategy: () => new NestjsxCrudRequestStrategy(),
     createResponseStrategy: () => new NestjsxCrudResponseStrategy(),
-    createResponseOptions: (config) => new NestjsxCrudResponseOptions(config)
+    createResponseOptions: (config) => new NestjsxCrudResponseOptions(config),
   },
 
   [DriverEnum.ODATA]: {
     createRequestStrategy: () => new OdataRequestStrategy(),
     createResponseStrategy: () => new OdataResponseStrategy(),
-    createResponseOptions: (config) => new OdataResponseOptions(config)
+    createResponseOptions: (config) => new OdataResponseOptions(config),
   },
 
   [DriverEnum.PAYLOAD]: {
     createRequestStrategy: () => new PayloadRequestStrategy(),
     createResponseStrategy: () => new PayloadResponseStrategy(),
-    createResponseOptions: (config) => new PayloadResponseOptions(config)
+    createResponseOptions: (config) => new PayloadResponseOptions(config),
   },
 
   [DriverEnum.POCKETBASE]: {
     createRequestStrategy: () => new PocketbaseRequestStrategy(),
     createResponseStrategy: () => new PocketbaseResponseStrategy(),
-    createResponseOptions: (config) => new PocketbaseResponseOptions(config)
+    createResponseOptions: (config) => new PocketbaseResponseOptions(config),
   },
 
   [DriverEnum.POSTGREST]: {
     createRequestStrategy: (mode) => new PostgrestRequestStrategy(mode),
     createResponseStrategy: () => new PostgrestResponseStrategy(),
-    createResponseOptions: (config) => new ResponseOptions(config)
+    createResponseOptions: (config) => new ResponseOptions(config),
   },
 
   [DriverEnum.SIEVE]: {
     createRequestStrategy: () => new SieveRequestStrategy(),
     createResponseStrategy: () => new SieveResponseStrategy(),
-    createResponseOptions: (config) => new SieveResponseOptions(config)
+    createResponseOptions: (config) => new SieveResponseOptions(config),
   },
 
   [DriverEnum.SPATIE]: {
     createRequestStrategy: () => new SpatieRequestStrategy(),
     createResponseStrategy: () => new SpatieResponseStrategy(),
-    createResponseOptions: (config) => new ResponseOptions(config)
+    createResponseOptions: (config) => new ResponseOptions(config),
   },
 
   [DriverEnum.SPRING]: {
     createRequestStrategy: () => new SpringRequestStrategy(),
     createResponseStrategy: () => new SpringResponseStrategy(),
-    createResponseOptions: (config) => new SpringResponseOptions(config)
+    createResponseOptions: (config) => new SpringResponseOptions(config),
   },
 
   [DriverEnum.STRAPI]: {
     createRequestStrategy: () => new StrapiRequestStrategy(),
     createResponseStrategy: () => new StrapiResponseStrategy(),
-    createResponseOptions: (config) => new StrapiResponseOptions(config)
+    createResponseOptions: (config) => new StrapiResponseOptions(config),
   },
 
   [DriverEnum.WORDPRESS]: {
     createRequestStrategy: () => new WordpressRequestStrategy(),
     createResponseStrategy: () => new WordpressResponseStrategy(),
-    createResponseOptions: (config) => new ResponseOptions(config)
-  }
+    createResponseOptions: (config) => new ResponseOptions(config),
+  },
 };

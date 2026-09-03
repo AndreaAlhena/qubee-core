@@ -20,7 +20,6 @@ import { AbstractRequestStrategy } from './abstract-request.strategy';
  * @see https://github.com/ppetzold/nestjs-paginate
  */
 export class NestjsRequestStrategy extends AbstractRequestStrategy {
-
   /**
    * Filters, operator filters, sorts, flat select, global search — no
    * per-model fields, no includes
@@ -33,7 +32,7 @@ export class NestjsRequestStrategy extends AbstractRequestStrategy {
     operatorFilters: true,
     search: true,
     select: true,
-    sort: true
+    sort: true,
   };
 
   /**
@@ -82,14 +81,18 @@ export class NestjsRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendFilters(state: IQueryBuilderState, options: QueryBuilderOptions, out: string[]): void {
+  private _appendFilters(
+    state: IQueryBuilderState,
+    options: QueryBuilderOptions,
+    out: string[]
+  ): void {
     const keys = Object.keys(state.filters);
 
     if (!keys.length) {
       return;
     }
 
-    keys.forEach(key => {
+    keys.forEach((key) => {
       const values = state.filters[key].join(',');
       out.push(`${options.filters}.${key}=${values}`);
     });
@@ -102,7 +105,11 @@ export class NestjsRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendLimit(state: IQueryBuilderState, options: QueryBuilderOptions, out: string[]): void {
+  private _appendLimit(
+    state: IQueryBuilderState,
+    options: QueryBuilderOptions,
+    out: string[]
+  ): void {
     out.push(`${options.limit}=${state.limit}`);
   }
 
@@ -115,7 +122,11 @@ export class NestjsRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendOperatorFilters(state: IQueryBuilderState, options: QueryBuilderOptions, out: string[]): void {
+  private _appendOperatorFilters(
+    state: IQueryBuilderState,
+    options: QueryBuilderOptions,
+    out: string[]
+  ): void {
     if (!state.operatorFilters.length) {
       return;
     }
@@ -133,7 +144,11 @@ export class NestjsRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendPage(state: IQueryBuilderState, options: QueryBuilderOptions, out: string[]): void {
+  private _appendPage(
+    state: IQueryBuilderState,
+    options: QueryBuilderOptions,
+    out: string[]
+  ): void {
     out.push(`${options.page}=${state.page}`);
   }
 
@@ -144,7 +159,11 @@ export class NestjsRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendSearch(state: IQueryBuilderState, options: QueryBuilderOptions, out: string[]): void {
+  private _appendSearch(
+    state: IQueryBuilderState,
+    options: QueryBuilderOptions,
+    out: string[]
+  ): void {
     if (!state.search) {
       return;
     }
@@ -159,7 +178,11 @@ export class NestjsRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendSelect(state: IQueryBuilderState, options: QueryBuilderOptions, out: string[]): void {
+  private _appendSelect(
+    state: IQueryBuilderState,
+    options: QueryBuilderOptions,
+    out: string[]
+  ): void {
     if (!state.select.length) {
       return;
     }
@@ -174,13 +197,17 @@ export class NestjsRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendSort(state: IQueryBuilderState, options: QueryBuilderOptions, out: string[]): void {
+  private _appendSort(
+    state: IQueryBuilderState,
+    options: QueryBuilderOptions,
+    out: string[]
+  ): void {
     if (!state.sorts.length) {
       return;
     }
 
-    const pairs = state.sorts.map(sort =>
-      `${sort.field}:${sort.order === SortEnum.DESC ? 'DESC' : 'ASC'}`
+    const pairs = state.sorts.map(
+      (sort) => `${sort.field}:${sort.order === SortEnum.DESC ? 'DESC' : 'ASC'}`
     );
 
     out.push(`${options.sortBy}=${pairs.join(',')}`);

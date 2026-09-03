@@ -39,7 +39,6 @@ import { AbstractRequestStrategy } from './abstract-request.strategy';
  * @see https://docs.oasis-open.org/odata/odata/v4.01/odata-v4.01-part2-url-conventions.html
  */
 export class OdataRequestStrategy extends AbstractRequestStrategy {
-
   /**
    * Filters, operator filters, sorts, flat select, includes and embedded
    * (both folding into `$expand`), global search — no per-model fields
@@ -53,7 +52,7 @@ export class OdataRequestStrategy extends AbstractRequestStrategy {
     operatorFilters: true,
     search: true,
     select: true,
-    sort: true
+    sort: true,
   };
 
   /**
@@ -125,7 +124,7 @@ export class OdataRequestStrategy extends AbstractRequestStrategy {
   private _appendExpand(state: IQueryBuilderState, out: string[]): void {
     const fragments: string[] = [];
 
-    state.includes.forEach(relation => {
+    state.includes.forEach((relation) => {
       if (relation in state.embedded) {
         return;
       }
@@ -133,10 +132,14 @@ export class OdataRequestStrategy extends AbstractRequestStrategy {
       fragments.push(relation);
     });
 
-    Object.keys(state.embedded).forEach(relation => {
+    Object.keys(state.embedded).forEach((relation) => {
       const columns = state.embedded[relation];
 
-      fragments.push(columns.length ? `${relation}(${OdataRequestStrategy._selectKey}=${columns.join(',')})` : relation);
+      fragments.push(
+        columns.length
+          ? `${relation}(${OdataRequestStrategy._selectKey}=${columns.join(',')})`
+          : relation
+      );
     });
 
     if (!fragments.length) {
@@ -160,16 +163,18 @@ export class OdataRequestStrategy extends AbstractRequestStrategy {
   private _appendFilter(state: IQueryBuilderState, out: string[]): void {
     const terms: string[] = [];
 
-    Object.keys(state.filters).forEach(field => {
+    Object.keys(state.filters).forEach((field) => {
       const values = state.filters[field];
 
       if (!values.length) {
         return;
       }
 
-      terms.push(values.length === 1
-        ? `${field} eq ${this._formatLiteral(values[0])}`
-        : `${field} in (${values.map(value => this._formatLiteral(value)).join(',')})`);
+      terms.push(
+        values.length === 1
+          ? `${field} eq ${this._formatLiteral(values[0])}`
+          : `${field} in (${values.map((value) => this._formatLiteral(value)).join(',')})`
+      );
     });
 
     state.operatorFilters.forEach((filter: IOperatorFilter) => {
@@ -194,8 +199,8 @@ export class OdataRequestStrategy extends AbstractRequestStrategy {
       return;
     }
 
-    const pairs = state.sorts.map(sort =>
-      `${sort.field} ${sort.order === SortEnum.DESC ? 'desc' : 'asc'}`
+    const pairs = state.sorts.map(
+      (sort) => `${sort.field} ${sort.order === SortEnum.DESC ? 'desc' : 'asc'}`
     );
 
     out.push(`${OdataRequestStrategy._orderbyKey}=${pairs.join(',')}`);
@@ -271,7 +276,7 @@ export class OdataRequestStrategy extends AbstractRequestStrategy {
    */
   private _formatLiteral(value: string | number | boolean): string {
     if (typeof value === 'string') {
-      return `'${value.replace(/'/g, '\'\'')}'`;
+      return `'${value.replace(/'/g, "''")}'`;
     }
 
     return String(value);
@@ -310,15 +315,24 @@ export class OdataRequestStrategy extends AbstractRequestStrategy {
     const first = values[0];
 
     switch (operator) {
-      case FilterOperatorEnum.EQ: return [`${field} eq ${this._formatLiteral(first)}`];
-      case FilterOperatorEnum.GT: return [`${field} gt ${this._formatLiteral(first)}`];
-      case FilterOperatorEnum.GTE: return [`${field} ge ${this._formatLiteral(first)}`];
-      case FilterOperatorEnum.LT: return [`${field} lt ${this._formatLiteral(first)}`];
-      case FilterOperatorEnum.LTE: return [`${field} le ${this._formatLiteral(first)}`];
-      case FilterOperatorEnum.CONTAINS: return [`contains(${field},${this._formatLiteral(first)})`];
-      case FilterOperatorEnum.ILIKE: return [`contains(tolower(${field}),tolower(${this._formatLiteral(first)}))`];
-      case FilterOperatorEnum.SW: return [`startswith(${field},${this._formatLiteral(first)})`];
-      case FilterOperatorEnum.IN: return [`${field} in (${values.map(value => this._formatLiteral(value)).join(',')})`];
+      case FilterOperatorEnum.EQ:
+        return [`${field} eq ${this._formatLiteral(first)}`];
+      case FilterOperatorEnum.GT:
+        return [`${field} gt ${this._formatLiteral(first)}`];
+      case FilterOperatorEnum.GTE:
+        return [`${field} ge ${this._formatLiteral(first)}`];
+      case FilterOperatorEnum.LT:
+        return [`${field} lt ${this._formatLiteral(first)}`];
+      case FilterOperatorEnum.LTE:
+        return [`${field} le ${this._formatLiteral(first)}`];
+      case FilterOperatorEnum.CONTAINS:
+        return [`contains(${field},${this._formatLiteral(first)})`];
+      case FilterOperatorEnum.ILIKE:
+        return [`contains(tolower(${field}),tolower(${this._formatLiteral(first)}))`];
+      case FilterOperatorEnum.SW:
+        return [`startswith(${field},${this._formatLiteral(first)})`];
+      case FilterOperatorEnum.IN:
+        return [`${field} in (${values.map((value) => this._formatLiteral(value)).join(',')})`];
 
       case FilterOperatorEnum.BTW: {
         if (values.length !== 2) {
@@ -328,11 +342,14 @@ export class OdataRequestStrategy extends AbstractRequestStrategy {
           );
         }
 
-        return [`${field} ge ${this._formatLiteral(values[0])}`, `${field} le ${this._formatLiteral(values[1])}`];
+        return [
+          `${field} ge ${this._formatLiteral(values[0])}`,
+          `${field} le ${this._formatLiteral(values[1])}`,
+        ];
       }
 
       case FilterOperatorEnum.NOT:
-        return values.map(value => `${field} ne ${this._formatLiteral(value)}`);
+        return values.map((value) => `${field} ne ${this._formatLiteral(value)}`);
 
       case FilterOperatorEnum.NULL: {
         if (values.length !== 1 || typeof first !== 'boolean') {

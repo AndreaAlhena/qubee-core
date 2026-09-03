@@ -33,7 +33,6 @@ interface IContentRangeParts {
  * @see https://postgrest.org/en/stable/references/api/pagination_count.html
  */
 export class PostgrestResponseStrategy implements IResponseStrategy {
-
   private static readonly _contentRangeHeader = 'Content-Range';
   private static readonly _contentRangeRegex = /^(\d+)-(\d+)\/(\*|\d+)$/;
 
@@ -63,11 +62,11 @@ export class PostgrestResponseStrategy implements IResponseStrategy {
     const { from, to, total } = this._parseContentRange(contentRange);
 
     // Per-page can only be derived from the from/to range; fall back to undefined
-    const perPage = (from !== undefined && to !== undefined) ? (to - from + 1) : undefined;
+    const perPage = from !== undefined && to !== undefined ? to - from + 1 : undefined;
 
     // Page is 1-based in ng-qubee state; PostgREST reports 0-based indices
-    const page = (perPage && from !== undefined) ? Math.floor(from / perPage) + 1 : 1;
-    const lastPage = (total !== undefined && perPage) ? Math.ceil(total / perPage) : undefined;
+    const page = perPage && from !== undefined ? Math.floor(from / perPage) + 1 : 1;
+    const lastPage = total !== undefined && perPage ? Math.ceil(total / perPage) : undefined;
 
     // Library convention: from/to are 1-indexed and inclusive; PostgREST emits 0-indexed
     const fromOneIndexed = from !== undefined ? from + 1 : undefined;
