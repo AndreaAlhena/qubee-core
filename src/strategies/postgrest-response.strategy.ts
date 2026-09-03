@@ -1,10 +1,10 @@
-import type { HeaderBag } from '../interfaces/header-bag.interface';
 import type { IPaginatedObject } from '../interfaces/paginated-object.interface';
 import type { IResponseStrategy } from '../interfaces/response-strategy.interface';
 import type { ResponseOptions } from '../models/response-options';
+import type { HeaderBag } from '../types/header-bag.type';
 
-import { readHeader } from '../interfaces/header-bag.interface';
 import { PaginatedCollection } from '../models/paginated-collection';
+import { readHeader } from '../utils/read-header';
 
 /**
  * Internal shape holding the three values parsed out of a `Content-Range`
