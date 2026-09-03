@@ -11,10 +11,10 @@ import { readHeader } from '../utils/read-header';
  * header. Both are optional: page 1 has no `prev`, the last page has no
  * `next`, and a single-page result has neither.
  */
-interface ILinkRelations {
+type LinkRelations = {
   next?: string;
   prev?: string;
-}
+};
 
 /**
  * Response strategy for the WordPress REST API driver
@@ -188,17 +188,17 @@ export class WordpressResponseStrategy implements IResponseStrategy {
    * @param value - Raw header value (possibly null/undefined)
    * @returns The navigation URLs found, keyed by relation
    */
-  private _parseLinkHeader(value: string | null | undefined): ILinkRelations {
+  private _parseLinkHeader(value: string | null | undefined): LinkRelations {
     if (!value) {
       return {};
     }
 
-    const relations: ILinkRelations = {};
+    const relations: LinkRelations = {};
     const regex = new RegExp(WordpressResponseStrategy._linkRegex.source, 'g');
     let match: RegExpExecArray | null;
 
     while ((match = regex.exec(value)) !== null) {
-      relations[match[2] as keyof ILinkRelations] = match[1];
+      relations[match[2] as keyof LinkRelations] = match[1];
     }
 
     return relations;

@@ -11,14 +11,14 @@ Anything marked **[auto]** is enforced and auto-fixed by ESLint or Prettier — 
 
 `kebab-case`, with a suffix that states the kind:
 
-| Suffix | Contents |
-|---|---|
-| `*.interface.ts` | An interface a class actually `implements` |
-| `*.type.ts` | Any other type — data shapes, unions, DTOs, mapped types |
-| `*.enum.ts` | An enum |
-| `*.error.ts` | An error class |
-| `*.strategy.ts` | A request or response strategy |
-| `*.spec.ts` | Tests, colocated beside the file under test |
+| Suffix           | Contents                                                 |
+| ---------------- | -------------------------------------------------------- |
+| `*.interface.ts` | An interface a class actually `implements`               |
+| `*.type.ts`      | Any other type — data shapes, unions, DTOs, mapped types |
+| `*.enum.ts`      | An enum                                                  |
+| `*.error.ts`     | An error class                                           |
+| `*.strategy.ts`  | A request or response strategy                           |
+| `*.spec.ts`      | Tests, colocated beside the file under test              |
 
 ### Interface vs type — the decision rule
 
@@ -30,7 +30,7 @@ Ask: **will a class `implements` this?**
 In this library exactly **two** files qualify: `IRequestStrategy` and `IResponseStrategy`.
 Everything else is data and must be a `type`.
 
-A class *can* technically `implements` a type alias — the rule is a readability convention, not a
+A class _can_ technically `implements` a type alias — the rule is a readability convention, not a
 compiler constraint. The substantive reason to prefer `type` for data is that **`interface` is
 open**: two declarations of the same name merge silently, so in a published library a consumer or a
 stray `.d.ts` can augment your public shapes with no error. `type` is closed.
@@ -44,6 +44,9 @@ enforced by review and by the filename split.
 - Enums end in `Enum`; members are `UPPER_CASE` **[auto]**
 - Variables, functions, members: `camelCase` **[auto]**
 - Module constants: `UPPER_SNAKE_CASE`
+- A leading `_` on a **parameter** means "intentionally unused" and is exempt from
+  `no-unused-vars`. That is a separate convention from the private-member prefix below; both are
+  in use and they do not conflict.
 
 ### Member visibility prefixes **[auto]**
 
@@ -54,11 +57,11 @@ Both halves are enforced by `naming-convention` (`leadingUnderscore: 'require'` 
 
 ### Enums at the API boundary
 
-Enums stay as `enum` declarations. Alongside each, a **derived union** widens the *public* input
+Enums stay as `enum` declarations. Alongside each, a **derived union** widens the _public_ input
 surface:
 
 ```ts
-export type Driver = `${DriverEnum}`;   // 'laravel' | 'strapi' | …
+export type Driver = `${DriverEnum}`; // 'laravel' | 'strapi' | …
 ```
 
 This lets a consumer write `{ driver: 'strapi' }` as well as `{ driver: DriverEnum.STRAPI }`, which
@@ -75,9 +78,37 @@ Widening state breaks two things that were verified to matter here:
 
 So: widen at the door, normalize inward.
 
+## One kind per file
+
+A file declares **one kind of thing**, and its name says which. A file that exports a `const` does
+not also export an `interface`; a file that exports a class does not also export a type.
+
+The one exception: a **non-exported** helper type used by a single private method may live beside
+it, rather than being hoisted into a public `*.type.ts` for no one's benefit.
+
+`test/conventions.spec.ts` enforces all of this — one kind per file, interfaces only in
+`*.interface.ts`, exported types only in `*.type.ts`, the `I` prefix only on interfaces a class
+implements, `*Enum` naming, kebab-case filenames, no framework imports, and no network I/O.
+
 ## Ordering **[auto]**
 
-Alphabetical, within groups. Class members are grouped in this order:
+**Alphabetise everything that can be alphabetised** — imports, named import bindings, class
+members, object literals, JSON keys, ESLint rules, `tsconfig` options, `package.json` fields.
+
+`prettier-plugin-sort-json` sorts every JSON file recursively (including `package.json`, which
+needs the `parser: "json"` override to be reachable). `perfectionist` sorts imports and class
+members in TypeScript.
+
+### The one place alphabetical order is wrong
+
+`perfectionist/sort-objects` is enabled for **config files only**, never for `src/`. The request
+strategies pass object literals to `qs.stringify`, which emits keys in **insertion order** — so
+literal order is wire-significant, and sorting it silently reorders query strings. This is not
+theoretical: enabling the rule across `src/` broke 4 driver tests.
+
+Where key order carries meaning, meaning wins.
+
+Class members are grouped in this order:
 
 ```
 index signatures → static props → private props → protected props → public props

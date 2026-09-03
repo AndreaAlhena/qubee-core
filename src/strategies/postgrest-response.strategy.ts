@@ -12,11 +12,11 @@ import { readHeader } from '../utils/read-header';
  * malformed header (or none at all, when the client didn't opt into counts
  * via `Prefer: count=exact`).
  */
-interface IContentRangeParts {
+type ContentRangeParts = {
   from?: number;
   to?: number;
   total?: number;
-}
+};
 
 /**
  * Response strategy for the PostgREST driver
@@ -47,7 +47,7 @@ export class PostgrestResponseStrategy implements IResponseStrategy {
    * @param value - Raw header value (possibly null/undefined)
    * @returns Parsed integers; missing fields indicate an unparseable header
    */
-  private _parseContentRange(value: string | null | undefined): IContentRangeParts {
+  private _parseContentRange(value: string | null | undefined): ContentRangeParts {
     if (!value) {
       return {};
     }
