@@ -1,21 +1,15 @@
 {
   "compilerOptions": {
-    /* Language and environment */
-    "target": "ES2022",
-    // DOM is here only for the WHATWG `URL` global (3 link-parsing sites).
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    // DOM is present only for the WHATWG `URL` global (3 link-parsing sites).
     // Verified: no DOM-only API (document/window/fetch) is used anywhere in src/.
     "lib": ["ES2022", "DOM"],
     "module": "ESNext",
     "moduleResolution": "bundler",
-
-    /* Emit — tsup produces the build; tsc is used for typechecking only */
-    "declaration": true,
-    "emitDeclarationOnly": true,
-    "outDir": "./dist/types",
-    "sourceMap": true,
-
-    /* Strictness — the ported source depends on every one of these */
-    "strict": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
     "noImplicitReturns": true,
@@ -23,16 +17,16 @@
     "noUncheckedIndexedAccess": false,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-
-    /* Interop and module hygiene */
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "isolatedModules": true,
+    // tsup produces the build; tsc is typecheck-only.
+    "outDir": "./dist/types",
     "resolveJsonModule": true,
     "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "ES2022",
     "types": ["vitest/globals"],
     "verbatimModuleSyntax": true
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "dist", "coverage"]
+  "exclude": ["coverage", "dist", "node_modules"],
+  "include": ["src/**/*.ts"]
 }

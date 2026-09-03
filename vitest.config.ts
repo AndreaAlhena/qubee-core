@@ -19,8 +19,8 @@ export default defineConfig({
       },
     },
     globals: true,
+    include: ['src/**/*.spec.ts', 'test/**/*.spec.ts'],
     // Safe here: every spec constructs its own strategy with `new` and shares no state.
     isolate: false,
-    include: ['src/**/*.spec.ts'],
   },
 });
