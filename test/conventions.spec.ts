@@ -1,7 +1,6 @@
-import { readFileSync } from 'node:fs';
-import { join, relative } from 'node:path';
+import { globSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { globSync } from 'node:fs';
 
 const ROOT = join(fileURLToPath(new URL('.', import.meta.url)), '..');
 const SRC = join(ROOT, 'src');
@@ -13,11 +12,12 @@ type SourceFile = {
   text: string;
 };
 
-const DECL = /^(export\s+)?(?:declare\s+)?(abstract class|class|interface|type|enum|const|function)\s+(\w+)/gm;
+const DECL =
+  /^(export\s+)?(?:declare\s+)?(abstract class|class|interface|type|enum|const|function)\s+(\w+)/gm;
 
 const files: SourceFile[] = globSync('**/*.ts', { cwd: SRC })
-  .filter((p) => !p.endsWith('.spec.ts'))
-  .map((p) => {
+  .filter((p: string) => !p.endsWith('.spec.ts'))
+  .map((p: string): SourceFile => {
     const text = readFileSync(join(SRC, p), 'utf8');
     const declarations = [...text.matchAll(DECL)].map((m) => ({
       exported: Boolean(m[1]),
@@ -27,7 +27,8 @@ const files: SourceFile[] = globSync('**/*.ts', { cwd: SRC })
     return { declarations, name: p.split('/').pop() as string, path: p, text };
   });
 
-const exportedOf = (f: SourceFile): SourceFile['declarations'] => f.declarations.filter((d) => d.exported);
+const exportedOf = (f: SourceFile): SourceFile['declarations'] =>
+  f.declarations.filter((d) => d.exported);
 
 describe('repository conventions', () => {
   it('has source files to check', () => {
@@ -37,13 +38,19 @@ describe('repository conventions', () => {
   it('never mixes declaration kinds in one file', () => {
     const offenders = files
       .filter((f) => new Set(exportedOf(f).map((d) => d.kind)).size > 1)
-      .map((f) => `${f.path} exports ${[...new Set(exportedOf(f).map((d) => d.kind))].sort().join(' + ')}`);
+      .map(
+        (f) =>
+          `${f.path} exports ${[...new Set(exportedOf(f).map((d) => d.kind))].sort().join(' + ')}`
+      );
     expect(offenders).toEqual([]);
   });
 
   it('declares interfaces only in *.interface.ts', () => {
     const offenders = files
-      .filter((f) => f.declarations.some((d) => d.kind === 'interface') && !f.name.endsWith('.interface.ts'))
+      .filter(
+        (f) =>
+          f.declarations.some((d) => d.kind === 'interface') && !f.name.endsWith('.interface.ts')
+      )
       .map((f) => f.path);
     expect(offenders).toEqual([]);
   });
@@ -68,28 +75,41 @@ describe('repository conventions', () => {
 
   it('names enums *Enum and puts them in *.enum.ts', () => {
     const offenders = files
-      .flatMap((f) => f.declarations.filter((d) => d.kind === 'enum').map((d) => ({ ...d, path: f.path })))
+      .flatMap((f) =>
+        f.declarations.filter((d) => d.kind === 'enum').map((d) => ({ ...d, path: f.path }))
+      )
       .filter((d) => !d.name.endsWith('Enum') || !d.path.endsWith('.enum.ts'))
       .map((d) => `${d.path}: ${d.name}`);
     expect(offenders).toEqual([]);
   });
 
   it('uses kebab-case filenames', () => {
-    const offenders = files.filter((f) => !/^[a-z0-9]+(-[a-z0-9]+)*(\.[a-z-]+)*\.ts$/.test(f.name)).map((f) => f.path);
+    const offenders = files
+      .filter((f) => !/^[a-z0-9]+(-[a-z0-9]+)*(\.[a-z-]+)*\.ts$/.test(f.name))
+      .map((f) => f.path);
     expect(offenders).toEqual([]);
   });
 
   it('keeps the core framework-agnostic', () => {
-    const offenders = files.filter((f) => /@angular|from 'rxjs'|from "rxjs"/.test(f.text)).map((f) => f.path);
+    const offenders = files
+      .filter((f) => /@angular|from 'rxjs'|from "rxjs"/.test(f.text))
+      .map((f) => f.path);
+    expect(offenders).toEqual([]);
+  });
+
+  it('imports nothing from node:', () => {
+    // `@types/node` is available project-wide for this very spec; the core itself
+    // must stay runnable in a browser.
+    const offenders = files.filter((f) => /from 'node:/.test(f.text)).map((f) => f.path);
     expect(offenders).toEqual([]);
   });
 
   it('performs no network I/O', () => {
     const offenders = files
-      .filter((f) => /\b(fetch|XMLHttpRequest|axios)\s*\(/.test(f.text.replace(/\/\*[\s\S]*?\*\/|\/\/.*/g, '')))
+      .filter((f) =>
+        /\b(fetch|XMLHttpRequest|axios)\s*\(/.test(f.text.replace(/\/\*[\s\S]*?\*\/|\/\/.*/g, ''))
+      )
       .map((f) => f.path);
     expect(offenders).toEqual([]);
   });
 });
-
-void relative;
