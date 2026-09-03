@@ -1,6 +1,6 @@
 import type { PaginatedCollection } from '../models/paginated-collection';
 import type { ResponseOptions } from '../models/response-options';
-import type { HeaderBag } from './header-bag.interface';
+import type { HeaderBag } from '../types/header-bag.type';
 import type { IPaginatedObject } from './paginated-object.interface';
 
 /**
