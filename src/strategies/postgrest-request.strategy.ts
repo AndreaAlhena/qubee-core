@@ -1,7 +1,7 @@
-import type { IOperatorFilter } from '../interfaces/operator-filter.interface';
-import type { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
-import type { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
 import type { QueryBuilderOptions } from '../models/query-builder-options';
+import type { OperatorFilter } from '../types/operator-filter.type';
+import type { QueryBuilderState } from '../types/query-builder-state.type';
+import type { StrategyCapabilities } from '../types/strategy-capabilities.type';
 
 import { FilterOperatorEnum } from '../enums/filter-operator.enum';
 import { PaginationModeEnum } from '../enums/pagination-mode.enum';
@@ -47,7 +47,7 @@ export class PostgrestRequestStrategy extends AbstractRequestStrategy {
    * per-model fields, no JSON:API/Spatie-style includes, no global
    * search (per-column FTS via the operator family covers it)
    */
-  public readonly capabilities: IStrategyCapabilities = {
+  public readonly capabilities: StrategyCapabilities = {
     embedded: true,
     fields: false,
     filters: true,
@@ -61,7 +61,7 @@ export class PostgrestRequestStrategy extends AbstractRequestStrategy {
   /**
    * @param paginationMode - Wire-level pagination mechanism. Defaults to
    * `PaginationModeEnum.QUERY`; `provideNgQubee` wires this from
-   * `IConfig.pagination`.
+   * `Config.pagination`.
    */
   constructor(paginationMode: PaginationModeEnum = PaginationModeEnum.QUERY) {
     super();
@@ -78,7 +78,7 @@ export class PostgrestRequestStrategy extends AbstractRequestStrategy {
    * @param out - The accumulator the caller joins into the URI
    * @throws {InvalidFilterOperatorValueError} If values.length !== 2
    */
-  private _appendBetweenFilter(filter: IOperatorFilter, out: string[]): void {
+  private _appendBetweenFilter(filter: OperatorFilter, out: string[]): void {
     if (filter.values.length !== 2) {
       throw new InvalidFilterOperatorValueError(
         filter.operator,
@@ -102,7 +102,7 @@ export class PostgrestRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendFilters(state: IQueryBuilderState, out: string[]): void {
+  private _appendFilters(state: QueryBuilderState, out: string[]): void {
     const keys = Object.keys(state.filters);
 
     if (!keys.length) {
@@ -132,7 +132,7 @@ export class PostgrestRequestStrategy extends AbstractRequestStrategy {
    * @param out - The accumulator the caller joins into the URI
    */
   private _appendLimit(
-    state: IQueryBuilderState,
+    state: QueryBuilderState,
     options: QueryBuilderOptions,
     out: string[]
   ): void {
@@ -150,7 +150,7 @@ export class PostgrestRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendOffset(state: IQueryBuilderState, out: string[]): void {
+  private _appendOffset(state: QueryBuilderState, out: string[]): void {
     const offset = (state.page - 1) * state.limit;
 
     if (offset <= 0) {
@@ -173,7 +173,7 @@ export class PostgrestRequestStrategy extends AbstractRequestStrategy {
    * @param out - The accumulator the caller joins into the URI
    * @throws {InvalidFilterOperatorValueError} If `BTW` does not receive exactly 2 values, or `NULL` does not receive exactly 1 boolean
    */
-  private _appendOperatorFilters(state: IQueryBuilderState, out: string[]): void {
+  private _appendOperatorFilters(state: QueryBuilderState, out: string[]): void {
     if (!state.operatorFilters.length) {
       return;
     }
@@ -196,7 +196,7 @@ export class PostgrestRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendOrder(state: IQueryBuilderState, out: string[]): void {
+  private _appendOrder(state: QueryBuilderState, out: string[]): void {
     if (!state.sorts.length) {
       return;
     }
@@ -226,7 +226,7 @@ export class PostgrestRequestStrategy extends AbstractRequestStrategy {
    * @param out - The accumulator the caller joins into the URI
    */
   private _appendSelect(
-    state: IQueryBuilderState,
+    state: QueryBuilderState,
     options: QueryBuilderOptions,
     out: string[]
   ): void {
@@ -256,7 +256,7 @@ export class PostgrestRequestStrategy extends AbstractRequestStrategy {
    * @returns The PostgREST-formatted value portion (right of the `=` sign)
    * @throws {InvalidFilterOperatorValueError} If NULL receives a non-boolean or wrong arity
    */
-  private _formatOperatorRhs(filter: IOperatorFilter): string {
+  private _formatOperatorRhs(filter: OperatorFilter): string {
     const { operator, values } = filter;
     const first = values[0];
 
@@ -320,7 +320,7 @@ export class PostgrestRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @returns Ordered query-string fragments
    */
-  protected parts(state: IQueryBuilderState, options: QueryBuilderOptions): string[] {
+  protected parts(state: QueryBuilderState, options: QueryBuilderOptions): string[] {
     const out: string[] = [];
 
     this._appendFilters(state, out);
@@ -348,7 +348,7 @@ export class PostgrestRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @returns `{ 'Range-Unit': 'items', 'Range': 'from-to' }` or `null`
    */
-  public buildPaginationHeaders(state: IQueryBuilderState): Record<string, string> | null {
+  public buildPaginationHeaders(state: QueryBuilderState): Record<string, string> | null {
     if (this._paginationMode !== PaginationModeEnum.RANGE) {
       return null;
     }

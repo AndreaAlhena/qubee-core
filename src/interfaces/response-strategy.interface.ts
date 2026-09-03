@@ -1,7 +1,7 @@
 import type { PaginatedCollection } from '../models/paginated-collection';
 import type { ResponseOptions } from '../models/response-options';
 import type { HeaderBag } from '../types/header-bag.type';
-import type { IPaginatedObject } from './paginated-object.interface';
+import type { PaginatedObject } from '../types/paginated-object.type';
 
 /**
  * Strategy interface for parsing paginated API responses
@@ -22,7 +22,7 @@ export interface IResponseStrategy {
    * accessor (`HttpHeaders`, `Headers`) or a plain `Record<string, string>`.
    * @returns A typed PaginatedCollection instance
    */
-  paginate<T extends IPaginatedObject>(
+  paginate<T extends PaginatedObject>(
     response: Record<string, unknown>,
     options: ResponseOptions,
     headers?: HeaderBag

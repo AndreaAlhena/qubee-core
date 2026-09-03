@@ -7,7 +7,7 @@
  * For the NestJS driver, dot-notation paths are used to access nested values
  * (e.g., 'meta.currentPage', 'links.next').
  */
-export interface IPaginationConfig {
+export type PaginationConfig = {
   /** Key for the current page number (Laravel: 'current_page', NestJS: 'meta.currentPage') */
   currentPage?: string;
   /** Key for the data array (default: 'data') */
@@ -32,4 +32,4 @@ export interface IPaginationConfig {
   to?: string;
   /** Key for the total item count (Laravel: 'total', NestJS: 'meta.totalItems') */
   total?: string;
-}
+};

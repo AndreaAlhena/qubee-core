@@ -1,5 +1,5 @@
-import type { IPaginatedObject } from '../interfaces/paginated-object.interface';
 import type { ResponseOptions } from '../models/response-options';
+import type { PaginatedObject } from '../types/paginated-object.type';
 
 import { PaginatedCollection } from '../models/paginated-collection';
 import { AbstractDotPathResponseStrategy } from './abstract-dot-path-response.strategy';
@@ -32,7 +32,7 @@ import { AbstractDotPathResponseStrategy } from './abstract-dot-path-response.st
  *   default `data` path is plain `_embedded`; when it resolves to an
  *   object rather than an array, the strategy picks the first array
  *   value inside it. Consumers with multiple embedded rels can pin the
- *   exact path via `IConfig.response` (e.g. `data: '_embedded.users'`).
+ *   exact path via `Config.response` (e.g. `data: '_embedded.users'`).
  *
  * Default key paths are configured in `SpringResponseOptions`.
  *
@@ -71,7 +71,7 @@ export class SpringResponseStrategy extends AbstractDotPathResponseStrategy {
    * @returns The resolved data array (possibly empty)
    */
 
-  private _resolveData<T extends IPaginatedObject>(
+  private _resolveData<T extends PaginatedObject>(
     response: Record<string, any>,
     options: ResponseOptions
   ): T[] {
@@ -100,7 +100,7 @@ export class SpringResponseStrategy extends AbstractDotPathResponseStrategy {
    * @returns A typed PaginatedCollection instance
    */
 
-  public override paginate<T extends IPaginatedObject>(
+  public override paginate<T extends PaginatedObject>(
     response: Record<string, any>,
     options: ResponseOptions
   ): PaginatedCollection<T> {

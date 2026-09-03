@@ -1,7 +1,7 @@
-import type { IOperatorFilter } from '../interfaces/operator-filter.interface';
-import type { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
-import type { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
 import type { QueryBuilderOptions } from '../models/query-builder-options';
+import type { OperatorFilter } from '../types/operator-filter.type';
+import type { QueryBuilderState } from '../types/query-builder-state.type';
+import type { StrategyCapabilities } from '../types/strategy-capabilities.type';
 
 import { SortEnum } from '../enums/sort.enum';
 import { InvalidLimitError } from '../errors/invalid-limit.error';
@@ -25,7 +25,7 @@ export class NestjsRequestStrategy extends AbstractRequestStrategy {
    * Filters, operator filters, sorts, flat select, global search — no
    * per-model fields, no includes
    */
-  public readonly capabilities: IStrategyCapabilities = {
+  public readonly capabilities: StrategyCapabilities = {
     embedded: false,
     fields: false,
     filters: true,
@@ -44,7 +44,7 @@ export class NestjsRequestStrategy extends AbstractRequestStrategy {
    * @param out - The accumulator the caller joins into the URI
    */
   private _appendFilters(
-    state: IQueryBuilderState,
+    state: QueryBuilderState,
     options: QueryBuilderOptions,
     out: string[]
   ): void {
@@ -68,7 +68,7 @@ export class NestjsRequestStrategy extends AbstractRequestStrategy {
    * @param out - The accumulator the caller joins into the URI
    */
   private _appendLimit(
-    state: IQueryBuilderState,
+    state: QueryBuilderState,
     options: QueryBuilderOptions,
     out: string[]
   ): void {
@@ -85,7 +85,7 @@ export class NestjsRequestStrategy extends AbstractRequestStrategy {
    * @param out - The accumulator the caller joins into the URI
    */
   private _appendOperatorFilters(
-    state: IQueryBuilderState,
+    state: QueryBuilderState,
     options: QueryBuilderOptions,
     out: string[]
   ): void {
@@ -93,7 +93,7 @@ export class NestjsRequestStrategy extends AbstractRequestStrategy {
       return;
     }
 
-    state.operatorFilters.forEach((opFilter: IOperatorFilter) => {
+    state.operatorFilters.forEach((opFilter: OperatorFilter) => {
       const values = opFilter.values.join(',');
       out.push(`${options.filters}.${opFilter.field}=${opFilter.operator}:${values}`);
     });
@@ -106,11 +106,7 @@ export class NestjsRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendPage(
-    state: IQueryBuilderState,
-    options: QueryBuilderOptions,
-    out: string[]
-  ): void {
+  private _appendPage(state: QueryBuilderState, options: QueryBuilderOptions, out: string[]): void {
     out.push(`${options.page}=${state.page}`);
   }
 
@@ -122,7 +118,7 @@ export class NestjsRequestStrategy extends AbstractRequestStrategy {
    * @param out - The accumulator the caller joins into the URI
    */
   private _appendSearch(
-    state: IQueryBuilderState,
+    state: QueryBuilderState,
     options: QueryBuilderOptions,
     out: string[]
   ): void {
@@ -141,7 +137,7 @@ export class NestjsRequestStrategy extends AbstractRequestStrategy {
    * @param out - The accumulator the caller joins into the URI
    */
   private _appendSelect(
-    state: IQueryBuilderState,
+    state: QueryBuilderState,
     options: QueryBuilderOptions,
     out: string[]
   ): void {
@@ -159,11 +155,7 @@ export class NestjsRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendSort(
-    state: IQueryBuilderState,
-    options: QueryBuilderOptions,
-    out: string[]
-  ): void {
+  private _appendSort(state: QueryBuilderState, options: QueryBuilderOptions, out: string[]): void {
     if (!state.sorts.length) {
       return;
     }
@@ -183,7 +175,7 @@ export class NestjsRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @returns Ordered query-string fragments
    */
-  protected parts(state: IQueryBuilderState, options: QueryBuilderOptions): string[] {
+  protected parts(state: QueryBuilderState, options: QueryBuilderOptions): string[] {
     const out: string[] = [];
 
     this._appendFilters(state, options, out);

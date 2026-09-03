@@ -1,7 +1,7 @@
-import type { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
 import type { IRequestStrategy } from '../interfaces/request-strategy.interface';
-import type { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
 import type { QueryBuilderOptions } from '../models/query-builder-options';
+import type { QueryBuilderState } from '../types/query-builder-state.type';
+import type { StrategyCapabilities } from '../types/strategy-capabilities.type';
 
 import { InvalidLimitError } from '../errors/invalid-limit.error';
 
@@ -25,7 +25,7 @@ export abstract class AbstractRequestStrategy implements IRequestStrategy {
    * Concrete strategies must provide a static, immutable capability map
    * so `NgQubeeService._assertCapability(...)` can read it.
    */
-  public abstract readonly capabilities: IStrategyCapabilities;
+  public abstract readonly capabilities: StrategyCapabilities;
 
   /**
    * Throw if the resource is not set on the state
@@ -36,7 +36,7 @@ export abstract class AbstractRequestStrategy implements IRequestStrategy {
    * @param state - The current query builder state
    * @throws Error if `state.resource` is empty
    */
-  protected assertResource(state: IQueryBuilderState): void {
+  protected assertResource(state: QueryBuilderState): void {
     if (!state.resource) {
       throw new Error(
         'Set the resource property BEFORE adding filters or calling the url() / get() methods'
@@ -50,7 +50,7 @@ export abstract class AbstractRequestStrategy implements IRequestStrategy {
    * @param state - The current query builder state
    * @returns The base URI without the query separator (e.g. `/users` or `https://api.example.com/users`)
    */
-  protected baseUri(state: IQueryBuilderState): string {
+  protected baseUri(state: QueryBuilderState): string {
     return state.baseUrl ? `${state.baseUrl}/${state.resource}` : `/${state.resource}`;
   }
 
@@ -79,7 +79,7 @@ export abstract class AbstractRequestStrategy implements IRequestStrategy {
    * @param options - The query parameter key name configuration
    * @returns Ordered list of query-string fragments
    */
-  protected abstract parts(state: IQueryBuilderState, options: QueryBuilderOptions): string[];
+  protected abstract parts(state: QueryBuilderState, options: QueryBuilderOptions): string[];
 
   /**
    * Compose the full request URI from the given state
@@ -93,7 +93,7 @@ export abstract class AbstractRequestStrategy implements IRequestStrategy {
    * @returns The composed URI string
    * @throws Error if the resource is not set
    */
-  public buildUri(state: IQueryBuilderState, options: QueryBuilderOptions): string {
+  public buildUri(state: QueryBuilderState, options: QueryBuilderOptions): string {
     this.assertResource(state);
 
     const segments = this.parts(state, options);

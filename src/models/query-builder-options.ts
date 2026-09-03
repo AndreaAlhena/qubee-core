@@ -1,4 +1,4 @@
-import type { IQueryBuilderConfig } from '../interfaces/query-builder-config.interface';
+import type { QueryBuilderConfig } from '../types/query-builder-config.type';
 
 /**
  * Resolved query parameter key names with defaults applied
@@ -18,7 +18,7 @@ export class QueryBuilderOptions {
   public readonly sort: string;
   public readonly sortBy: string;
 
-  constructor(options: IQueryBuilderConfig) {
+  constructor(options: QueryBuilderConfig) {
     this.appends = options.appends || 'append';
     this.fields = options.fields || 'fields';
     this.filters = options.filters || 'filter';

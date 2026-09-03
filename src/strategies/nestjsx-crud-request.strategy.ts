@@ -1,7 +1,7 @@
-import type { IOperatorFilter } from '../interfaces/operator-filter.interface';
-import type { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
-import type { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
 import type { QueryBuilderOptions } from '../models/query-builder-options';
+import type { OperatorFilter } from '../types/operator-filter.type';
+import type { QueryBuilderState } from '../types/query-builder-state.type';
+import type { StrategyCapabilities } from '../types/strategy-capabilities.type';
 
 import { FilterOperatorEnum } from '../enums/filter-operator.enum';
 import { SortEnum } from '../enums/sort.enum';
@@ -56,7 +56,7 @@ export class NestjsxCrudRequestStrategy extends AbstractRequestStrategy {
    * (`select`), sorts — no per-model fields, no global search (the `s`
    * parameter is JSON-shaped, not a plain term)
    */
-  public readonly capabilities: IStrategyCapabilities = {
+  public readonly capabilities: StrategyCapabilities = {
     embedded: false,
     fields: false,
     filters: true,
@@ -73,7 +73,7 @@ export class NestjsxCrudRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendFields(state: IQueryBuilderState, out: string[]): void {
+  private _appendFields(state: QueryBuilderState, out: string[]): void {
     if (!state.select.length) {
       return;
     }
@@ -90,7 +90,7 @@ export class NestjsxCrudRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendFilters(state: IQueryBuilderState, out: string[]): void {
+  private _appendFilters(state: QueryBuilderState, out: string[]): void {
     const sep = NestjsxCrudRequestStrategy._separator;
 
     Object.keys(state.filters).forEach((field) => {
@@ -116,7 +116,7 @@ export class NestjsxCrudRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendJoin(state: IQueryBuilderState, out: string[]): void {
+  private _appendJoin(state: QueryBuilderState, out: string[]): void {
     state.includes.forEach((relation) => {
       out.push(`${NestjsxCrudRequestStrategy._joinKey}=${relation}`);
     });
@@ -130,7 +130,7 @@ export class NestjsxCrudRequestStrategy extends AbstractRequestStrategy {
    * @param out - The accumulator the caller joins into the URI
    */
   private _appendLimit(
-    state: IQueryBuilderState,
+    state: QueryBuilderState,
     options: QueryBuilderOptions,
     out: string[]
   ): void {
@@ -143,10 +143,10 @@ export class NestjsxCrudRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendOperatorFilters(state: IQueryBuilderState, out: string[]): void {
+  private _appendOperatorFilters(state: QueryBuilderState, out: string[]): void {
     const sep = NestjsxCrudRequestStrategy._separator;
 
-    state.operatorFilters.forEach((filter: IOperatorFilter) => {
+    state.operatorFilters.forEach((filter: OperatorFilter) => {
       const condition = this._formatOperatorCondition(filter);
 
       out.push(`${NestjsxCrudRequestStrategy._filterKey}=${filter.field}${sep}${condition}`);
@@ -160,11 +160,7 @@ export class NestjsxCrudRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendPage(
-    state: IQueryBuilderState,
-    options: QueryBuilderOptions,
-    out: string[]
-  ): void {
+  private _appendPage(state: QueryBuilderState, options: QueryBuilderOptions, out: string[]): void {
     out.push(`${options.page}=${state.page}`);
   }
 
@@ -174,7 +170,7 @@ export class NestjsxCrudRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendSort(state: IQueryBuilderState, out: string[]): void {
+  private _appendSort(state: QueryBuilderState, out: string[]): void {
     state.sorts.forEach((sort) => {
       const direction = sort.order === SortEnum.DESC ? 'DESC' : 'ASC';
 
@@ -206,7 +202,7 @@ export class NestjsxCrudRequestStrategy extends AbstractRequestStrategy {
    * @throws {UnsupportedFilterOperatorError} If the operator is a
    * PostgREST-only FTS variant
    */
-  private _formatOperatorCondition(filter: IOperatorFilter): string {
+  private _formatOperatorCondition(filter: OperatorFilter): string {
     const sep = NestjsxCrudRequestStrategy._separator;
     const { operator, values } = filter;
     const first = values[0];
@@ -274,7 +270,7 @@ export class NestjsxCrudRequestStrategy extends AbstractRequestStrategy {
    * `fields` / `filter` / `join` / `sort` keys are fixed by the server)
    * @returns Ordered query-string fragments
    */
-  protected parts(state: IQueryBuilderState, options: QueryBuilderOptions): string[] {
+  protected parts(state: QueryBuilderState, options: QueryBuilderOptions): string[] {
     const out: string[] = [];
 
     this._appendFields(state, out);

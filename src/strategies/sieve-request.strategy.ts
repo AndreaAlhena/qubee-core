@@ -1,7 +1,7 @@
-import type { IOperatorFilter } from '../interfaces/operator-filter.interface';
-import type { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
-import type { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
 import type { QueryBuilderOptions } from '../models/query-builder-options';
+import type { OperatorFilter } from '../types/operator-filter.type';
+import type { QueryBuilderState } from '../types/query-builder-state.type';
+import type { StrategyCapabilities } from '../types/strategy-capabilities.type';
 
 import { FilterOperatorEnum } from '../enums/filter-operator.enum';
 import { SortEnum } from '../enums/sort.enum';
@@ -48,7 +48,7 @@ export class SieveRequestStrategy extends AbstractRequestStrategy {
    * no flat select, no global search (use `CONTAINS` / `ILIKE` operator
    * filters for partial matches)
    */
-  public readonly capabilities: IStrategyCapabilities = {
+  public readonly capabilities: StrategyCapabilities = {
     embedded: false,
     fields: false,
     filters: true,
@@ -71,7 +71,7 @@ export class SieveRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendFilters(state: IQueryBuilderState, out: string[]): void {
+  private _appendFilters(state: QueryBuilderState, out: string[]): void {
     const terms: string[] = [];
 
     Object.keys(state.filters).forEach((field) => {
@@ -84,7 +84,7 @@ export class SieveRequestStrategy extends AbstractRequestStrategy {
       terms.push(`${field}==${values.join('|')}`);
     });
 
-    state.operatorFilters.forEach((filter: IOperatorFilter) => {
+    state.operatorFilters.forEach((filter: OperatorFilter) => {
       terms.push(...this._formatOperatorTerms(filter));
     });
 
@@ -102,11 +102,7 @@ export class SieveRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendPage(
-    state: IQueryBuilderState,
-    options: QueryBuilderOptions,
-    out: string[]
-  ): void {
+  private _appendPage(state: QueryBuilderState, options: QueryBuilderOptions, out: string[]): void {
     out.push(`${options.page}=${state.page}`);
   }
 
@@ -116,7 +112,7 @@ export class SieveRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendPageSize(state: IQueryBuilderState, out: string[]): void {
+  private _appendPageSize(state: QueryBuilderState, out: string[]): void {
     out.push(`${SieveRequestStrategy._pageSizeKey}=${state.limit}`);
   }
 
@@ -126,7 +122,7 @@ export class SieveRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendSorts(state: IQueryBuilderState, out: string[]): void {
+  private _appendSorts(state: QueryBuilderState, out: string[]): void {
     if (!state.sorts.length) {
       return;
     }
@@ -164,7 +160,7 @@ export class SieveRequestStrategy extends AbstractRequestStrategy {
    * @throws {UnsupportedFilterOperatorError} If the operator is a
    * PostgREST-only FTS variant
    */
-  private _formatOperatorTerms(filter: IOperatorFilter): string[] {
+  private _formatOperatorTerms(filter: OperatorFilter): string[] {
     const { field, operator, values } = filter;
     const first = values[0];
 
@@ -231,7 +227,7 @@ export class SieveRequestStrategy extends AbstractRequestStrategy {
    * `sorts` / `pageSize` keys are fixed by the server)
    * @returns Ordered query-string fragments
    */
-  protected parts(state: IQueryBuilderState, options: QueryBuilderOptions): string[] {
+  protected parts(state: QueryBuilderState, options: QueryBuilderOptions): string[] {
     const out: string[] = [];
 
     this._appendFilters(state, out);

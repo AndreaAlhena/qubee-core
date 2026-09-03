@@ -1,7 +1,7 @@
-import type { IOperatorFilter } from '../interfaces/operator-filter.interface';
-import type { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
-import type { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
 import type { QueryBuilderOptions } from '../models/query-builder-options';
+import type { OperatorFilter } from '../types/operator-filter.type';
+import type { QueryBuilderState } from '../types/query-builder-state.type';
+import type { StrategyCapabilities } from '../types/strategy-capabilities.type';
 
 import { FilterOperatorEnum } from '../enums/filter-operator.enum';
 import { SortEnum } from '../enums/sort.enum';
@@ -60,7 +60,7 @@ export class DrfRequestStrategy extends AbstractRequestStrategy {
    * global search — no per-model fields, no relation includes, no flat
    * select (django-restql adds it but is not core DRF)
    */
-  public readonly capabilities: IStrategyCapabilities = {
+  public readonly capabilities: StrategyCapabilities = {
     embedded: false,
     fields: false,
     filters: true,
@@ -82,7 +82,7 @@ export class DrfRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendFilters(state: IQueryBuilderState, out: string[]): void {
+  private _appendFilters(state: QueryBuilderState, out: string[]): void {
     const keys = Object.keys(state.filters);
 
     if (!keys.length) {
@@ -120,12 +120,12 @@ export class DrfRequestStrategy extends AbstractRequestStrategy {
    * @throws {UnsupportedFilterOperatorError} If the operator has no
    * django-filter equivalent
    */
-  private _appendOperatorFilters(state: IQueryBuilderState, out: string[]): void {
+  private _appendOperatorFilters(state: QueryBuilderState, out: string[]): void {
     if (!state.operatorFilters.length) {
       return;
     }
 
-    state.operatorFilters.forEach((filter: IOperatorFilter) => {
+    state.operatorFilters.forEach((filter: OperatorFilter) => {
       const [suffix, value] = this._formatOperatorPayload(filter);
       const key = suffix ? `${filter.field}__${suffix}` : filter.field;
 
@@ -139,7 +139,7 @@ export class DrfRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendOrdering(state: IQueryBuilderState, out: string[]): void {
+  private _appendOrdering(state: QueryBuilderState, out: string[]): void {
     if (!state.sorts.length) {
       return;
     }
@@ -162,7 +162,7 @@ export class DrfRequestStrategy extends AbstractRequestStrategy {
    * @param out - The accumulator the caller joins into the URI
    */
   private _appendPagination(
-    state: IQueryBuilderState,
+    state: QueryBuilderState,
     options: QueryBuilderOptions,
     out: string[]
   ): void {
@@ -178,7 +178,7 @@ export class DrfRequestStrategy extends AbstractRequestStrategy {
    * @param out - The accumulator the caller joins into the URI
    */
   private _appendSearch(
-    state: IQueryBuilderState,
+    state: QueryBuilderState,
     options: QueryBuilderOptions,
     out: string[]
   ): void {
@@ -216,7 +216,7 @@ export class DrfRequestStrategy extends AbstractRequestStrategy {
    * @throws {UnsupportedFilterOperatorError} If the operator has no
    * django-filter equivalent
    */
-  private _formatOperatorPayload(filter: IOperatorFilter): [DrfLookupSuffix, string] {
+  private _formatOperatorPayload(filter: OperatorFilter): [DrfLookupSuffix, string] {
     const { operator, values } = filter;
     const first = values[0];
 
@@ -279,7 +279,7 @@ export class DrfRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @returns Ordered query-string fragments
    */
-  protected parts(state: IQueryBuilderState, options: QueryBuilderOptions): string[] {
+  protected parts(state: QueryBuilderState, options: QueryBuilderOptions): string[] {
     const out: string[] = [];
 
     this._appendFilters(state, out);

@@ -4,7 +4,7 @@
  * Each property maps a logical query concept to the actual query parameter name
  * used in the generated URI. The defaults depend on the selected driver.
  */
-export interface IQueryBuilderConfig {
+export type QueryBuilderConfig = {
   /** Key for the appends parameter (Laravel only, default: 'append') */
   appends?: string;
   /** Key for the fields parameter (Laravel: 'fields', NestJS: 'select') */
@@ -25,4 +25,4 @@ export interface IQueryBuilderConfig {
   sort?: string;
   /** Key for the sortBy parameter (NestJS only, default: 'sortBy') */
   sortBy?: string;
-}
+};

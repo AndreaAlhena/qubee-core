@@ -1,7 +1,7 @@
-import type { IOperatorFilter } from '../interfaces/operator-filter.interface';
-import type { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
-import type { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
 import type { QueryBuilderOptions } from '../models/query-builder-options';
+import type { OperatorFilter } from '../types/operator-filter.type';
+import type { QueryBuilderState } from '../types/query-builder-state.type';
+import type { StrategyCapabilities } from '../types/strategy-capabilities.type';
 
 import { FilterOperatorEnum } from '../enums/filter-operator.enum';
 import { SortEnum } from '../enums/sort.enum';
@@ -56,7 +56,7 @@ export class ApiPlatformRequestStrategy extends AbstractRequestStrategy {
    * includes (relations embed via serialization groups server-side),
    * no flat select, no global search parameter
    */
-  public readonly capabilities: IStrategyCapabilities = {
+  public readonly capabilities: StrategyCapabilities = {
     embedded: false,
     fields: false,
     filters: true,
@@ -77,7 +77,7 @@ export class ApiPlatformRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendFilters(state: IQueryBuilderState, out: string[]): void {
+  private _appendFilters(state: QueryBuilderState, out: string[]): void {
     Object.keys(state.filters).forEach((field) => {
       const values = state.filters[field];
 
@@ -100,7 +100,7 @@ export class ApiPlatformRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendItemsPerPage(state: IQueryBuilderState, out: string[]): void {
+  private _appendItemsPerPage(state: QueryBuilderState, out: string[]): void {
     out.push(`${ApiPlatformRequestStrategy._itemsPerPageKey}=${state.limit}`);
   }
 
@@ -110,8 +110,8 @@ export class ApiPlatformRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendOperatorFilters(state: IQueryBuilderState, out: string[]): void {
-    state.operatorFilters.forEach((filter: IOperatorFilter) => {
+  private _appendOperatorFilters(state: QueryBuilderState, out: string[]): void {
+    state.operatorFilters.forEach((filter: OperatorFilter) => {
       out.push(...this._formatOperatorSegments(filter));
     });
   }
@@ -122,7 +122,7 @@ export class ApiPlatformRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendOrder(state: IQueryBuilderState, out: string[]): void {
+  private _appendOrder(state: QueryBuilderState, out: string[]): void {
     state.sorts.forEach((sort) => {
       const direction = sort.order === SortEnum.DESC ? 'desc' : 'asc';
 
@@ -137,11 +137,7 @@ export class ApiPlatformRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendPage(
-    state: IQueryBuilderState,
-    options: QueryBuilderOptions,
-    out: string[]
-  ): void {
+  private _appendPage(state: QueryBuilderState, options: QueryBuilderOptions, out: string[]): void {
     out.push(`${options.page}=${state.page}`);
   }
 
@@ -173,7 +169,7 @@ export class ApiPlatformRequestStrategy extends AbstractRequestStrategy {
    * @throws {UnsupportedFilterOperatorError} If the operator has no API
    * Platform equivalent
    */
-  private _formatOperatorSegments(filter: IOperatorFilter): string[] {
+  private _formatOperatorSegments(filter: OperatorFilter): string[] {
     const { field, operator, values } = filter;
     const first = values[0];
 
@@ -238,7 +234,7 @@ export class ApiPlatformRequestStrategy extends AbstractRequestStrategy {
    * for `page`, whose default matches the wire format)
    * @returns Ordered query-string fragments
    */
-  protected parts(state: IQueryBuilderState, options: QueryBuilderOptions): string[] {
+  protected parts(state: QueryBuilderState, options: QueryBuilderOptions): string[] {
     const out: string[] = [];
 
     this._appendFilters(state, out);

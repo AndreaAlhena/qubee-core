@@ -19,7 +19,7 @@ import { AbstractDotPathResponseStrategy } from './abstract-dot-path-response.st
  * key is just a one-segment path). PocketBase does not include
  * navigation links in the envelope, so `firstPageUrl`, `prevPageUrl`,
  * `nextPageUrl`, and `lastPageUrl` resolve to `undefined` unless the
- * consumer overrides their paths via `IPaginationConfig`; `from`/`to`
+ * consumer overrides their paths via `PaginationConfig`; `from`/`to`
  * are computed from `page` × `perPage`. This class exists so
  * `DriverEnum.POCKETBASE` resolves to a distinct identity at the DI
  * layer even though the parsing logic is shared with JSON:API, NestJS,

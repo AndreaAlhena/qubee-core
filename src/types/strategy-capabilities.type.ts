@@ -8,7 +8,7 @@
  * Adding a new driver means defining one of these objects on the new
  * strategy class — `NgQubeeService` does not need to be touched.
  */
-export interface IStrategyCapabilities {
+export type StrategyCapabilities = {
   /** Embedded-resource selection inside `select` (PostgREST `select=col,rel(col1)`) */
   readonly embedded: boolean;
 
@@ -32,4 +32,4 @@ export interface IStrategyCapabilities {
 
   /** Sort ordering on one or more fields */
   readonly sort: boolean;
-}
+};

@@ -1,5 +1,5 @@
-import type { IPaginatedObject } from '../interfaces/paginated-object.interface';
 import type { ResponseOptions } from '../models/response-options';
+import type { PaginatedObject } from '../types/paginated-object.type';
 
 import { PaginatedCollection } from '../models/paginated-collection';
 import { AbstractDotPathResponseStrategy } from './abstract-dot-path-response.strategy';
@@ -20,7 +20,7 @@ import { AbstractDotPathResponseStrategy } from './abstract-dot-path-response.st
  * The default `total` path is `meta.filter_count` — the number of items
  * matching the current filter, which is the relevant total for paging a
  * filtered collection (`meta.total_count` ignores filters; point the
- * `total` path at it via `IPaginationConfig` if that is what you want).
+ * `total` path at it via `PaginationConfig` if that is what you want).
  *
  * The envelope carries **no current-page or page-size field**, so:
  *
@@ -33,7 +33,7 @@ import { AbstractDotPathResponseStrategy } from './abstract-dot-path-response.st
  *   response that provably holds the whole filtered set it resolves
  *   to 1.
  *
- * Every key path is overridable via `IPaginationConfig` (dot notation
+ * Every key path is overridable via `PaginationConfig` (dot notation
  * supported), so custom wrappers that do include paging fields map
  * without subclassing.
  *
@@ -117,7 +117,7 @@ export class DirectusResponseStrategy extends AbstractDotPathResponseStrategy {
    * @returns A typed PaginatedCollection instance
    */
 
-  public override paginate<T extends IPaginatedObject>(
+  public override paginate<T extends PaginatedObject>(
     response: Record<string, any>,
     options: ResponseOptions
   ): PaginatedCollection<T> {

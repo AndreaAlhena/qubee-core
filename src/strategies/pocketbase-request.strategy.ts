@@ -1,7 +1,7 @@
-import type { IOperatorFilter } from '../interfaces/operator-filter.interface';
-import type { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
-import type { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
 import type { QueryBuilderOptions } from '../models/query-builder-options';
+import type { OperatorFilter } from '../types/operator-filter.type';
+import type { QueryBuilderState } from '../types/query-builder-state.type';
+import type { StrategyCapabilities } from '../types/strategy-capabilities.type';
 
 import { FilterOperatorEnum } from '../enums/filter-operator.enum';
 import { SortEnum } from '../enums/sort.enum';
@@ -59,7 +59,7 @@ export class PocketbaseRequestStrategy extends AbstractRequestStrategy {
    * selection (`select`) — no per-model fields, no global search, no
    * embedded resources
    */
-  public readonly capabilities: IStrategyCapabilities = {
+  public readonly capabilities: StrategyCapabilities = {
     embedded: false,
     fields: false,
     filters: true,
@@ -79,7 +79,7 @@ export class PocketbaseRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendExpand(state: IQueryBuilderState, out: string[]): void {
+  private _appendExpand(state: QueryBuilderState, out: string[]): void {
     if (!state.includes.length) {
       return;
     }
@@ -93,7 +93,7 @@ export class PocketbaseRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendFields(state: IQueryBuilderState, out: string[]): void {
+  private _appendFields(state: QueryBuilderState, out: string[]): void {
     if (!state.select.length) {
       return;
     }
@@ -112,7 +112,7 @@ export class PocketbaseRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendFilter(state: IQueryBuilderState, out: string[]): void {
+  private _appendFilter(state: QueryBuilderState, out: string[]): void {
     const clauses: string[] = [];
 
     Object.keys(state.filters).forEach((field) => {
@@ -129,7 +129,7 @@ export class PocketbaseRequestStrategy extends AbstractRequestStrategy {
       );
     });
 
-    state.operatorFilters.forEach((filter: IOperatorFilter) => {
+    state.operatorFilters.forEach((filter: OperatorFilter) => {
       clauses.push(this._formatOperatorClause(filter));
     });
 
@@ -146,7 +146,7 @@ export class PocketbaseRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendPagination(state: IQueryBuilderState, out: string[]): void {
+  private _appendPagination(state: QueryBuilderState, out: string[]): void {
     out.push(`${PocketbaseRequestStrategy._pageKey}=${state.page}`);
     out.push(`${PocketbaseRequestStrategy._perPageKey}=${state.limit}`);
   }
@@ -157,7 +157,7 @@ export class PocketbaseRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendSort(state: IQueryBuilderState, out: string[]): void {
+  private _appendSort(state: QueryBuilderState, out: string[]): void {
     if (!state.sorts.length) {
       return;
     }
@@ -206,7 +206,7 @@ export class PocketbaseRequestStrategy extends AbstractRequestStrategy {
    * @throws {UnsupportedFilterOperatorError} If the operator is a
    * PostgREST-only FTS variant
    */
-  private _formatOperatorClause(filter: IOperatorFilter): string {
+  private _formatOperatorClause(filter: OperatorFilter): string {
     const { field, operator, values } = filter;
     const first = values[0];
 
@@ -292,7 +292,7 @@ export class PocketbaseRequestStrategy extends AbstractRequestStrategy {
    * PocketBase's wire keys are fixed by the server)
    * @returns Ordered query-string fragments
    */
-  protected parts(state: IQueryBuilderState, _options: QueryBuilderOptions): string[] {
+  protected parts(state: QueryBuilderState, _options: QueryBuilderOptions): string[] {
     const out: string[] = [];
 
     this._appendExpand(state, out);

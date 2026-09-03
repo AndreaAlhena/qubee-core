@@ -1,6 +1,6 @@
 import type { QueryBuilderOptions } from '../models/query-builder-options';
-import type { IQueryBuilderState } from './query-builder-state.interface';
-import type { IStrategyCapabilities } from './strategy-capabilities.interface';
+import type { QueryBuilderState } from '../types/query-builder-state.type';
+import type { StrategyCapabilities } from '../types/strategy-capabilities.type';
 
 /**
  * Strategy interface for building request URIs
@@ -16,7 +16,7 @@ export interface IRequestStrategy {
    * without hardcoding `DriverEnum` checks. Each strategy returns a
    * static, immutable capability map.
    */
-  readonly capabilities: IStrategyCapabilities;
+  readonly capabilities: StrategyCapabilities;
 
   /**
    * Build a URI string from the given query builder state
@@ -25,7 +25,7 @@ export interface IRequestStrategy {
    * @param options - The query parameter key name configuration
    * @returns The composed URI string
    */
-  buildUri(state: IQueryBuilderState, options: QueryBuilderOptions): string;
+  buildUri(state: QueryBuilderState, options: QueryBuilderOptions): string;
 
   /**
    * Compute HTTP request headers carrying pagination metadata
@@ -43,7 +43,7 @@ export interface IRequestStrategy {
    * @param state - The current query builder state
    * @returns A map of header name → value, or `null` when not applicable
    */
-  buildPaginationHeaders?(state: IQueryBuilderState): Record<string, string> | null;
+  buildPaginationHeaders?(state: QueryBuilderState): Record<string, string> | null;
 
   /**
    * Assert that the given limit value is valid for this driver

@@ -3,10 +3,10 @@
    not_equals, not_in) are snake_case by server spec and emitted verbatim */
 import * as qs from 'qs';
 
-import type { IOperatorFilter } from '../interfaces/operator-filter.interface';
-import type { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
-import type { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
 import type { QueryBuilderOptions } from '../models/query-builder-options';
+import type { OperatorFilter } from '../types/operator-filter.type';
+import type { QueryBuilderState } from '../types/query-builder-state.type';
+import type { StrategyCapabilities } from '../types/strategy-capabilities.type';
 
 import { FilterOperatorEnum } from '../enums/filter-operator.enum';
 import { SortEnum } from '../enums/sort.enum';
@@ -71,7 +71,7 @@ export class PayloadRequestStrategy extends AbstractRequestStrategy {
    * — no per-model fields, no includes (numeric `depth` instead), no
    * global search, no embedded resources
    */
-  public readonly capabilities: IStrategyCapabilities = {
+  public readonly capabilities: StrategyCapabilities = {
     embedded: false,
     fields: false,
     filters: true,
@@ -88,7 +88,7 @@ export class PayloadRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendPagination(state: IQueryBuilderState, out: string[]): void {
+  private _appendPagination(state: QueryBuilderState, out: string[]): void {
     out.push(`${PayloadRequestStrategy._pageKey}=${state.page}`);
     out.push(`${PayloadRequestStrategy._limitKey}=${state.limit}`);
   }
@@ -103,7 +103,7 @@ export class PayloadRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendSelect(state: IQueryBuilderState, out: string[]): void {
+  private _appendSelect(state: QueryBuilderState, out: string[]): void {
     if (!state.select.length) {
       return;
     }
@@ -123,7 +123,7 @@ export class PayloadRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendSort(state: IQueryBuilderState, out: string[]): void {
+  private _appendSort(state: QueryBuilderState, out: string[]): void {
     if (!state.sorts.length) {
       return;
     }
@@ -148,7 +148,7 @@ export class PayloadRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendWhere(state: IQueryBuilderState, out: string[]): void {
+  private _appendWhere(state: QueryBuilderState, out: string[]): void {
     const simpleKeys = Object.keys(state.filters);
 
     if (!simpleKeys.length && !state.operatorFilters.length) {
@@ -167,7 +167,7 @@ export class PayloadRequestStrategy extends AbstractRequestStrategy {
       where[key] = values.length === 1 ? { equals: values[0] } : { in: values.join(',') };
     });
 
-    state.operatorFilters.forEach((filter: IOperatorFilter) => {
+    state.operatorFilters.forEach((filter: OperatorFilter) => {
       const payload = this._formatOperatorPayload(filter);
 
       where[filter.field] = {
@@ -212,7 +212,7 @@ export class PayloadRequestStrategy extends AbstractRequestStrategy {
    * @throws {UnsupportedFilterOperatorError} If the operator has no
    * Payload equivalent
    */
-  private _formatOperatorPayload(filter: IOperatorFilter): PayloadFilterPayload {
+  private _formatOperatorPayload(filter: OperatorFilter): PayloadFilterPayload {
     const { operator, values } = filter;
     const first = values[0];
 
@@ -282,7 +282,7 @@ export class PayloadRequestStrategy extends AbstractRequestStrategy {
    * Payload's wire keys are fixed by the server)
    * @returns Ordered query-string fragments
    */
-  protected parts(state: IQueryBuilderState, _options: QueryBuilderOptions): string[] {
+  protected parts(state: QueryBuilderState, _options: QueryBuilderOptions): string[] {
     const out: string[] = [];
 
     this._appendWhere(state, out);

@@ -1,9 +1,9 @@
 import * as qs from 'qs';
 
-import type { IOperatorFilter } from '../interfaces/operator-filter.interface';
-import type { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
-import type { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
 import type { QueryBuilderOptions } from '../models/query-builder-options';
+import type { OperatorFilter } from '../types/operator-filter.type';
+import type { QueryBuilderState } from '../types/query-builder-state.type';
+import type { StrategyCapabilities } from '../types/strategy-capabilities.type';
 
 import { FilterOperatorEnum } from '../enums/filter-operator.enum';
 import { SortEnum } from '../enums/sort.enum';
@@ -67,7 +67,7 @@ export class FeathersRequestStrategy extends AbstractRequestStrategy {
    * no per-model fields, no includes, no global search, no embedded
    * resources
    */
-  public readonly capabilities: IStrategyCapabilities = {
+  public readonly capabilities: StrategyCapabilities = {
     embedded: false,
     fields: false,
     filters: true,
@@ -88,7 +88,7 @@ export class FeathersRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendFilters(state: IQueryBuilderState, out: string[]): void {
+  private _appendFilters(state: QueryBuilderState, out: string[]): void {
     Object.keys(state.filters).forEach((field) => {
       const values = state.filters[field];
 
@@ -110,8 +110,8 @@ export class FeathersRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendOperatorFilters(state: IQueryBuilderState, out: string[]): void {
-    state.operatorFilters.forEach((filter: IOperatorFilter) => {
+  private _appendOperatorFilters(state: QueryBuilderState, out: string[]): void {
+    state.operatorFilters.forEach((filter: OperatorFilter) => {
       const payload = this._formatOperatorPayload(filter);
 
       out.push(
@@ -131,7 +131,7 @@ export class FeathersRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendPagination(state: IQueryBuilderState, out: string[]): void {
+  private _appendPagination(state: QueryBuilderState, out: string[]): void {
     out.push(`${FeathersRequestStrategy._limitKey}=${state.limit}`);
     out.push(`${FeathersRequestStrategy._skipKey}=${(state.page - 1) * state.limit}`);
   }
@@ -143,7 +143,7 @@ export class FeathersRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendSelect(state: IQueryBuilderState, out: string[]): void {
+  private _appendSelect(state: QueryBuilderState, out: string[]): void {
     if (!state.select.length) {
       return;
     }
@@ -159,7 +159,7 @@ export class FeathersRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendSort(state: IQueryBuilderState, out: string[]): void {
+  private _appendSort(state: QueryBuilderState, out: string[]): void {
     if (!state.sorts.length) {
       return;
     }
@@ -199,7 +199,7 @@ export class FeathersRequestStrategy extends AbstractRequestStrategy {
    * Feathers equivalent
    */
   private _formatOperatorPayload(
-    filter: IOperatorFilter
+    filter: OperatorFilter
   ): FeathersFilterPayload | FeathersFilterValue {
     const { operator, values } = filter;
     const first = values[0];
@@ -253,7 +253,7 @@ export class FeathersRequestStrategy extends AbstractRequestStrategy {
    * Feathers' system keys are fixed by the server)
    * @returns Ordered query-string fragments
    */
-  protected parts(state: IQueryBuilderState, _options: QueryBuilderOptions): string[] {
+  protected parts(state: QueryBuilderState, _options: QueryBuilderOptions): string[] {
     const out: string[] = [];
 
     this._appendFilters(state, out);

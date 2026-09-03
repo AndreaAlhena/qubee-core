@@ -1,3 +1,3 @@
-export interface IFields {
+export type Fields = {
   [model: string]: string[];
-}
+};

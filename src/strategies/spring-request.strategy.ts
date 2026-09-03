@@ -1,6 +1,6 @@
-import type { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
-import type { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
 import type { QueryBuilderOptions } from '../models/query-builder-options';
+import type { QueryBuilderState } from '../types/query-builder-state.type';
+import type { StrategyCapabilities } from '../types/strategy-capabilities.type';
 
 import { SortEnum } from '../enums/sort.enum';
 import { AbstractRequestStrategy } from './abstract-request.strategy';
@@ -39,7 +39,7 @@ export class SpringRequestStrategy extends AbstractRequestStrategy {
    * filters, operator filters, per-model fields, flat select, includes,
    * or global search
    */
-  public readonly capabilities: IStrategyCapabilities = {
+  public readonly capabilities: StrategyCapabilities = {
     embedded: false,
     fields: false,
     filters: false,
@@ -61,11 +61,7 @@ export class SpringRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendPage(
-    state: IQueryBuilderState,
-    options: QueryBuilderOptions,
-    out: string[]
-  ): void {
+  private _appendPage(state: QueryBuilderState, options: QueryBuilderOptions, out: string[]): void {
     out.push(`${options.page}=${state.page - 1}`);
   }
 
@@ -75,7 +71,7 @@ export class SpringRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendSize(state: IQueryBuilderState, out: string[]): void {
+  private _appendSize(state: QueryBuilderState, out: string[]): void {
     out.push(`${SpringRequestStrategy._sizeKey}=${state.limit}`);
   }
 
@@ -90,11 +86,7 @@ export class SpringRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendSort(
-    state: IQueryBuilderState,
-    options: QueryBuilderOptions,
-    out: string[]
-  ): void {
+  private _appendSort(state: QueryBuilderState, options: QueryBuilderOptions, out: string[]): void {
     state.sorts.forEach((sort) => {
       const direction = sort.order === SortEnum.DESC ? 'desc' : 'asc';
 
@@ -112,7 +104,7 @@ export class SpringRequestStrategy extends AbstractRequestStrategy {
    * `size` key is fixed by the server)
    * @returns Ordered query-string fragments
    */
-  protected parts(state: IQueryBuilderState, options: QueryBuilderOptions): string[] {
+  protected parts(state: QueryBuilderState, options: QueryBuilderOptions): string[] {
     const out: string[] = [];
 
     this._appendSort(state, options, out);

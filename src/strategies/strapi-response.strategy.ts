@@ -21,7 +21,7 @@ import { AbstractDotPathResponseStrategy } from './abstract-dot-path-response.st
  * Default key paths are configured in `StrapiResponseOptions`. Strapi
  * does not include navigation links in the envelope, so `firstPageUrl`,
  * `prevPageUrl`, `nextPageUrl`, and `lastPageUrl` resolve to `undefined`
- * unless the consumer overrides their paths via `IPaginationConfig`. The
+ * unless the consumer overrides their paths via `PaginationConfig`. The
  * traversal algorithm (dot-notation resolution + computed `from`/`to`)
  * is inherited from `AbstractDotPathResponseStrategy`; this class exists
  * so `DriverEnum.STRAPI` resolves to a distinct identity at the DI

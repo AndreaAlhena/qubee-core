@@ -52,6 +52,29 @@ enforced by review and by the filename split.
 
 Both halves are enforced by `naming-convention` (`leadingUnderscore: 'require'` / `'forbid'`).
 
+### Enums at the API boundary
+
+Enums stay as `enum` declarations. Alongside each, a **derived union** widens the *public* input
+surface:
+
+```ts
+export type Driver = `${DriverEnum}`;   // 'laravel' | 'strapi' | …
+```
+
+This lets a consumer write `{ driver: 'strapi' }` as well as `{ driver: DriverEnum.STRAPI }`, which
+matters for React and plain-JS callers and for config that arrives as a string from an env var.
+
+**The widening applies to public method parameters only. Internal state keeps the enum type.**
+Widening state breaks two things that were verified to matter here:
+
+- the 13 per-driver `switch` statements over `FilterOperatorEnum` enumerate every member with **no
+  `default:`** — that is what makes them provably exhaustive, and a string union defeats the
+  narrowing;
+- 17 sites compare `sort.order === SortEnum.DESC`, which `no-unsafe-enum-comparison` rejects across
+  a union.
+
+So: widen at the door, normalize inward.
+
 ## Ordering **[auto]**
 
 Alphabetical, within groups. Class members are grouped in this order:
