@@ -1,9 +1,9 @@
 import * as qs from 'qs';
 
-import type { IOperatorFilter } from '../interfaces/operator-filter.interface';
-import type { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
-import type { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
 import type { QueryBuilderOptions } from '../models/query-builder-options';
+import type { OperatorFilter } from '../types/operator-filter.type';
+import type { QueryBuilderState } from '../types/query-builder-state.type';
+import type { StrategyCapabilities } from '../types/strategy-capabilities.type';
 
 import { FilterOperatorEnum } from '../enums/filter-operator.enum';
 import { SortEnum } from '../enums/sort.enum';
@@ -67,7 +67,7 @@ export class DirectusRequestStrategy extends AbstractRequestStrategy {
    * (Directus scopes relational projections with dot paths, not a
    * `fields[model]` map)
    */
-  public readonly capabilities: IStrategyCapabilities = {
+  public readonly capabilities: StrategyCapabilities = {
     embedded: true,
     fields: false,
     filters: true,
@@ -95,7 +95,7 @@ export class DirectusRequestStrategy extends AbstractRequestStrategy {
    * @param out - The accumulator the caller joins into the URI
    */
   private _appendFields(
-    state: IQueryBuilderState,
+    state: QueryBuilderState,
     options: QueryBuilderOptions,
     out: string[]
   ): void {
@@ -144,7 +144,7 @@ export class DirectusRequestStrategy extends AbstractRequestStrategy {
    * @param out - The accumulator the caller joins into the URI
    */
   private _appendFilters(
-    state: IQueryBuilderState,
+    state: QueryBuilderState,
     options: QueryBuilderOptions,
     out: string[]
   ): void {
@@ -168,7 +168,7 @@ export class DirectusRequestStrategy extends AbstractRequestStrategy {
       /* eslint-enable @typescript-eslint/naming-convention */
     });
 
-    state.operatorFilters.forEach((operatorFilter: IOperatorFilter) => {
+    state.operatorFilters.forEach((operatorFilter: OperatorFilter) => {
       const payload = this._formatOperatorPayload(operatorFilter);
 
       filter[operatorFilter.field] = {
@@ -192,7 +192,7 @@ export class DirectusRequestStrategy extends AbstractRequestStrategy {
    * @param out - The accumulator the caller joins into the URI
    */
   private _appendLimit(
-    state: IQueryBuilderState,
+    state: QueryBuilderState,
     options: QueryBuilderOptions,
     out: string[]
   ): void {
@@ -220,11 +220,7 @@ export class DirectusRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendPage(
-    state: IQueryBuilderState,
-    options: QueryBuilderOptions,
-    out: string[]
-  ): void {
+  private _appendPage(state: QueryBuilderState, options: QueryBuilderOptions, out: string[]): void {
     out.push(`${options.page}=${state.page}`);
   }
 
@@ -236,7 +232,7 @@ export class DirectusRequestStrategy extends AbstractRequestStrategy {
    * @param out - The accumulator the caller joins into the URI
    */
   private _appendSearch(
-    state: IQueryBuilderState,
+    state: QueryBuilderState,
     options: QueryBuilderOptions,
     out: string[]
   ): void {
@@ -254,11 +250,7 @@ export class DirectusRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendSort(
-    state: IQueryBuilderState,
-    options: QueryBuilderOptions,
-    out: string[]
-  ): void {
+  private _appendSort(state: QueryBuilderState, options: QueryBuilderOptions, out: string[]): void {
     if (!state.sorts.length) {
       return;
     }
@@ -296,7 +288,7 @@ export class DirectusRequestStrategy extends AbstractRequestStrategy {
    * @throws {UnsupportedFilterOperatorError} If the operator is a
    * PostgREST-only FTS variant
    */
-  private _formatOperatorPayload(filter: IOperatorFilter): DirectusFilterPayload {
+  private _formatOperatorPayload(filter: OperatorFilter): DirectusFilterPayload {
     const { operator, values } = filter;
     const first = values[0];
 
@@ -367,7 +359,7 @@ export class DirectusRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @returns Ordered query-string fragments
    */
-  protected parts(state: IQueryBuilderState, options: QueryBuilderOptions): string[] {
+  protected parts(state: QueryBuilderState, options: QueryBuilderOptions): string[] {
     const out: string[] = [];
 
     this._appendFilters(state, options, out);

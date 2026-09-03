@@ -1,7 +1,7 @@
-import type { DriverEnum } from '../enums/driver.enum';
-import type { PaginationModeEnum } from '../enums/pagination-mode.enum';
-import type { IPaginationConfig } from './pagination-config.interface';
-import type { IQueryBuilderConfig } from './query-builder-config.interface';
+import type { Driver } from './driver.type';
+import type { PaginationConfig } from './pagination-config.type';
+import type { PaginationMode } from './pagination-mode.type';
+import type { QueryBuilderConfig } from './query-builder-config.type';
 
 /**
  * Main configuration interface for ng-qubee
@@ -11,24 +11,24 @@ import type { IQueryBuilderConfig } from './query-builder-config.interface';
  *
  * @example
  * ```typescript
- * const config: IConfig = {
+ * const config: Config = {
  *   driver: DriverEnum.NESTJS,
  *   request: { filters: 'filter', sort: 'sortBy' },
  *   response: { data: 'data' }
  * };
  * ```
  */
-export interface IConfig {
+export type Config = {
   /** The pagination driver to use */
-  driver: DriverEnum;
+  driver: Driver;
   /**
    * Wire-level pagination mechanism. Defaults to `PaginationModeEnum.QUERY`
    * when omitted. Currently honoured only by the PostgREST driver; other
    * drivers ignore it.
    */
-  pagination?: PaginationModeEnum;
+  pagination?: PaginationMode;
   /** Custom key names for request query parameters */
-  request?: IQueryBuilderConfig;
+  request?: QueryBuilderConfig;
   /** Custom key names for response field mapping */
-  response?: IPaginationConfig;
-}
+  response?: PaginationConfig;
+};

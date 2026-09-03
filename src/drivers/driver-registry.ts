@@ -1,7 +1,7 @@
 import type { PaginationModeEnum } from '../enums/pagination-mode.enum';
-import type { IPaginationConfig } from '../interfaces/pagination-config.interface';
 import type { IRequestStrategy } from '../interfaces/request-strategy.interface';
 import type { IResponseStrategy } from '../interfaces/response-strategy.interface';
+import type { PaginationConfig } from '../types/pagination-config.type';
 
 import { DriverEnum } from '../enums/driver.enum';
 import {
@@ -89,12 +89,12 @@ export interface IDriverDefinition {
   /**
    * Build the driver-specific `ResponseOptions` instance
    *
-   * Honours user-supplied key-path overrides via `IPaginationConfig`.
+   * Honours user-supplied key-path overrides via `PaginationConfig`.
    *
    * @param config - User-supplied response key overrides
    * @returns A `ResponseOptions` (or subclass) carrying the resolved defaults
    */
-  createResponseOptions(config: IPaginationConfig): ResponseOptions;
+  createResponseOptions(config: PaginationConfig): ResponseOptions;
 }
 
 /**

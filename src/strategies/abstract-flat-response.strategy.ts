@@ -1,6 +1,6 @@
-import type { IPaginatedObject } from '../interfaces/paginated-object.interface';
 import type { IResponseStrategy } from '../interfaces/response-strategy.interface';
 import type { ResponseOptions } from '../models/response-options';
+import type { PaginatedObject } from '../types/paginated-object.type';
 
 import { PaginatedCollection } from '../models/paginated-collection';
 
@@ -32,7 +32,7 @@ export abstract class AbstractFlatResponseStrategy implements IResponseStrategy 
    * @returns A typed PaginatedCollection instance
    */
 
-  public paginate<T extends IPaginatedObject>(
+  public paginate<T extends PaginatedObject>(
     response: Record<string, any>,
     options: ResponseOptions
   ): PaginatedCollection<T> {

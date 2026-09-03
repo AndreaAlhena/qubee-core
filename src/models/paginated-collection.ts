@@ -1,9 +1,9 @@
-import type { INormalized } from '../interfaces/normalized.interface';
-import type { IPaginatedObject } from '../interfaces/paginated-object.interface';
+import type { Normalized } from '../types/normalized.type';
+import type { PaginatedObject } from '../types/paginated-object.type';
 
 import { KeyNotFoundError } from '../errors/key-not-found.error';
 
-export class PaginatedCollection<T extends IPaginatedObject> {
+export class PaginatedCollection<T extends PaginatedObject> {
   constructor(
     public data: T[],
     public readonly page: number,
@@ -33,7 +33,7 @@ export class PaginatedCollection<T extends IPaginatedObject> {
    * @returns []
    * @throws KeyNotFoundItem
    */
-  public normalize(id?: string): INormalized {
+  public normalize(id?: string): Normalized {
     return {
       [this.page]: this.data.reduce((ids: number[], value: T) => {
         if (id && id in value) {

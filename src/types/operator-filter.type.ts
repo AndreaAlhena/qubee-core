@@ -8,7 +8,7 @@ import type { FilterOperatorEnum } from '../enums/filter-operator.enum';
  *
  * @example
  * ```typescript
- * const filter: IOperatorFilter = {
+ * const filter: OperatorFilter = {
  *   field: 'age',
  *   operator: FilterOperatorEnum.GTE,
  *   values: [18]
@@ -16,11 +16,11 @@ import type { FilterOperatorEnum } from '../enums/filter-operator.enum';
  * // Produces: filter.age=$gte:18
  * ```
  */
-export interface IOperatorFilter {
+export type OperatorFilter = {
   /** The field name to filter on */
   field: string;
   /** The filter operator to apply */
   operator: FilterOperatorEnum;
   /** The value(s) for the filter */
   values: (string | number | boolean)[];
-}
+};

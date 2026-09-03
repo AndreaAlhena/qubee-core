@@ -1,7 +1,7 @@
-import type { IOperatorFilter } from '../interfaces/operator-filter.interface';
-import type { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
-import type { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
 import type { QueryBuilderOptions } from '../models/query-builder-options';
+import type { OperatorFilter } from '../types/operator-filter.type';
+import type { QueryBuilderState } from '../types/query-builder-state.type';
+import type { StrategyCapabilities } from '../types/strategy-capabilities.type';
 
 import { FilterOperatorEnum } from '../enums/filter-operator.enum';
 import { SortEnum } from '../enums/sort.enum';
@@ -53,7 +53,7 @@ export class JsonServerRequestStrategy extends AbstractRequestStrategy {
    * Filters, operator filters, sorts, global search — no per-model
    * fields, no includes, no flat select, no embedded resources
    */
-  public readonly capabilities: IStrategyCapabilities = {
+  public readonly capabilities: StrategyCapabilities = {
     embedded: false,
     fields: false,
     filters: true,
@@ -73,7 +73,7 @@ export class JsonServerRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendFilters(state: IQueryBuilderState, out: string[]): void {
+  private _appendFilters(state: QueryBuilderState, out: string[]): void {
     Object.keys(state.filters).forEach((field) => {
       const values = state.filters[field];
 
@@ -91,8 +91,8 @@ export class JsonServerRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendOperatorFilters(state: IQueryBuilderState, out: string[]): void {
-    state.operatorFilters.forEach((filter: IOperatorFilter) => {
+  private _appendOperatorFilters(state: QueryBuilderState, out: string[]): void {
+    state.operatorFilters.forEach((filter: OperatorFilter) => {
       out.push(...this._formatOperatorSegments(filter));
     });
   }
@@ -103,7 +103,7 @@ export class JsonServerRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendPage(state: IQueryBuilderState, out: string[]): void {
+  private _appendPage(state: QueryBuilderState, out: string[]): void {
     out.push(`${JsonServerRequestStrategy._pageKey}=${state.page}`);
   }
 
@@ -113,7 +113,7 @@ export class JsonServerRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendPerPage(state: IQueryBuilderState, out: string[]): void {
+  private _appendPerPage(state: QueryBuilderState, out: string[]): void {
     out.push(`${JsonServerRequestStrategy._perPageKey}=${state.limit}`);
   }
 
@@ -123,7 +123,7 @@ export class JsonServerRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendSearch(state: IQueryBuilderState, out: string[]): void {
+  private _appendSearch(state: QueryBuilderState, out: string[]): void {
     if (!state.search) {
       return;
     }
@@ -137,7 +137,7 @@ export class JsonServerRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendSort(state: IQueryBuilderState, out: string[]): void {
+  private _appendSort(state: QueryBuilderState, out: string[]): void {
     if (!state.sorts.length) {
       return;
     }
@@ -174,7 +174,7 @@ export class JsonServerRequestStrategy extends AbstractRequestStrategy {
    * @throws {UnsupportedFilterOperatorError} If the operator has no
    * json-server equivalent
    */
-  private _formatOperatorSegments(filter: IOperatorFilter): string[] {
+  private _formatOperatorSegments(filter: OperatorFilter): string[] {
     const { field, operator, values } = filter;
     const first = values[0];
 
@@ -229,7 +229,7 @@ export class JsonServerRequestStrategy extends AbstractRequestStrategy {
    * json-server's system keys are fixed by the server)
    * @returns Ordered query-string fragments
    */
-  protected parts(state: IQueryBuilderState, _options: QueryBuilderOptions): string[] {
+  protected parts(state: QueryBuilderState, _options: QueryBuilderOptions): string[] {
     const out: string[] = [];
 
     this._appendFilters(state, out);

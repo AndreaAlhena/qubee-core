@@ -1,6 +1,6 @@
-import type { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
-import type { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
 import type { QueryBuilderOptions } from '../models/query-builder-options';
+import type { QueryBuilderState } from '../types/query-builder-state.type';
+import type { StrategyCapabilities } from '../types/strategy-capabilities.type';
 
 import { AbstractRequestStrategy } from './abstract-request.strategy';
 
@@ -16,7 +16,7 @@ export class LaravelRequestStrategy extends AbstractRequestStrategy {
   /**
    * Pagination-only driver — no filtering, sorting, or column selection
    */
-  public readonly capabilities: IStrategyCapabilities = {
+  public readonly capabilities: StrategyCapabilities = {
     embedded: false,
     fields: false,
     filters: false,
@@ -34,7 +34,7 @@ export class LaravelRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @returns The two pagination query-string fragments
    */
-  protected parts(state: IQueryBuilderState, options: QueryBuilderOptions): string[] {
+  protected parts(state: QueryBuilderState, options: QueryBuilderOptions): string[] {
     return [`${options.limit}=${state.limit}`, `${options.page}=${state.page}`];
   }
 }

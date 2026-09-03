@@ -1,9 +1,9 @@
 import * as qs from 'qs';
 
-import type { IOperatorFilter } from '../interfaces/operator-filter.interface';
-import type { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
-import type { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
 import type { QueryBuilderOptions } from '../models/query-builder-options';
+import type { OperatorFilter } from '../types/operator-filter.type';
+import type { QueryBuilderState } from '../types/query-builder-state.type';
+import type { StrategyCapabilities } from '../types/strategy-capabilities.type';
 
 import { FilterOperatorEnum } from '../enums/filter-operator.enum';
 import { SortEnum } from '../enums/sort.enum';
@@ -59,7 +59,7 @@ export class StrapiRequestStrategy extends AbstractRequestStrategy {
    * selection (`select`) — no per-model fields, no global search (use
    * `$contains` / `$containsi` operator filters instead)
    */
-  public readonly capabilities: IStrategyCapabilities = {
+  public readonly capabilities: StrategyCapabilities = {
     embedded: false,
     fields: false,
     filters: true,
@@ -80,7 +80,7 @@ export class StrapiRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendFields(state: IQueryBuilderState, out: string[]): void {
+  private _appendFields(state: QueryBuilderState, out: string[]): void {
     if (!state.select.length) {
       return;
     }
@@ -101,7 +101,7 @@ export class StrapiRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendFilters(state: IQueryBuilderState, out: string[]): void {
+  private _appendFilters(state: QueryBuilderState, out: string[]): void {
     const simpleKeys = Object.keys(state.filters);
 
     if (!simpleKeys.length && !state.operatorFilters.length) {
@@ -120,7 +120,7 @@ export class StrapiRequestStrategy extends AbstractRequestStrategy {
       filters[key] = values.length === 1 ? { $eq: values[0] } : { $in: values };
     });
 
-    state.operatorFilters.forEach((filter: IOperatorFilter) => {
+    state.operatorFilters.forEach((filter: OperatorFilter) => {
       const payload = this._formatOperatorPayload(filter);
 
       filters[filter.field] = {
@@ -146,7 +146,7 @@ export class StrapiRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendPagination(state: IQueryBuilderState, out: string[]): void {
+  private _appendPagination(state: QueryBuilderState, out: string[]): void {
     const wrapper = {
       [StrapiRequestStrategy._paginationKey]: {
         page: state.page,
@@ -167,7 +167,7 @@ export class StrapiRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendPopulate(state: IQueryBuilderState, out: string[]): void {
+  private _appendPopulate(state: QueryBuilderState, out: string[]): void {
     if (!state.includes.length) {
       return;
     }
@@ -183,7 +183,7 @@ export class StrapiRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendSort(state: IQueryBuilderState, out: string[]): void {
+  private _appendSort(state: QueryBuilderState, out: string[]): void {
     if (!state.sorts.length) {
       return;
     }
@@ -221,7 +221,7 @@ export class StrapiRequestStrategy extends AbstractRequestStrategy {
    * @throws {UnsupportedFilterOperatorError} If the operator is a
    * PostgREST-only FTS variant
    */
-  private _formatOperatorPayload(filter: IOperatorFilter): StrapiFilterPayload {
+  private _formatOperatorPayload(filter: OperatorFilter): StrapiFilterPayload {
     const { operator, values } = filter;
     const first = values[0];
 
@@ -291,7 +291,7 @@ export class StrapiRequestStrategy extends AbstractRequestStrategy {
    * Strapi's wire keys are fixed by the server)
    * @returns Ordered query-string fragments
    */
-  protected parts(state: IQueryBuilderState, _options: QueryBuilderOptions): string[] {
+  protected parts(state: QueryBuilderState, _options: QueryBuilderOptions): string[] {
     const out: string[] = [];
 
     this._appendPopulate(state, out);

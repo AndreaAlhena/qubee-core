@@ -17,7 +17,7 @@ import { AbstractDotPathResponseStrategy } from './abstract-dot-path-response.st
  * }
  * ```
  *
- * Every key path is configurable through `IConfig.response` (dot
+ * Every key path is configurable through `Config.response` (dot
  * notation supported), so any wrapper shape — `{ items, meta: {...} }`,
  * `{ results, pagination: {...} }` — can be mapped without subclassing.
  * Defaults are encoded in `SieveResponseOptions`. `from`/`to` are

@@ -1,8 +1,8 @@
 import type { Embedded } from '../types/embedded.type';
-import type { IFields } from './fields.interface';
-import type { IFilters } from './filters.interface';
-import type { IOperatorFilter } from './operator-filter.interface';
-import type { ISort } from './sort.interface';
+import type { Fields } from './fields.type';
+import type { Filters } from './filters.type';
+import type { OperatorFilter } from './operator-filter.type';
+import type { Sort } from './sort.type';
 
 /**
  * Represents the complete query builder state
@@ -10,15 +10,15 @@ import type { ISort } from './sort.interface';
  * This is a superset that covers the needs of all drivers.
  * Each driver reads only the fields it needs from this state.
  */
-export interface IQueryBuilderState {
+export type QueryBuilderState = {
   /** The base URL to prepend to generated URIs */
   baseUrl: string;
   /** Embedded-resource selection (PostgREST only) */
   embedded: Embedded;
   /** Per-model field selection (Spatie only) */
-  fields: IFields;
+  fields: Fields;
   /** Simple key-value filters (Spatie and NestJS) */
-  filters: IFilters;
+  filters: Filters;
   /** Related models to include (Spatie only) */
   includes: string[];
   /** Whether the last paginated response has synced `lastPage` into state */
@@ -28,7 +28,7 @@ export interface IQueryBuilderState {
   /** Number of items per page (all drivers) */
   limit: number;
   /** Filters with explicit operators (NestJS only) */
-  operatorFilters: IOperatorFilter[];
+  operatorFilters: OperatorFilter[];
   /** Current page number (all drivers) */
   page: number;
   /** The API resource name for URI generation (all drivers) */
@@ -38,5 +38,5 @@ export interface IQueryBuilderState {
   /** Flat field selection (NestJS only) */
   select: string[];
   /** Sort configurations (Spatie and NestJS) */
-  sorts: ISort[];
-}
+  sorts: Sort[];
+};

@@ -1,7 +1,7 @@
-import type { IOperatorFilter } from '../interfaces/operator-filter.interface';
-import type { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
-import type { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
 import type { QueryBuilderOptions } from '../models/query-builder-options';
+import type { OperatorFilter } from '../types/operator-filter.type';
+import type { QueryBuilderState } from '../types/query-builder-state.type';
+import type { StrategyCapabilities } from '../types/strategy-capabilities.type';
 
 import { FilterOperatorEnum } from '../enums/filter-operator.enum';
 import { SortEnum } from '../enums/sort.enum';
@@ -61,7 +61,7 @@ export class OdataRequestStrategy extends AbstractRequestStrategy {
    * (both folding into `$expand`), global search — no per-model fields
    * (OData has no JSON:API-style `fields[type]` projection)
    */
-  public readonly capabilities: IStrategyCapabilities = {
+  public readonly capabilities: StrategyCapabilities = {
     embedded: true,
     fields: false,
     filters: true,
@@ -98,7 +98,7 @@ export class OdataRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendExpand(state: IQueryBuilderState, out: string[]): void {
+  private _appendExpand(state: QueryBuilderState, out: string[]): void {
     const fragments: string[] = [];
 
     state.includes.forEach((relation) => {
@@ -137,7 +137,7 @@ export class OdataRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendFilter(state: IQueryBuilderState, out: string[]): void {
+  private _appendFilter(state: QueryBuilderState, out: string[]): void {
     const terms: string[] = [];
 
     Object.keys(state.filters).forEach((field) => {
@@ -154,7 +154,7 @@ export class OdataRequestStrategy extends AbstractRequestStrategy {
       );
     });
 
-    state.operatorFilters.forEach((filter: IOperatorFilter) => {
+    state.operatorFilters.forEach((filter: OperatorFilter) => {
       terms.push(...this._formatOperatorTerms(filter));
     });
 
@@ -171,7 +171,7 @@ export class OdataRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendOrderby(state: IQueryBuilderState, out: string[]): void {
+  private _appendOrderby(state: QueryBuilderState, out: string[]): void {
     if (!state.sorts.length) {
       return;
     }
@@ -189,7 +189,7 @@ export class OdataRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendSearch(state: IQueryBuilderState, out: string[]): void {
+  private _appendSearch(state: QueryBuilderState, out: string[]): void {
     if (!state.search) {
       return;
     }
@@ -203,7 +203,7 @@ export class OdataRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendSelect(state: IQueryBuilderState, out: string[]): void {
+  private _appendSelect(state: QueryBuilderState, out: string[]): void {
     if (!state.select.length) {
       return;
     }
@@ -221,7 +221,7 @@ export class OdataRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendSkip(state: IQueryBuilderState, out: string[]): void {
+  private _appendSkip(state: QueryBuilderState, out: string[]): void {
     const skip = (state.page - 1) * state.limit;
 
     if (skip <= 0) {
@@ -237,7 +237,7 @@ export class OdataRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendTop(state: IQueryBuilderState, out: string[]): void {
+  private _appendTop(state: QueryBuilderState, out: string[]): void {
     out.push(`${OdataRequestStrategy._topKey}=${state.limit}`);
   }
 
@@ -287,7 +287,7 @@ export class OdataRequestStrategy extends AbstractRequestStrategy {
    * @throws {UnsupportedFilterOperatorError} If the operator is a
    * PostgREST-only FTS variant
    */
-  private _formatOperatorTerms(filter: IOperatorFilter): string[] {
+  private _formatOperatorTerms(filter: OperatorFilter): string[] {
     const { field, operator, values } = filter;
     const first = values[0];
 
@@ -356,7 +356,7 @@ export class OdataRequestStrategy extends AbstractRequestStrategy {
    * every OData system query option name is fixed by the specification)
    * @returns Ordered query-string fragments
    */
-  protected parts(state: IQueryBuilderState, _options: QueryBuilderOptions): string[] {
+  protected parts(state: QueryBuilderState, _options: QueryBuilderOptions): string[] {
     const out: string[] = [];
 
     this._appendFilter(state, out);

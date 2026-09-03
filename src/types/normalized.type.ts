@@ -1,3 +1,3 @@
-export interface INormalized {
+export type Normalized = {
   [k: number | string]: number[] | string[];
-}
+};

@@ -1,5 +1,5 @@
-import type { IPaginatedObject } from '../interfaces/paginated-object.interface';
 import type { ResponseOptions } from '../models/response-options';
+import type { PaginatedObject } from '../types/paginated-object.type';
 
 import { PaginatedCollection } from '../models/paginated-collection';
 import { AbstractDotPathResponseStrategy } from './abstract-dot-path-response.strategy';
@@ -228,7 +228,7 @@ export class ApiPlatformResponseStrategy extends AbstractDotPathResponseStrategy
    * @returns A typed PaginatedCollection instance
    */
 
-  public override paginate<T extends IPaginatedObject>(
+  public override paginate<T extends PaginatedObject>(
     response: Record<string, any>,
     options: ResponseOptions
   ): PaginatedCollection<T> {

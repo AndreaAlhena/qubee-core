@@ -27,7 +27,7 @@ import { AbstractDotPathResponseStrategy } from './abstract-dot-path-response.st
  * `page` × `limit` (clamped to the total). `prevPage` / `nextPage` are
  * **page numbers**, not URLs, so the navigation-URL slots on
  * `PaginatedCollection` stay `undefined` unless the consumer overrides
- * their paths via `IPaginationConfig`. The traversal algorithm is
+ * their paths via `PaginationConfig`. The traversal algorithm is
  * inherited from `AbstractDotPathResponseStrategy`; this class exists
  * so `DriverEnum.PAYLOAD` resolves to a distinct identity at the DI
  * layer even though the parsing logic is shared with JSON:API, NestJS,

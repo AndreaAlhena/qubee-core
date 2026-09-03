@@ -1,8 +1,8 @@
 import * as qs from 'qs';
 
-import type { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
-import type { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
 import type { QueryBuilderOptions } from '../models/query-builder-options';
+import type { QueryBuilderState } from '../types/query-builder-state.type';
+import type { StrategyCapabilities } from '../types/strategy-capabilities.type';
 
 import { SortEnum } from '../enums/sort.enum';
 import { UnselectableModelError } from '../errors/unselectable-model.error';
@@ -25,7 +25,7 @@ export class SpatieRequestStrategy extends AbstractRequestStrategy {
    * Filters, sorts, includes, per-model fields — no operators, no flat
    * select, no global search
    */
-  public readonly capabilities: IStrategyCapabilities = {
+  public readonly capabilities: StrategyCapabilities = {
     embedded: false,
     fields: true,
     filters: true,
@@ -49,7 +49,7 @@ export class SpatieRequestStrategy extends AbstractRequestStrategy {
    * @throws UnselectableModelError if a field model is not in resource or includes
    */
   private _appendFields(
-    state: IQueryBuilderState,
+    state: QueryBuilderState,
     options: QueryBuilderOptions,
     out: string[]
   ): void {
@@ -86,7 +86,7 @@ export class SpatieRequestStrategy extends AbstractRequestStrategy {
    * @param out - The accumulator the caller joins into the URI
    */
   private _appendFilters(
-    state: IQueryBuilderState,
+    state: QueryBuilderState,
     options: QueryBuilderOptions,
     out: string[]
   ): void {
@@ -113,7 +113,7 @@ export class SpatieRequestStrategy extends AbstractRequestStrategy {
    * @param out - The accumulator the caller joins into the URI
    */
   private _appendIncludes(
-    state: IQueryBuilderState,
+    state: QueryBuilderState,
     options: QueryBuilderOptions,
     out: string[]
   ): void {
@@ -132,7 +132,7 @@ export class SpatieRequestStrategy extends AbstractRequestStrategy {
    * @param out - The accumulator the caller joins into the URI
    */
   private _appendLimit(
-    state: IQueryBuilderState,
+    state: QueryBuilderState,
     options: QueryBuilderOptions,
     out: string[]
   ): void {
@@ -146,11 +146,7 @@ export class SpatieRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendPage(
-    state: IQueryBuilderState,
-    options: QueryBuilderOptions,
-    out: string[]
-  ): void {
+  private _appendPage(state: QueryBuilderState, options: QueryBuilderOptions, out: string[]): void {
     out.push(`${options.page}=${state.page}`);
   }
 
@@ -161,11 +157,7 @@ export class SpatieRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendSort(
-    state: IQueryBuilderState,
-    options: QueryBuilderOptions,
-    out: string[]
-  ): void {
+  private _appendSort(state: QueryBuilderState, options: QueryBuilderOptions, out: string[]): void {
     if (!state.sorts.length) {
       return;
     }
@@ -185,7 +177,7 @@ export class SpatieRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @returns Ordered query-string fragments
    */
-  protected parts(state: IQueryBuilderState, options: QueryBuilderOptions): string[] {
+  protected parts(state: QueryBuilderState, options: QueryBuilderOptions): string[] {
     const out: string[] = [];
 
     this._appendIncludes(state, options, out);

@@ -1,6 +1,6 @@
-import type { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
-import type { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
 import type { QueryBuilderOptions } from '../models/query-builder-options';
+import type { QueryBuilderState } from '../types/query-builder-state.type';
+import type { StrategyCapabilities } from '../types/strategy-capabilities.type';
 
 import { SortEnum } from '../enums/sort.enum';
 import { AbstractRequestStrategy } from './abstract-request.strategy';
@@ -57,7 +57,7 @@ export class WordpressRequestStrategy extends AbstractRequestStrategy {
    * embedding (`includes`) — no operator filters, no per-model fields,
    * no embedded-column projection
    */
-  public readonly capabilities: IStrategyCapabilities = {
+  public readonly capabilities: StrategyCapabilities = {
     embedded: false,
     fields: false,
     filters: true,
@@ -77,7 +77,7 @@ export class WordpressRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendEmbed(state: IQueryBuilderState, out: string[]): void {
+  private _appendEmbed(state: QueryBuilderState, out: string[]): void {
     if (!state.includes.length) {
       return;
     }
@@ -91,7 +91,7 @@ export class WordpressRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendFields(state: IQueryBuilderState, out: string[]): void {
+  private _appendFields(state: QueryBuilderState, out: string[]): void {
     if (!state.select.length) {
       return;
     }
@@ -108,7 +108,7 @@ export class WordpressRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendFilters(state: IQueryBuilderState, out: string[]): void {
+  private _appendFilters(state: QueryBuilderState, out: string[]): void {
     Object.keys(state.filters).forEach((field) => {
       const values = state.filters[field];
 
@@ -126,7 +126,7 @@ export class WordpressRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendPagination(state: IQueryBuilderState, out: string[]): void {
+  private _appendPagination(state: QueryBuilderState, out: string[]): void {
     out.push(`${WordpressRequestStrategy._pageKey}=${state.page}`);
     out.push(`${WordpressRequestStrategy._perPageKey}=${state.limit}`);
   }
@@ -137,7 +137,7 @@ export class WordpressRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendSearch(state: IQueryBuilderState, out: string[]): void {
+  private _appendSearch(state: QueryBuilderState, out: string[]): void {
     if (!state.search) {
       return;
     }
@@ -155,7 +155,7 @@ export class WordpressRequestStrategy extends AbstractRequestStrategy {
    * @param state - The current query builder state
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendSort(state: IQueryBuilderState, out: string[]): void {
+  private _appendSort(state: QueryBuilderState, out: string[]): void {
     if (!state.sorts.length) {
       return;
     }
@@ -177,7 +177,7 @@ export class WordpressRequestStrategy extends AbstractRequestStrategy {
    * WordPress' wire keys are fixed by the server)
    * @returns Ordered query-string fragments
    */
-  protected parts(state: IQueryBuilderState, _options: QueryBuilderOptions): string[] {
+  protected parts(state: QueryBuilderState, _options: QueryBuilderOptions): string[] {
     const out: string[] = [];
 
     this._appendFilters(state, out);

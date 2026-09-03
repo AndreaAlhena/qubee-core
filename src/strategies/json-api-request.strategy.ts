@@ -1,8 +1,8 @@
 import * as qs from 'qs';
 
-import type { IQueryBuilderState } from '../interfaces/query-builder-state.interface';
-import type { IStrategyCapabilities } from '../interfaces/strategy-capabilities.interface';
 import type { QueryBuilderOptions } from '../models/query-builder-options';
+import type { QueryBuilderState } from '../types/query-builder-state.type';
+import type { StrategyCapabilities } from '../types/strategy-capabilities.type';
 
 import { SortEnum } from '../enums/sort.enum';
 import { UnselectableModelError } from '../errors/unselectable-model.error';
@@ -25,7 +25,7 @@ export class JsonApiRequestStrategy extends AbstractRequestStrategy {
    * Filters, sorts, includes, per-model fields — same shape as Spatie
    * but with bracket-style pagination
    */
-  public readonly capabilities: IStrategyCapabilities = {
+  public readonly capabilities: StrategyCapabilities = {
     embedded: false,
     fields: true,
     filters: true,
@@ -46,7 +46,7 @@ export class JsonApiRequestStrategy extends AbstractRequestStrategy {
    * @throws UnselectableModelError if a field type is not the resource or in includes
    */
   private _appendFields(
-    state: IQueryBuilderState,
+    state: QueryBuilderState,
     options: QueryBuilderOptions,
     out: string[]
   ): void {
@@ -83,7 +83,7 @@ export class JsonApiRequestStrategy extends AbstractRequestStrategy {
    * @param out - The accumulator the caller joins into the URI
    */
   private _appendFilters(
-    state: IQueryBuilderState,
+    state: QueryBuilderState,
     options: QueryBuilderOptions,
     out: string[]
   ): void {
@@ -110,7 +110,7 @@ export class JsonApiRequestStrategy extends AbstractRequestStrategy {
    * @param out - The accumulator the caller joins into the URI
    */
   private _appendIncludes(
-    state: IQueryBuilderState,
+    state: QueryBuilderState,
     options: QueryBuilderOptions,
     out: string[]
   ): void {
@@ -133,7 +133,7 @@ export class JsonApiRequestStrategy extends AbstractRequestStrategy {
    * @param out - The accumulator the caller joins into the URI
    */
   private _appendPagination(
-    state: IQueryBuilderState,
+    state: QueryBuilderState,
     options: QueryBuilderOptions,
     out: string[]
   ): void {
@@ -152,11 +152,7 @@ export class JsonApiRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @param out - The accumulator the caller joins into the URI
    */
-  private _appendSort(
-    state: IQueryBuilderState,
-    options: QueryBuilderOptions,
-    out: string[]
-  ): void {
+  private _appendSort(state: QueryBuilderState, options: QueryBuilderOptions, out: string[]): void {
     if (!state.sorts.length) {
       return;
     }
@@ -176,7 +172,7 @@ export class JsonApiRequestStrategy extends AbstractRequestStrategy {
    * @param options - The query parameter key name configuration
    * @returns Ordered query-string fragments
    */
-  protected parts(state: IQueryBuilderState, options: QueryBuilderOptions): string[] {
+  protected parts(state: QueryBuilderState, options: QueryBuilderOptions): string[] {
     const out: string[] = [];
 
     this._appendIncludes(state, options, out);

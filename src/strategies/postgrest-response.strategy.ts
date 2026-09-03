@@ -1,7 +1,7 @@
-import type { IPaginatedObject } from '../interfaces/paginated-object.interface';
 import type { IResponseStrategy } from '../interfaces/response-strategy.interface';
 import type { ResponseOptions } from '../models/response-options';
 import type { HeaderBag } from '../types/header-bag.type';
+import type { PaginatedObject } from '../types/paginated-object.type';
 
 import { PaginatedCollection } from '../models/paginated-collection';
 import { readHeader } from '../utils/read-header';
@@ -78,7 +78,7 @@ export class PostgrestResponseStrategy implements IResponseStrategy {
    * `isLastPageKnown` at `false`).
    * @returns A typed PaginatedCollection instance
    */
-  public paginate<T extends IPaginatedObject>(
+  public paginate<T extends PaginatedObject>(
     response: Record<string, unknown>,
     options: ResponseOptions,
     headers?: HeaderBag

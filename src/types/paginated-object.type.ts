@@ -1,4 +1,4 @@
-export interface IPaginatedObject {
+export type PaginatedObject = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [k: string]: any;
-}
+};

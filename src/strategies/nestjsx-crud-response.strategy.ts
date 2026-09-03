@@ -18,7 +18,7 @@ import { AbstractDotPathResponseStrategy } from './abstract-dot-path-response.st
  * envelope carries no `from`/`to` indices and no navigation links, so
  * `from`/`to` are computed from `page` × `count` by the inherited
  * traversal algorithm and the URL slots resolve to `undefined` unless
- * the consumer overrides their paths via `IPaginationConfig`.
+ * the consumer overrides their paths via `PaginationConfig`.
  *
  * Note that `count` is the number of entities **on the current page**,
  * not the requested page size — on the last page of a result set the

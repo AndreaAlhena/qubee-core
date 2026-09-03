@@ -1,6 +1,6 @@
 import type { SortEnum } from '../enums/sort.enum';
 
-export interface ISort {
+export type Sort = {
   field: string;
   order: SortEnum;
-}
+};

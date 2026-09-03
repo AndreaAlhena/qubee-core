@@ -1,4 +1,4 @@
-import type { IPaginationConfig } from '../interfaces/pagination-config.interface';
+import type { PaginationConfig } from '../types/pagination-config.type';
 
 /**
  * Resolved response field key names with defaults applied
@@ -28,7 +28,7 @@ export class ResponseOptions {
   public readonly to: string;
   public readonly total: string;
 
-  constructor(options: IPaginationConfig) {
+  constructor(options: PaginationConfig) {
     this.currentPage = options.currentPage || 'current_page';
     this.data = options.data || 'data';
     this.firstPageUrl = options.firstPageUrl || 'first_page_url';
@@ -55,7 +55,7 @@ export class ResponseOptions {
  * default to empty paths (derived from the view URLs instead).
  */
 export class ApiPlatformResponseOptions extends ResponseOptions {
-  constructor(options: IPaginationConfig) {
+  constructor(options: PaginationConfig) {
     super({
       currentPage: options.currentPage || '',
       data: options.data || 'hydra:member',
@@ -80,7 +80,7 @@ export class ApiPlatformResponseOptions extends ResponseOptions {
  * (with `meta=total_count,filter_count` requested — the request strategy
  * always emits it). `total` defaults to `meta.filter_count`, the count of
  * items matching the current filter; point it at `meta.total_count` via
- * `IPaginationConfig` for the unfiltered collection size. The envelope
+ * `PaginationConfig` for the unfiltered collection size. The envelope
  * names no current page, page size, or navigation URLs, so those paths
  * default to empty strings — the strategy falls back to page 1 and
  * derives `lastPage`/`from`/`to` only when the response provably holds
@@ -88,7 +88,7 @@ export class ApiPlatformResponseOptions extends ResponseOptions {
  * supported) for custom wrappers that do include paging fields.
  */
 export class DirectusResponseOptions extends ResponseOptions {
-  constructor(options: IPaginationConfig) {
+  constructor(options: PaginationConfig) {
     super({
       currentPage: options.currentPage || '',
       data: options.data || 'data',
@@ -118,7 +118,7 @@ export class DirectusResponseOptions extends ResponseOptions {
  * `options.firstPageUrl`, and `options.lastPageUrl`.
  */
 export class DrfResponseOptions extends ResponseOptions {
-  constructor(options: IPaginationConfig) {
+  constructor(options: PaginationConfig) {
     super({
       currentPage: options.currentPage || '',
       data: options.data || 'results',
@@ -148,7 +148,7 @@ export class DrfResponseOptions extends ResponseOptions {
  * directly by the strategy).
  */
 export class FeathersResponseOptions extends ResponseOptions {
-  constructor(options: IPaginationConfig) {
+  constructor(options: PaginationConfig) {
     super({
       currentPage: options.currentPage || '',
       data: options.data || 'data',
@@ -171,10 +171,10 @@ export class FeathersResponseOptions extends ResponseOptions {
  *
  * Uses dot-notation paths to access nested values in the JSON:API response format.
  * JSON:API meta key names vary by implementation; these defaults cover the most
- * common conventions and can be fully customised via `IPaginationConfig`.
+ * common conventions and can be fully customised via `PaginationConfig`.
  */
 export class JsonApiResponseOptions extends ResponseOptions {
-  constructor(options: IPaginationConfig) {
+  constructor(options: PaginationConfig) {
     super({
       currentPage: options.currentPage || 'meta.current-page',
       data: options.data || 'data',
@@ -204,7 +204,7 @@ export class JsonApiResponseOptions extends ResponseOptions {
  * no body field and are derived.
  */
 export class JsonServerResponseOptions extends ResponseOptions {
-  constructor(options: IPaginationConfig) {
+  constructor(options: PaginationConfig) {
     super({
       currentPage: options.currentPage || '',
       data: options.data || 'data',
@@ -228,7 +228,7 @@ export class JsonServerResponseOptions extends ResponseOptions {
  * Uses dot-notation paths to access nested values in the NestJS response format.
  */
 export class NestjsResponseOptions extends ResponseOptions {
-  constructor(options: IPaginationConfig) {
+  constructor(options: PaginationConfig) {
     super({
       currentPage: options.currentPage || 'meta.currentPage',
       data: options.data || 'data',
@@ -255,10 +255,10 @@ export class NestjsResponseOptions extends ResponseOptions {
  * every page except a partial last one. The envelope carries no
  * `from`/`to` indices and no navigation links, so those paths default to
  * empty strings (the strategy derives `from`/`to` and leaves the URLs
- * `undefined`); consumers can override any path via `IPaginationConfig`.
+ * `undefined`); consumers can override any path via `PaginationConfig`.
  */
 export class NestjsxCrudResponseOptions extends ResponseOptions {
-  constructor(options: IPaginationConfig) {
+  constructor(options: PaginationConfig) {
     super({
       currentPage: options.currentPage || 'page',
       data: options.data || 'data',
@@ -288,7 +288,7 @@ export class NestjsxCrudResponseOptions extends ResponseOptions {
  * are ignored.
  */
 export class OdataResponseOptions extends ResponseOptions {
-  constructor(options: IPaginationConfig) {
+  constructor(options: PaginationConfig) {
     super({
       currentPage: options.currentPage || '',
       data: options.data || 'value',
@@ -315,11 +315,11 @@ export class OdataResponseOptions extends ResponseOptions {
  * offset of the first doc on the page and maps onto `from`; `to` has no
  * body field and is derived. `prevPage`/`nextPage` are page numbers,
  * not URLs, so the navigation-URL paths default to empty strings. All
- * paths are overridable via `IPaginationConfig` (dot notation
+ * paths are overridable via `PaginationConfig` (dot notation
  * supported) for custom wrappers.
  */
 export class PayloadResponseOptions extends ResponseOptions {
-  constructor(options: IPaginationConfig) {
+  constructor(options: PaginationConfig) {
     super({
       currentPage: options.currentPage || 'page',
       data: options.data || 'docs',
@@ -344,11 +344,11 @@ export class PayloadResponseOptions extends ResponseOptions {
  * totalPages, items }`. The envelope carries no `from`/`to` indices and
  * no navigation links, so those paths default to empty strings (the
  * strategy derives `from`/`to` from `page` × `perPage` and leaves the
- * URLs `undefined`); all paths are overridable via `IPaginationConfig`
+ * URLs `undefined`); all paths are overridable via `PaginationConfig`
  * (dot notation supported) for custom wrappers.
  */
 export class PocketbaseResponseOptions extends ResponseOptions {
-  constructor(options: IPaginationConfig) {
+  constructor(options: PaginationConfig) {
     super({
       currentPage: options.currentPage || 'page',
       data: options.data || 'items',
@@ -372,14 +372,14 @@ export class PocketbaseResponseOptions extends ResponseOptions {
  * Sieve defines no response envelope (it returns an `IQueryable` the
  * developer wraps), so these defaults target the common hand-rolled
  * `PagedResult<T>` shape: `{ data, page, pageSize, total, totalPages }`.
- * Every path is overridable via `IPaginationConfig` — dot notation is
+ * Every path is overridable via `PaginationConfig` — dot notation is
  * supported, so nested wrappers (`meta.page`, `pagination.total`) map
  * without subclassing. `from`/`to` default to empty paths and are
  * derived; the navigation-URL slots resolve to `undefined` unless paths
  * are provided.
  */
 export class SieveResponseOptions extends ResponseOptions {
-  constructor(options: IPaginationConfig) {
+  constructor(options: PaginationConfig) {
     super({
       currentPage: options.currentPage || 'page',
       data: options.data || 'data',
@@ -406,11 +406,11 @@ export class SieveResponseOptions extends ResponseOptions {
  * adds 1 when reading it. `data` defaults to plain `_embedded` because
  * the collection key underneath is the resource rel name (e.g.
  * `_embedded.users`) and cannot be known statically — the strategy picks
- * the first array inside; pin an exact path via `IPaginationConfig` when
+ * the first array inside; pin an exact path via `PaginationConfig` when
  * needed. `from`/`to` default to empty paths and are derived.
  */
 export class SpringResponseOptions extends ResponseOptions {
-  constructor(options: IPaginationConfig) {
+  constructor(options: PaginationConfig) {
     super({
       currentPage: options.currentPage || 'page.number',
       data: options.data || '_embedded',
@@ -437,7 +437,7 @@ export class SpringResponseOptions extends ResponseOptions {
  * unless the consumer overrides them.
  */
 export class StrapiResponseOptions extends ResponseOptions {
-  constructor(options: IPaginationConfig) {
+  constructor(options: PaginationConfig) {
     super({
       currentPage: options.currentPage || 'meta.pagination.page',
       data: options.data || 'data',
