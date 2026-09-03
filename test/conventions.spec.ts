@@ -21,8 +21,8 @@ const files: SourceFile[] = globSync('**/*.ts', { cwd: SRC })
     const text = readFileSync(join(SRC, p), 'utf8');
     const declarations = [...text.matchAll(DECL)].map((m) => ({
       exported: Boolean(m[1]),
-      kind: (m[2] as string).replace('abstract class', 'class'),
-      name: m[3] as string,
+      kind: m[2].replace('abstract class', 'class'),
+      name: m[3],
     }));
     return { declarations, name: p.split('/').pop() as string, path: p, text };
   });
@@ -102,6 +102,38 @@ describe('repository conventions', () => {
     // must stay runnable in a browser.
     const offenders = files.filter((f) => /from 'node:/.test(f.text)).map((f) => f.path);
     expect(offenders).toEqual([]);
+  });
+
+  it('orders package.json export conditions with types first', () => {
+    // Condition order is SEMANTIC — the first match wins. Alphabetical sorting puts
+    // "default" before "types", which makes the type declarations unreachable.
+    // This bit once; prettier-plugin-sort-json is disabled for package.json because of it.
+    const pkg = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')) as {
+      exports: Record<string, Record<string, Record<string, string>>>;
+    };
+    const conditions = Object.values(pkg.exports['.'] ?? {});
+    expect(conditions.length).toBeGreaterThan(0);
+    for (const condition of conditions) {
+      expect(Object.keys(condition)[0]).toBe('types');
+    }
+  });
+
+  it('points every package.json entry at a path that tsup emits', () => {
+    const pkg = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')) as Record<
+      string,
+      unknown
+    >;
+    const declared = new Set<string>();
+    for (const key of ['main', 'module', 'types']) {
+      if (typeof pkg[key] === 'string') declared.add(pkg[key]);
+    }
+    for (const c of Object.values(
+      (pkg['exports'] as Record<string, Record<string, Record<string, string>>>)['.'] ?? {}
+    )) {
+      Object.values(c).forEach((v) => declared.add(v));
+    }
+    // Paths must be well-formed and inside dist/; existence is asserted by the build job.
+    expect([...declared].filter((p) => !p.startsWith('./dist/'))).toEqual([]);
   });
 
   it('performs no network I/O', () => {
