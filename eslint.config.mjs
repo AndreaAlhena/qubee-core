@@ -57,13 +57,18 @@ export default tseslint.config(
       '@typescript-eslint/consistent-type-imports': ['error', { prefer: 'type-imports' }],
       '@typescript-eslint/explicit-function-return-type': ['error', { allowExpressions: false }],
       '@typescript-eslint/explicit-module-boundary-types': 'error',
-      '@typescript-eslint/no-explicit-any': 'error',
+      // Inherited debt, tracked by #7 (RawResponse). Flip to 'error' there.
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-unsafe-argument': 'warn',
+      '@typescript-eslint/no-unsafe-return': 'warn',
+      // Inherited debt, tracked by #13. Flip to 'error' there.
+      '@typescript-eslint/restrict-template-expressions': 'warn',
+      'no-prototype-builtins': 'warn',
       '@typescript-eslint/switch-exhaustiveness-check': 'error',
 
       /* --- Modern syntax --- */
       '@typescript-eslint/prefer-optional-chain': 'error',
       '@typescript-eslint/prefer-readonly': 'error',
-      'no-prototype-builtins': 'error',
       'no-var': 'error',
       'prefer-const': 'error',
       'prefer-object-spread': 'error',
@@ -73,8 +78,10 @@ export default tseslint.config(
       '@typescript-eslint/prefer-nullish-coalescing': 'off',
 
       /* --- Documentation --- */
+      // Re-enable after #7 removes the eslint-disable comments that detach
+      // real JSDoc from its declaration and make this rule's fixer insert empty stubs.
       'jsdoc/require-jsdoc': [
-        'warn',
+        'off',
         {
           contexts: ['TSInterfaceDeclaration', 'TSTypeAliasDeclaration', 'TSEnumDeclaration'],
           publicOnly: true,
@@ -84,6 +91,10 @@ export default tseslint.config(
             MethodDefinition: true,
           },
         },
+      ],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
       ],
       'no-console': ['error', { allow: ['warn', 'error'] }],
     },
