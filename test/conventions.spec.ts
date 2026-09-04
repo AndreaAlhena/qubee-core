@@ -2,33 +2,33 @@ import { globSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const ROOT = join(fileURLToPath(new URL('.', import.meta.url)), '..');
-const SRC = join(ROOT, 'src');
+import type { SourceDeclaration, SourceFile } from './source-file.type';
 
-type SourceFile = {
-  declarations: { kind: string; name: string; exported: boolean }[];
-  name: string;
-  path: string;
-  text: string;
-};
+const rootDir = join(fileURLToPath(new URL('.', import.meta.url)), '..');
+const srcDir = join(rootDir, 'src');
+const testDir = join(rootDir, 'test');
 
 const DECL =
   /^(export\s+)?(?:declare\s+)?(abstract class|class|interface|type|enum|const|function)\s+(\w+)/gm;
 
-const files: SourceFile[] = globSync('**/*.ts', { cwd: SRC })
-  .filter((p: string) => !p.endsWith('.spec.ts'))
-  .map((p: string): SourceFile => {
-    const text = readFileSync(join(SRC, p), 'utf8');
+const read = (dir: string, prefix: string): SourceFile[] =>
+  globSync('**/*.ts', { cwd: dir }).map((p: string): SourceFile => {
+    const text = readFileSync(join(dir, p), 'utf8');
     const declarations = [...text.matchAll(DECL)].map((m) => ({
       exported: Boolean(m[1]),
       kind: m[2].replace('abstract class', 'class'),
       name: m[3],
     }));
-    return { declarations, name: p.split('/').pop() as string, path: p, text };
+    return { declarations, name: p.split('/').pop() as string, path: `${prefix}${p}`, text };
   });
 
-const exportedOf = (f: SourceFile): SourceFile['declarations'] =>
-  f.declarations.filter((d) => d.exported);
+/** Everything under src/, excluding specs — the shipped library. */
+const files: SourceFile[] = read(srcDir, 'src/').filter((f) => !f.name.endsWith('.spec.ts'));
+
+/** Every TypeScript file in the repo, specs and test helpers included. */
+const allFiles: SourceFile[] = [...read(srcDir, 'src/'), ...read(testDir, 'test/')];
+
+const exportedOf = (f: SourceFile): SourceDeclaration[] => f.declarations.filter((d) => d.exported);
 
 describe('repository conventions', () => {
   it('has source files to check', () => {
@@ -104,11 +104,36 @@ describe('repository conventions', () => {
     expect(offenders).toEqual([]);
   });
 
+  it('uses UPPER_CASE only for literal constants', () => {
+    // UPPER_CASE means a static, literal value. Anything computed at runtime is camelCase.
+    const declaration = /^\s*(?:export\s+)?const\s+([A-Z][A-Z0-9_]*)\s*(?::[^=]+)?=\s*(.*)$/gm;
+    const literal = /^[{['"`/]|^-?\d|^true\b|^false\b|^null\b/;
+    const offenders = allFiles.flatMap((f) =>
+      [...f.text.matchAll(declaration)]
+        .filter((m) => !literal.test(m[2].trim()))
+        .map((m) => `${f.path}: ${m[1]} is computed at runtime — use camelCase`)
+    );
+    expect(offenders).toEqual([]);
+  });
+
+  it('declares types outside *.type.ts only as non-exported local helpers', () => {
+    // A private shape used by one file may live beside its consumer; an EXPORTED
+    // type is public API and belongs in a *.type.ts of its own.
+    const offenders = allFiles
+      .filter((f) => !f.name.endsWith('.type.ts'))
+      .flatMap((f) =>
+        f.declarations
+          .filter((d) => d.kind === 'type' && d.exported)
+          .map((d) => `${f.path}: ${d.name}`)
+      );
+    expect(offenders).toEqual([]);
+  });
+
   it('orders package.json export conditions with types first', () => {
     // Condition order is SEMANTIC — the first match wins. Alphabetical sorting puts
     // "default" before "types", which makes the type declarations unreachable.
     // This bit once; prettier-plugin-sort-json is disabled for package.json because of it.
-    const pkg = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')) as {
+    const pkg = JSON.parse(readFileSync(join(rootDir, 'package.json'), 'utf8')) as {
       exports: Record<string, Record<string, Record<string, string>>>;
     };
     const conditions = Object.values(pkg.exports['.'] ?? {});
@@ -119,7 +144,7 @@ describe('repository conventions', () => {
   });
 
   it('points every package.json entry at a path that tsup emits', () => {
-    const pkg = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')) as Record<
+    const pkg = JSON.parse(readFileSync(join(rootDir, 'package.json'), 'utf8')) as Record<
       string,
       unknown
     >;

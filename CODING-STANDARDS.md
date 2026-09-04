@@ -43,7 +43,18 @@ enforced by review and by the filename split.
 - Classes, interfaces, types, enums: `PascalCase` **[auto]**
 - Enums end in `Enum`; members are `UPPER_CASE` **[auto]**
 - Variables, functions, members: `camelCase` **[auto]**
-- Module constants: `UPPER_SNAKE_CASE`
+- **Constants — casing states how the value is produced** _(enforced by
+  `test/conventions.spec.ts`)_:
+  - `UPPER_SNAKE_CASE` for **literal / static** values — a string, number, regex, or an object or
+    array literal written out in the source. `DRIVERS`, `STRAPI_DRIVER`, `DECL`.
+  - `camelCase` for anything **computed at runtime**, even when it never reassigns.
+    `const rootDir = join(...)` is camelCase because a function call produced it.
+
+    ```ts
+    const DEFAULT_PAGE_SIZE = 15; // literal        -> UPPER_SNAKE_CASE
+    const DECL = /^export\s+/gm; // regex literal  -> UPPER_SNAKE_CASE
+    const rootDir = join(base, '..'); // computed       -> camelCase
+    ```
 - A leading `_` on a **parameter** means "intentionally unused" and is exempt from
   `no-unused-vars`. That is a separate convention from the private-member prefix below; both are
   in use and they do not conflict.
@@ -141,7 +152,14 @@ load-bearing — it encodes per-backend wire-format quirks that are not obvious 
 ## Testing
 
 - Every new feature ships with tests; every bug fix ships with a regression test.
-- Specs are colocated: `laravel-request.strategy.spec.ts` beside `laravel-request.strategy.ts`.
+- Unit specs are colocated: `laravel-request.strategy.spec.ts` beside
+  `laravel-request.strategy.ts`.
+- Repo-wide checks that belong to no single source file live in `test/` —
+  `test/conventions.spec.ts`, `test/drivers.spec.ts`. Their helper types follow the same rule as
+  everything else and live in `test/*.type.ts`.
+- **`test/` is covered by the convention checks too.** It was not at first, which is precisely why
+  the first two test files shipped with `UPPER_CASE` names on computed values and a type declared
+  inline. A guard that skips the code you are currently writing is not a guard.
 - Structure: `describe('Subject') > describe('method') > it('should …')`, arrange/act/assert.
 - Coverage thresholds are enforced in `vitest.config.ts` and must not be lowered to make a build
   pass.

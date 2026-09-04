@@ -7,7 +7,7 @@ import { DriverEnum } from '../src/enums/driver.enum';
 import { PaginationModeEnum } from '../src/enums/pagination-mode.enum';
 import { ResponseOptions } from '../src/models/response-options';
 
-const DRIVERS_DIR = join(fileURLToPath(new URL('.', import.meta.url)), '..', 'src', 'drivers');
+const driversDir = join(fileURLToPath(new URL('.', import.meta.url)), '..', 'src', 'drivers');
 
 describe('DRIVERS registry', () => {
   it('covers every DriverEnum member', () => {
@@ -16,7 +16,7 @@ describe('DRIVERS registry', () => {
 
   it('has no orphaned driver file', () => {
     // The one hazard the per-file split introduces: a *.driver.ts nothing imports.
-    const onDisk = globSync('*.driver.ts', { cwd: DRIVERS_DIR }).length;
+    const onDisk = globSync('*.driver.ts', { cwd: driversDir }).length;
     expect(onDisk).toBe(Object.keys(DRIVERS).length);
   });
 
