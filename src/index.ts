@@ -101,6 +101,9 @@ export { StrapiResponseStrategy } from './strategies/strapi-response.strategy';
 export { WordpressRequestStrategy } from './strategies/wordpress-request.strategy';
 export { WordpressResponseStrategy } from './strategies/wordpress-response.strategy';
 
+// Services
+export { QubeeStore } from './services/qubee-store';
+
 // Drivers
 export { API_PLATFORM_DRIVER } from './drivers/api-platform.driver';
 export { DIRECTUS_DRIVER } from './drivers/directus.driver';
