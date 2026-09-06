@@ -67,6 +67,9 @@ describe('repository conventions', () => {
     const all = files.map((f) => f.text).join('\n');
     const offenders = files
       .flatMap((f) => f.declarations.map((d) => ({ ...d, path: f.path })))
+      // Type-like declarations only: UPPER_CASE consts such as INITIAL_STATE
+      // also start with I followed by a capital.
+      .filter((d) => d.kind === 'interface' || d.kind === 'type')
       .filter((d) => /^I[A-Z]/.test(d.name))
       .filter((d) => !new RegExp(`implements\\s+${d.name}\\b`).test(all))
       .map((d) => `${d.path}: ${d.name} is I-prefixed but no class implements it`);
