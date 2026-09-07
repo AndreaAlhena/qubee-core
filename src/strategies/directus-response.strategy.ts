@@ -1,5 +1,6 @@
 import type { ResponseOptions } from '../models/response-options';
 import type { PaginatedObject } from '../types/paginated-object.type';
+import type { RawResponse } from '../types/raw-response.type';
 
 import { PaginatedCollection } from '../models/paginated-collection';
 import { AbstractDotPathResponseStrategy } from './abstract-dot-path-response.strategy';
@@ -56,7 +57,7 @@ export class DirectusResponseStrategy extends AbstractDotPathResponseStrategy {
    */
 
   private _deriveLastPage(
-    response: Record<string, any>,
+    response: RawResponse,
     options: ResponseOptions,
     data: unknown[] | undefined,
     total?: number,
@@ -118,7 +119,7 @@ export class DirectusResponseStrategy extends AbstractDotPathResponseStrategy {
    */
 
   public override paginate<T extends PaginatedObject>(
-    response: Record<string, any>,
+    response: RawResponse,
     options: ResponseOptions
   ): PaginatedCollection<T> {
     const data = this.resolve(response, options.data) as T[];

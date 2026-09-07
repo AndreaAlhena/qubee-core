@@ -1,8 +1,10 @@
 import type { IResponseStrategy } from '../interfaces/response-strategy.interface';
 import type { ResponseOptions } from '../models/response-options';
 import type { PaginatedObject } from '../types/paginated-object.type';
+import type { RawResponse } from '../types/raw-response.type';
 
 import { PaginatedCollection } from '../models/paginated-collection';
+import { readNumber, readRows } from '../utils/read-path';
 
 /**
  * Response strategy for the FeathersJS driver
@@ -52,13 +54,13 @@ export class FeathersResponseStrategy implements IResponseStrategy {
    */
 
   public paginate<T extends PaginatedObject>(
-    response: Record<string, any>,
+    response: RawResponse,
     options: ResponseOptions
   ): PaginatedCollection<T> {
-    const data = response[options.data] as T[];
-    const total = response[options.total] as number | undefined;
-    const perPage = response[options.perPage] as number | undefined;
-    const skip = (response[FeathersResponseStrategy._skipKey] ?? 0) as number;
+    const data = readRows<T>(response, options.data);
+    const total = readNumber(response, options.total);
+    const perPage = readNumber(response, options.perPage);
+    const skip = readNumber(response, FeathersResponseStrategy._skipKey) ?? 0;
 
     const currentPage = perPage ? Math.floor(skip / perPage) + 1 : 1;
     const lastPage = total !== undefined && perPage ? Math.ceil(total / perPage) : undefined;

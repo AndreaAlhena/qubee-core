@@ -1,8 +1,10 @@
 import type { IResponseStrategy } from '../interfaces/response-strategy.interface';
 import type { ResponseOptions } from '../models/response-options';
 import type { PaginatedObject } from '../types/paginated-object.type';
+import type { RawResponse } from '../types/raw-response.type';
 
 import { PaginatedCollection } from '../models/paginated-collection';
+import { readNumber, readRows, readString } from '../utils/read-path';
 
 /**
  * Base class for response strategies whose pagination metadata is a flat
@@ -33,21 +35,21 @@ export abstract class AbstractFlatResponseStrategy implements IResponseStrategy 
    */
 
   public paginate<T extends PaginatedObject>(
-    response: Record<string, any>,
+    response: RawResponse,
     options: ResponseOptions
   ): PaginatedCollection<T> {
     return new PaginatedCollection(
-      response[options.data],
-      response[options.currentPage],
-      response[options.from],
-      response[options.to],
-      response[options.total],
-      response[options.perPage],
-      response[options.prevPageUrl],
-      response[options.nextPageUrl],
-      response[options.lastPage],
-      response[options.firstPageUrl],
-      response[options.lastPageUrl]
+      readRows<T>(response, options.data),
+      readNumber(response, options.currentPage) ?? 1,
+      readNumber(response, options.from),
+      readNumber(response, options.to),
+      readNumber(response, options.total),
+      readNumber(response, options.perPage),
+      readString(response, options.prevPageUrl),
+      readString(response, options.nextPageUrl),
+      readNumber(response, options.lastPage),
+      readString(response, options.firstPageUrl),
+      readString(response, options.lastPageUrl)
     );
   }
 }

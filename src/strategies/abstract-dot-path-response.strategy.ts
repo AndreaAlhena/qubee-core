@@ -1,8 +1,10 @@
 import type { IResponseStrategy } from '../interfaces/response-strategy.interface';
 import type { ResponseOptions } from '../models/response-options';
 import type { PaginatedObject } from '../types/paginated-object.type';
+import type { RawResponse } from '../types/raw-response.type';
 
 import { PaginatedCollection } from '../models/paginated-collection';
+import { readPath } from '../utils/read-path';
 
 /**
  * Base class for response strategies whose pagination metadata lives at
@@ -30,9 +32,8 @@ export abstract class AbstractDotPathResponseStrategy implements IResponseStrate
    * @param path - The dot-notation path to resolve
    * @returns The resolved value, or undefined if any segment is missing
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  protected resolve(response: Record<string, any>, path: string): unknown {
-    return path.split('.').reduce((obj, key) => obj?.[key], response);
+  protected resolve(response: RawResponse, path: string): unknown {
+    return readPath(response, path);
   }
 
   /**
@@ -49,7 +50,7 @@ export abstract class AbstractDotPathResponseStrategy implements IResponseStrate
    */
 
   protected resolveFrom(
-    response: Record<string, any>,
+    response: RawResponse,
     options: ResponseOptions,
     currentPage: number,
     perPage?: number
@@ -83,7 +84,7 @@ export abstract class AbstractDotPathResponseStrategy implements IResponseStrate
    */
 
   protected resolveTo(
-    response: Record<string, any>,
+    response: RawResponse,
     options: ResponseOptions,
     currentPage: number,
     perPage?: number,
@@ -111,7 +112,7 @@ export abstract class AbstractDotPathResponseStrategy implements IResponseStrate
    */
 
   public paginate<T extends PaginatedObject>(
-    response: Record<string, any>,
+    response: RawResponse,
     options: ResponseOptions
   ): PaginatedCollection<T> {
     const data = this.resolve(response, options.data) as T[];

@@ -1,5 +1,6 @@
 import type { ResponseOptions } from '../models/response-options';
 import type { PaginatedObject } from '../types/paginated-object.type';
+import type { RawResponse } from '../types/raw-response.type';
 
 import { PaginatedCollection } from '../models/paginated-collection';
 import { AbstractDotPathResponseStrategy } from './abstract-dot-path-response.strategy';
@@ -49,8 +50,8 @@ export class SpringResponseStrategy extends AbstractDotPathResponseStrategy {
    * @param options - The response key name configuration
    * @returns The 1-indexed current page number
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private _resolveCurrentPage(response: Record<string, any>, options: ResponseOptions): number {
+
+  private _resolveCurrentPage(response: RawResponse, options: ResponseOptions): number {
     const pageNumber = this.resolve(response, options.currentPage) as number | undefined;
 
     return (pageNumber ?? 0) + 1;
@@ -72,7 +73,7 @@ export class SpringResponseStrategy extends AbstractDotPathResponseStrategy {
    */
 
   private _resolveData<T extends PaginatedObject>(
-    response: Record<string, any>,
+    response: RawResponse,
     options: ResponseOptions
   ): T[] {
     const raw = this.resolve(response, options.data);
@@ -101,7 +102,7 @@ export class SpringResponseStrategy extends AbstractDotPathResponseStrategy {
    */
 
   public override paginate<T extends PaginatedObject>(
-    response: Record<string, any>,
+    response: RawResponse,
     options: ResponseOptions
   ): PaginatedCollection<T> {
     const data = this._resolveData<T>(response, options);
