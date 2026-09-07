@@ -1,12 +1,15 @@
+import { UnsupportedCapabilityError } from './unsupported-capability.error';
+
 /**
- * Error thrown when filter operators are attempted with a driver that does not support them
+ * Thrown when the active driver does not support operator filters — `addFilterOperator()`.
  *
- * Filter operators are only supported by the NestJS driver.
- * Use `addFilter()` for Spatie implicit equality filters.
+ * The message is generated from the capability and driver, never hardcoded.
  */
-export class UnsupportedFilterOperatorError extends Error {
-  constructor() {
-    super('Filter operators are only supported by the NestJS driver. Use addFilter() for Spatie.');
-    this.name = 'UnsupportedFilterOperatorError';
+export class UnsupportedFilterOperatorError extends UnsupportedCapabilityError {
+  /**
+   * @param driver - The active driver, when known
+   */
+  constructor(driver?: string) {
+    super('operatorFilters', driver);
   }
 }

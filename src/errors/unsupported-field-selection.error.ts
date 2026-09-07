@@ -1,14 +1,15 @@
+import { UnsupportedCapabilityError } from './unsupported-capability.error';
+
 /**
- * Error thrown when per-model field selection is attempted with a driver that does not support it
+ * Thrown when the active driver does not support per-model field selection — `addFields()`.
  *
- * Per-model field selection is only supported by the Spatie driver.
- * Use `addSelect()` for NestJS flat field selection.
+ * The message is generated from the capability and driver, never hardcoded.
  */
-export class UnsupportedFieldSelectionError extends Error {
-  constructor() {
-    super(
-      'Per-model field selection is only supported by the Spatie driver. Use addSelect() for NestJS.'
-    );
-    this.name = 'UnsupportedFieldSelectionError';
+export class UnsupportedFieldSelectionError extends UnsupportedCapabilityError {
+  /**
+   * @param driver - The active driver, when known
+   */
+  constructor(driver?: string) {
+    super('fields', driver);
   }
 }

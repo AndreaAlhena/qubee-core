@@ -1,11 +1,15 @@
+import { UnsupportedCapabilityError } from './unsupported-capability.error';
+
 /**
- * Error thrown when includes are attempted with a driver that does not support them
+ * Thrown when the active driver does not support relation includes — `addIncludes()`.
  *
- * Includes are only supported by the Spatie driver.
+ * The message is generated from the capability and driver, never hardcoded.
  */
-export class UnsupportedIncludesError extends Error {
-  constructor() {
-    super('Includes are only supported by the Spatie driver.');
-    this.name = 'UnsupportedIncludesError';
+export class UnsupportedIncludesError extends UnsupportedCapabilityError {
+  /**
+   * @param driver - The active driver, when known
+   */
+  constructor(driver?: string) {
+    super('includes', driver);
   }
 }

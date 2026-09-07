@@ -4,6 +4,7 @@ import type { SortEnum } from '../enums/sort.enum';
 // Contracts
 import type { IRequestStrategy } from '../interfaces/request-strategy.interface';
 // Types
+import type { Driver } from '../types/driver.type';
 import type { Fields } from '../types/fields.type';
 import type { StrategyCapabilities } from '../types/strategy-capabilities.type';
 // Services
@@ -25,6 +26,11 @@ import { QueryBuilderOptions } from '../models/query-builder-options';
 
 export class QueryBuilder {
   /**
+   * The active driver, recorded solely so capability errors can name it.
+   */
+  private readonly _driver?: Driver;
+
+  /**
    * Resolved query parameter key name options
    */
   private readonly _options: QueryBuilderOptions;
@@ -43,12 +49,15 @@ export class QueryBuilder {
    * @param store - State container holding the query being built
    * @param requestStrategy - Driver strategy that turns state into a URI
    * @param options - Query parameter key names for the active driver
+   * @param driver - Active driver id, used to name it in capability errors
    */
   constructor(
     store: QubeeStore,
     requestStrategy: IRequestStrategy,
-    options: QueryBuilderOptions = new QueryBuilderOptions({})
+    options: QueryBuilderOptions = new QueryBuilderOptions({}),
+    driver?: Driver
   ) {
+    this._driver = driver;
     this._options = options;
     this._requestStrategy = requestStrategy;
     this._store = store;
@@ -94,7 +103,7 @@ export class QueryBuilder {
    * @throws {UnsupportedEmbeddedError} If the active driver does not support embedded resources
    */
   public addEmbedded(relation: string, ...columns: string[]): this {
-    this._assertCapability('embedded', new UnsupportedEmbeddedError());
+    this._assertCapability('embedded', new UnsupportedEmbeddedError(this._driver));
 
     this._store.addEmbedded({ [relation]: columns });
 
@@ -110,7 +119,7 @@ export class QueryBuilder {
    * @throws {UnsupportedFieldSelectionError} If the active driver does not support per-model field selection
    */
   public addFields(model: string, fields: string[]): this {
-    this._assertCapability('fields', new UnsupportedFieldSelectionError());
+    this._assertCapability('fields', new UnsupportedFieldSelectionError(this._driver));
 
     if (!fields.length) {
       return this;
@@ -132,7 +141,7 @@ export class QueryBuilder {
    * @throws {UnsupportedFilterError} If the active driver does not support filters
    */
   public addFilter(field: string, ...values: (string | number | boolean)[]): this {
-    this._assertCapability('filters', new UnsupportedFilterError());
+    this._assertCapability('filters', new UnsupportedFilterError(this._driver));
 
     if (!values.length) {
       return this;
@@ -162,7 +171,7 @@ export class QueryBuilder {
     operator: FilterOperatorEnum,
     ...values: (string | number | boolean)[]
   ): this {
-    this._assertCapability('operatorFilters', new UnsupportedFilterOperatorError());
+    this._assertCapability('operatorFilters', new UnsupportedFilterOperatorError(this._driver));
 
     if (!values.length) {
       return this;
@@ -182,7 +191,7 @@ export class QueryBuilder {
    * @throws {UnsupportedIncludesError} If the active driver does not support includes
    */
   public addIncludes(...models: string[]): this {
-    this._assertCapability('includes', new UnsupportedIncludesError());
+    this._assertCapability('includes', new UnsupportedIncludesError(this._driver));
 
     if (!models.length) {
       return this;
@@ -203,7 +212,7 @@ export class QueryBuilder {
    * @throws {UnsupportedSelectError} If the active driver does not support flat field selection
    */
   public addSelect(...fields: string[]): this {
-    this._assertCapability('select', new UnsupportedSelectError());
+    this._assertCapability('select', new UnsupportedSelectError(this._driver));
 
     if (!fields.length) {
       return this;
@@ -223,7 +232,7 @@ export class QueryBuilder {
    * @throws {UnsupportedSortError} If the active driver does not support sorts
    */
   public addSort(field: string, order: SortEnum): this {
-    this._assertCapability('sort', new UnsupportedSortError());
+    this._assertCapability('sort', new UnsupportedSortError(this._driver));
 
     this._store.addSort({
       field,
@@ -254,7 +263,7 @@ export class QueryBuilder {
    * @throws {UnsupportedEmbeddedError} If the active driver does not support embedded resources
    */
   public deleteEmbedded(...relations: string[]): this {
-    this._assertCapability('embedded', new UnsupportedEmbeddedError());
+    this._assertCapability('embedded', new UnsupportedEmbeddedError(this._driver));
 
     if (!relations.length) {
       return this;
@@ -280,7 +289,7 @@ export class QueryBuilder {
    * @throws {UnsupportedFieldSelectionError} If the active driver does not support per-model field selection
    */
   public deleteFields(fields: Fields): this {
-    this._assertCapability('fields', new UnsupportedFieldSelectionError());
+    this._assertCapability('fields', new UnsupportedFieldSelectionError(this._driver));
     this._store.deleteFields(fields);
 
     return this;
@@ -299,7 +308,7 @@ export class QueryBuilder {
    * @throws {UnsupportedFieldSelectionError} If the active driver does not support per-model field selection
    */
   public deleteFieldsByModel(model: string, ...fields: string[]): this {
-    this._assertCapability('fields', new UnsupportedFieldSelectionError());
+    this._assertCapability('fields', new UnsupportedFieldSelectionError(this._driver));
 
     if (!fields.length) {
       return this;
@@ -320,7 +329,7 @@ export class QueryBuilder {
    * @throws {UnsupportedFilterError} If the active driver does not support filters
    */
   public deleteFilters(...filters: string[]): this {
-    this._assertCapability('filters', new UnsupportedFilterError());
+    this._assertCapability('filters', new UnsupportedFilterError(this._driver));
 
     if (!filters.length) {
       return this;
@@ -340,7 +349,7 @@ export class QueryBuilder {
    * @throws {UnsupportedIncludesError} If the active driver does not support includes
    */
   public deleteIncludes(...includes: string[]): this {
-    this._assertCapability('includes', new UnsupportedIncludesError());
+    this._assertCapability('includes', new UnsupportedIncludesError(this._driver));
 
     if (!includes.length) {
       return this;
@@ -359,7 +368,7 @@ export class QueryBuilder {
    * @throws {UnsupportedFilterOperatorError} If the active driver does not support filter operators
    */
   public deleteOperatorFilters(...fields: string[]): this {
-    this._assertCapability('operatorFilters', new UnsupportedFilterOperatorError());
+    this._assertCapability('operatorFilters', new UnsupportedFilterOperatorError(this._driver));
 
     if (!fields.length) {
       return this;
@@ -378,7 +387,7 @@ export class QueryBuilder {
    * @throws {UnsupportedSearchError} If the active driver does not support search
    */
   public deleteSearch(): this {
-    this._assertCapability('search', new UnsupportedSearchError());
+    this._assertCapability('search', new UnsupportedSearchError(this._driver));
     this._store.deleteSearch();
     this._store.page = 1;
 
@@ -393,7 +402,7 @@ export class QueryBuilder {
    * @throws {UnsupportedSelectError} If the active driver does not support flat field selection
    */
   public deleteSelect(...fields: string[]): this {
-    this._assertCapability('select', new UnsupportedSelectError());
+    this._assertCapability('select', new UnsupportedSelectError(this._driver));
 
     if (!fields.length) {
       return this;
@@ -412,7 +421,7 @@ export class QueryBuilder {
    * @throws {UnsupportedSortError} If the active driver does not support sorts
    */
   public deleteSorts(...sorts: string[]): this {
-    this._assertCapability('sort', new UnsupportedSortError());
+    this._assertCapability('sort', new UnsupportedSortError(this._driver));
     this._store.deleteSorts(...sorts);
     this._store.page = 1;
 
@@ -666,7 +675,7 @@ export class QueryBuilder {
    * @throws {UnsupportedSearchError} If the active driver does not support search
    */
   public setSearch(search: string): this {
-    this._assertCapability('search', new UnsupportedSearchError());
+    this._assertCapability('search', new UnsupportedSearchError(this._driver));
     this._store.setSearch(search);
     this._store.page = 1;
 

@@ -1,11 +1,15 @@
+import { UnsupportedCapabilityError } from './unsupported-capability.error';
+
 /**
- * Error thrown when filters are attempted with a driver that does not support them
+ * Thrown when the active driver does not support filtering — `addFilter()`.
  *
- * Filters are only supported by the Spatie and NestJS drivers.
+ * The message is generated from the capability and driver, never hardcoded.
  */
-export class UnsupportedFilterError extends Error {
-  constructor() {
-    super('Filters are only supported by the Spatie and NestJS drivers.');
-    this.name = 'UnsupportedFilterError';
+export class UnsupportedFilterError extends UnsupportedCapabilityError {
+  /**
+   * @param driver - The active driver, when known
+   */
+  constructor(driver?: string) {
+    super('filters', driver);
   }
 }

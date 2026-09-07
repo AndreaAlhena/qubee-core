@@ -1,5 +1,7 @@
 import type { FilterOperatorEnum } from '../enums/filter-operator.enum';
 
+import { QubeeError } from './qubee.error';
+
 /**
  * Thrown when a filter operator receives a value array of the wrong shape
  *
@@ -15,13 +17,31 @@ import type { FilterOperatorEnum } from '../enums/filter-operator.enum';
  * error is reserved for cases where the library itself can detect the
  * problem unambiguously from the call site.
  */
-export class InvalidFilterOperatorValueError extends Error {
+export class InvalidFilterOperatorValueError extends QubeeError {
+  /**
+   * The operator that rejected the values.
+   */
+  public readonly operator: FilterOperatorEnum;
+
+  /**
+   * Why the values were rejected.
+   */
+  public readonly reason: string;
+
   /**
    * @param operator - The operator that rejected the values
    * @param reason - Short human-readable explanation of the constraint
    */
   constructor(operator: FilterOperatorEnum, reason: string) {
-    super(`Invalid values for filter operator ${operator}: ${reason}`);
-    this.name = 'InvalidFilterOperatorValueError';
+    super(
+      'INVALID_FILTER_OPERATOR_VALUE',
+      `Invalid values for filter operator ${operator}: ${reason}`,
+      {
+        context: { operator, reason },
+      }
+    );
+
+    this.operator = operator;
+    this.reason = reason;
   }
 }
