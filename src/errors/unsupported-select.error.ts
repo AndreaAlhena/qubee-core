@@ -1,14 +1,15 @@
+import { UnsupportedCapabilityError } from './unsupported-capability.error';
+
 /**
- * Error thrown when flat field selection is attempted with a driver that does not support it
+ * Thrown when the active driver does not support flat field selection — `addSelect()`.
  *
- * Flat field selection is only supported by the NestJS driver.
- * Use `addFields()` for Spatie per-model field selection.
+ * The message is generated from the capability and driver, never hardcoded.
  */
-export class UnsupportedSelectError extends Error {
-  constructor() {
-    super(
-      'Flat field selection is only supported by the NestJS driver. Use addFields() for Spatie.'
-    );
-    this.name = 'UnsupportedSelectError';
+export class UnsupportedSelectError extends UnsupportedCapabilityError {
+  /**
+   * @param driver - The active driver, when known
+   */
+  constructor(driver?: string) {
+    super('select', driver);
   }
 }

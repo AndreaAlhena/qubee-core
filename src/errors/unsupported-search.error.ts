@@ -1,11 +1,15 @@
+import { UnsupportedCapabilityError } from './unsupported-capability.error';
+
 /**
- * Error thrown when search is attempted with a driver that does not support it
+ * Thrown when the active driver does not support full-text search — `setSearch()`.
  *
- * Search is only supported by the NestJS driver.
+ * The message is generated from the capability and driver, never hardcoded.
  */
-export class UnsupportedSearchError extends Error {
-  constructor() {
-    super('Search is only supported by the NestJS driver.');
-    this.name = 'UnsupportedSearchError';
+export class UnsupportedSearchError extends UnsupportedCapabilityError {
+  /**
+   * @param driver - The active driver, when known
+   */
+  constructor(driver?: string) {
+    super('search', driver);
   }
 }

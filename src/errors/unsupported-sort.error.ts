@@ -1,11 +1,15 @@
+import { UnsupportedCapabilityError } from './unsupported-capability.error';
+
 /**
- * Error thrown when sorts are attempted with a driver that does not support them
+ * Thrown when the active driver does not support sorting — `addSort()`.
  *
- * Sorts are only supported by the Spatie and NestJS drivers.
+ * The message is generated from the capability and driver, never hardcoded.
  */
-export class UnsupportedSortError extends Error {
-  constructor() {
-    super('Sorts are only supported by the Spatie and NestJS drivers.');
-    this.name = 'UnsupportedSortError';
+export class UnsupportedSortError extends UnsupportedCapabilityError {
+  /**
+   * @param driver - The active driver, when known
+   */
+  constructor(driver?: string) {
+    super('sort', driver);
   }
 }
