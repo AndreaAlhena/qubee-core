@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention -- Payload's wire-format
    operator names (greater_than, greater_than_equal, less_than, less_than_equal,
    not_equals, not_in) are snake_case by server spec and emitted verbatim */
-import * as qs from 'qs';
 
 import type { QueryBuilderOptions } from '../models/query-builder-options';
 import type { OperatorFilter } from '../types/operator-filter.type';
@@ -12,6 +11,7 @@ import { FilterOperatorEnum } from '../enums/filter-operator.enum';
 import { SortEnum } from '../enums/sort.enum';
 import { InvalidFilterOperatorValueError } from '../errors/invalid-filter-operator-value.error';
 import { UnsupportedFilterOperatorError } from '../errors/unsupported-filter-operator.error';
+import { stringify } from '../utils/stringify';
 import { AbstractRequestStrategy } from './abstract-request.strategy';
 
 /**
@@ -114,7 +114,7 @@ export class PayloadRequestStrategy extends AbstractRequestStrategy {
       flags[column] = true;
     });
 
-    out.push(qs.stringify({ [PayloadRequestStrategy._selectKey]: flags }, { encode: false }));
+    out.push(stringify({ [PayloadRequestStrategy._selectKey]: flags }));
   }
 
   /**
@@ -139,7 +139,7 @@ export class PayloadRequestStrategy extends AbstractRequestStrategy {
    * Append the unified `where[...]` wrapper combining simple filters
    * and operator filters
    *
-   * Both kinds emit into the same nested object under `where` so qs
+   * Both kinds emit into the same nested object under `where` so `stringify()`
    * produces a single bracketed block per request. Simple single-value
    * filters fold to `equals`; simple multi-value filters fold to the
    * `in` CSV. Operator filters then merge into the same per-field map,
@@ -180,7 +180,7 @@ export class PayloadRequestStrategy extends AbstractRequestStrategy {
       return;
     }
 
-    out.push(qs.stringify({ [PayloadRequestStrategy._whereKey]: where }, { encode: false }));
+    out.push(stringify({ [PayloadRequestStrategy._whereKey]: where }));
   }
 
   /**
@@ -274,7 +274,7 @@ export class PayloadRequestStrategy extends AbstractRequestStrategy {
    * where (merged) → sort → select → page → limit
    *
    * Simple filters and operator filters share a single `where` wrapper
-   * so qs emits one ordered bracket structure rather than two duplicate
+   * so `stringify()` emits one ordered bracket structure rather than two duplicate
    * top-level `where[...]` blocks.
    *
    * @param state - The current query builder state

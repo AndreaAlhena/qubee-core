@@ -1,5 +1,3 @@
-import * as qs from 'qs';
-
 import type { QueryBuilderOptions } from '../models/query-builder-options';
 import type { OperatorFilter } from '../types/operator-filter.type';
 import type { QueryBuilderState } from '../types/query-builder-state.type';
@@ -9,6 +7,7 @@ import { FilterOperatorEnum } from '../enums/filter-operator.enum';
 import { SortEnum } from '../enums/sort.enum';
 import { InvalidFilterOperatorValueError } from '../errors/invalid-filter-operator-value.error';
 import { UnsupportedFilterOperatorError } from '../errors/unsupported-filter-operator.error';
+import { stringify } from '../utils/stringify';
 import { AbstractRequestStrategy } from './abstract-request.strategy';
 
 /**
@@ -85,14 +84,14 @@ export class StrapiRequestStrategy extends AbstractRequestStrategy {
       return;
     }
 
-    out.push(qs.stringify({ [StrapiRequestStrategy._fieldsKey]: state.select }, { encode: false }));
+    out.push(stringify({ [StrapiRequestStrategy._fieldsKey]: state.select }));
   }
 
   /**
    * Append the unified `filters[...]` wrapper combining simple filters
    * and operator filters
    *
-   * Both kinds emit into the same nested object under `filters` so qs
+   * Both kinds emit into the same nested object under `filters` so `stringify()`
    * produces a single deeply-bracketed block per request. Simple
    * single-value filters fold to `$eq`; simple multi-value filters fold
    * to `$in`. Operator filters then merge into the same per-field map,
@@ -133,7 +132,7 @@ export class StrapiRequestStrategy extends AbstractRequestStrategy {
       return;
     }
 
-    out.push(qs.stringify({ filters }, { encode: false }));
+    out.push(stringify({ filters }));
   }
 
   /**
@@ -154,7 +153,7 @@ export class StrapiRequestStrategy extends AbstractRequestStrategy {
       },
     };
 
-    out.push(qs.stringify(wrapper, { encode: false }));
+    out.push(stringify(wrapper));
   }
 
   /**
@@ -172,9 +171,7 @@ export class StrapiRequestStrategy extends AbstractRequestStrategy {
       return;
     }
 
-    out.push(
-      qs.stringify({ [StrapiRequestStrategy._populateKey]: state.includes }, { encode: false })
-    );
+    out.push(stringify({ [StrapiRequestStrategy._populateKey]: state.includes }));
   }
 
   /**
@@ -192,7 +189,7 @@ export class StrapiRequestStrategy extends AbstractRequestStrategy {
       (sort) => `${sort.field}:${sort.order === SortEnum.DESC ? 'desc' : 'asc'}`
     );
 
-    out.push(qs.stringify({ [StrapiRequestStrategy._sortKey]: pairs }, { encode: false }));
+    out.push(stringify({ [StrapiRequestStrategy._sortKey]: pairs }));
   }
 
   /**
@@ -283,7 +280,7 @@ export class StrapiRequestStrategy extends AbstractRequestStrategy {
    * populate → fields → filters (merged) → sort → pagination
    *
    * Simple filters and operator filters share a single `filters` wrapper
-   * so qs emits one ordered, deeply-nested bracket structure rather than
+   * so `stringify()` emits one ordered, deeply-nested bracket structure rather than
    * two duplicate top-level `filters[...]` blocks.
    *
    * @param state - The current query builder state

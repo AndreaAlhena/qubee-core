@@ -1,11 +1,10 @@
-import * as qs from 'qs';
-
 import type { QueryBuilderOptions } from '../models/query-builder-options';
 import type { QueryBuilderState } from '../types/query-builder-state.type';
 import type { StrategyCapabilities } from '../types/strategy-capabilities.type';
 
 import { SortEnum } from '../enums/sort.enum';
 import { UnselectableModelError } from '../errors/unselectable-model.error';
+import { stringify } from '../utils/stringify';
 import { AbstractRequestStrategy } from './abstract-request.strategy';
 
 /**
@@ -75,7 +74,7 @@ export class SpatieRequestStrategy extends AbstractRequestStrategy {
       grouped[`${options.fields}[${model}]`] = state.fields[model].join(',');
     }
 
-    out.push(qs.stringify(grouped, { encode: false }));
+    out.push(stringify(grouped));
   }
 
   /**
@@ -102,7 +101,7 @@ export class SpatieRequestStrategy extends AbstractRequestStrategy {
       }, {}),
     };
 
-    out.push(qs.stringify(wrapper, { encode: false }));
+    out.push(stringify(wrapper));
   }
 
   /**

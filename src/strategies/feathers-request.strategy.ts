@@ -1,5 +1,3 @@
-import * as qs from 'qs';
-
 import type { QueryBuilderOptions } from '../models/query-builder-options';
 import type { OperatorFilter } from '../types/operator-filter.type';
 import type { QueryBuilderState } from '../types/query-builder-state.type';
@@ -9,6 +7,7 @@ import { FilterOperatorEnum } from '../enums/filter-operator.enum';
 import { SortEnum } from '../enums/sort.enum';
 import { InvalidFilterOperatorValueError } from '../errors/invalid-filter-operator-value.error';
 import { UnsupportedFilterOperatorError } from '../errors/unsupported-filter-operator.error';
+import { stringify } from '../utils/stringify';
 import { AbstractRequestStrategy } from './abstract-request.strategy';
 
 /**
@@ -97,9 +96,7 @@ export class FeathersRequestStrategy extends AbstractRequestStrategy {
       }
 
       out.push(
-        values.length === 1
-          ? `${field}=${values[0]}`
-          : qs.stringify({ [field]: { $in: values } }, { encode: false })
+        values.length === 1 ? `${field}=${values[0]}` : stringify({ [field]: { $in: values } })
       );
     });
   }
@@ -116,7 +113,7 @@ export class FeathersRequestStrategy extends AbstractRequestStrategy {
 
       out.push(
         typeof payload === 'object'
-          ? qs.stringify({ [filter.field]: payload }, { encode: false })
+          ? stringify({ [filter.field]: payload })
           : `${filter.field}=${payload}`
       );
     });
@@ -148,9 +145,7 @@ export class FeathersRequestStrategy extends AbstractRequestStrategy {
       return;
     }
 
-    out.push(
-      qs.stringify({ [FeathersRequestStrategy._selectKey]: state.select }, { encode: false })
-    );
+    out.push(stringify({ [FeathersRequestStrategy._selectKey]: state.select }));
   }
 
   /**
@@ -170,7 +165,7 @@ export class FeathersRequestStrategy extends AbstractRequestStrategy {
       map[sort.field] = sort.order === SortEnum.DESC ? -1 : 1;
     });
 
-    out.push(qs.stringify({ [FeathersRequestStrategy._sortKey]: map }, { encode: false }));
+    out.push(stringify({ [FeathersRequestStrategy._sortKey]: map }));
   }
 
   /**
