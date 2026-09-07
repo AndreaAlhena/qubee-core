@@ -33,20 +33,24 @@ export class PaginatedCollection<T extends PaginatedObject> {
    * @returns []
    * @throws KeyNotFoundItem
    */
-  public normalize(id?: string): Normalized {
-    return {
-      [this.page]: this.data.reduce((ids: number[], value: T) => {
-        if (id && id in value) {
-          ids.push(value[id]);
-        } else if (value.hasOwnProperty('id')) {
-          ids.push(value['id']);
-        } else {
-          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- '' means "no key given"
-          throw new KeyNotFoundError(id || 'id');
-        }
+  public normalize(selector?: ((item: T) => number | string) | string): Normalized {
+    const key = typeof selector === 'string' && selector !== '' ? selector : undefined;
 
-        return ids;
-      }, []),
+    const read = (item: T): number | string => {
+      if (typeof selector === 'function') {
+        return selector(item);
+      }
+
+      const source = key !== undefined && key in item ? key : 'id';
+      const value = Object.hasOwn(item, source) ? item[source] : undefined;
+
+      if (typeof value !== 'number' && typeof value !== 'string') {
+        throw new KeyNotFoundError(key ?? 'id');
+      }
+
+      return value;
     };
+
+    return { [this.page]: this.data.map(read) } as Normalized;
   }
 }
