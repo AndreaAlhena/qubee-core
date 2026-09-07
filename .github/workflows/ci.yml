@@ -1,0 +1,78 @@
+name: CI
+
+on:
+  push:
+    branches: [master, develop]
+  pull_request:
+    branches: [master, develop]
+
+concurrency:
+  cancel-in-progress: true
+  group: ci-${{ github.ref }}
+
+jobs:
+  verify:
+    name: verify (node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ['22.12', '24']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          cache: npm
+          node-version: ${{ matrix.node }}
+
+      - run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Check formatting
+        run: npm run format:check
+
+      - name: Test with coverage
+        run: npm run test:coverage
+
+      - name: Build
+        run: npm run build
+
+      - name: Verify the published entry points resolve
+        run: |
+          node --input-type=module -e "
+            import { DRIVERS, QueryBuilder, QubeeStore } from './dist/index.js';
+            if (Object.keys(DRIVERS).length !== 18) throw new Error('ESM: expected 18 drivers');
+            if (typeof QueryBuilder !== 'function') throw new Error('ESM: QueryBuilder missing');
+            if (typeof QubeeStore !== 'function') throw new Error('ESM: QubeeStore missing');
+          "
+          node --input-type=commonjs -e "
+            const { DRIVERS, QueryBuilder } = require('./dist/index.cjs');
+            if (Object.keys(DRIVERS).length !== 18) throw new Error('CJS: expected 18 drivers');
+            if (typeof QueryBuilder !== 'function') throw new Error('CJS: QueryBuilder missing');
+          "
+
+      - name: Verify the package has no runtime dependencies
+        run: |
+          node -e "
+            const { dependencies = {} } = require('./package.json');
+            const names = Object.keys(dependencies);
+            if (names.length) throw new Error('unexpected runtime dependencies: ' + names.join(', '));
+          "
+
+      - name: Verify a single driver tree-shakes
+        run: |
+          mkdir -p .probe
+          printf \"import { STRAPI_DRIVER } from '../src/index';\nexport const x = STRAPI_DRIVER;\n\" > .probe/one.ts
+          npx esbuild .probe/one.ts --bundle --minify --format=esm --target=es2022 --outfile=.probe/one.js --log-level=error
+          SIZE=$(wc -c < .probe/one.js)
+          echo "single-driver bundle: ${SIZE} bytes"
+          # Guards against a stray import pulling the whole registry back in.
+          if [ "$SIZE" -gt 20000 ]; then echo "regression: expected well under 20 kB"; exit 1; fi
