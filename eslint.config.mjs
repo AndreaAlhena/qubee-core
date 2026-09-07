@@ -57,9 +57,7 @@ export default tseslint.config(
         'error',
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
       ],
-      /* GATED: enabling this autofixes ~180 `||` sites and changes ResponseOptions behaviour.
-         Turn on only after the characterisation tests and the coercion fix land. */
-      '@typescript-eslint/prefer-nullish-coalescing': 'off',
+      '@typescript-eslint/prefer-nullish-coalescing': 'error',
       /* --- Modern syntax --- */
       '@typescript-eslint/prefer-optional-chain': 'error',
       '@typescript-eslint/prefer-readonly': 'error',
