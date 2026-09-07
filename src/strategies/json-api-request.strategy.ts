@@ -61,7 +61,7 @@ export class JsonApiRequestStrategy extends AbstractRequestStrategy {
     const grouped: Record<string, string> = {};
 
     for (const type in state.fields) {
-      if (!state.fields.hasOwnProperty(type)) {
+      if (!Object.hasOwn(state.fields, type)) {
         continue;
       }
 
@@ -118,7 +118,7 @@ export class JsonApiRequestStrategy extends AbstractRequestStrategy {
       return;
     }
 
-    out.push(`${options.includes}=${state.includes}`);
+    out.push(`${options.includes}=${state.includes.join(',')}`);
   }
 
   /**

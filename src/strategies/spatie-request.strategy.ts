@@ -64,7 +64,7 @@ export class SpatieRequestStrategy extends AbstractRequestStrategy {
     const grouped: Record<string, string> = {};
 
     for (const model in state.fields) {
-      if (!state.fields.hasOwnProperty(model)) {
+      if (!Object.hasOwn(state.fields, model)) {
         continue;
       }
 
@@ -121,7 +121,7 @@ export class SpatieRequestStrategy extends AbstractRequestStrategy {
       return;
     }
 
-    out.push(`${options.includes}=${state.includes}`);
+    out.push(`${options.includes}=${state.includes.join(',')}`);
   }
 
   /**
