@@ -1,22 +1,33 @@
 {
-  "name": "@qubee/core",
-  "version": "0.1.0",
-  "description": "Framework-agnostic query builder and paginator with pluggable drivers for 18 backend querying standards",
   "author": {
     "name": "Andrea Tantimonaco",
     "url": "https://andreatantimonaco.me"
   },
-  "license": "MIT",
-  "type": "module",
-  "sideEffects": false,
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
+  "description": "Framework-agnostic query builder and paginator with pluggable drivers for 18 backend querying standards",
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^26.4.1",
+    "@types/qs": "^6.15.1",
+    "@vitest/coverage-v8": "^5.0.0",
+    "eslint": "^10.9.1",
+    "eslint-plugin-jsdoc": "^64.3.4",
+    "eslint-plugin-perfectionist": "^5.11.0",
+    "prettier": "^3.9.6",
+    "prettier-plugin-sort-json": "^4.2.0",
+    "qs": "^6.16.0",
+    "tsup": "^8.5.1",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.69.0",
+    "vitest": "^5.0.0"
+  },
+  "engines": {
+    "node": "^22.12.0 || ^24.0.0 || >=26.0.0"
+  },
   "exports": {
     ".": {
       "import": {
-        "types": "./dist/index.d.mts",
-        "default": "./dist/index.mjs"
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
       },
       "require": {
         "types": "./dist/index.d.cts",
@@ -25,39 +36,7 @@
     },
     "./package.json": "./package.json"
   },
-  "files": [
-    "dist"
-  ],
-  "engines": {
-    "node": "^22.12.0 || ^24.0.0 || >=26.0.0"
-  },
-  "scripts": {
-    "build": "tsup",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "test": "vitest run",
-    "test:coverage": "vitest run --coverage",
-    "test:watch": "vitest",
-    "typecheck": "tsc --noEmit"
-  },
-  "dependencies": {
-    "qs": "^6.16.0"
-  },
-  "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "@types/qs": "^6.15.1",
-    "@vitest/coverage-v8": "^5.0.0",
-    "eslint": "^10.9.1",
-    "eslint-plugin-jsdoc": "^64.3.4",
-    "eslint-plugin-perfectionist": "^5.11.0",
-    "prettier": "^3.9.6",
-    "tsup": "^8.5.1",
-    "typescript": "~6.0.3",
-    "typescript-eslint": "^8.69.0",
-    "vitest": "^5.0.0"
-  },
+  "files": ["dist"],
   "keywords": [
     "api-platform",
     "builder",
@@ -84,5 +63,24 @@
     "strapi",
     "typescript",
     "wordpress"
-  ]
+  ],
+  "license": "MIT",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "name": "@qubee/core",
+  "scripts": {
+    "build": "tsup",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "sideEffects": false,
+  "type": "module",
+  "types": "./dist/index.d.ts",
+  "version": "0.1.0"
 }

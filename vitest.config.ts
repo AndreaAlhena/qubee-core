@@ -7,14 +7,18 @@ export default defineConfig({
       include: ['src/**/*.ts'],
       provider: 'v8',
       reporter: ['text-summary', 'lcov', 'html'],
+      // Floor, not a target — these RATCHET UP, never down.
+      // ng-qubee's own figure was 95.47% statements.
       thresholds: {
-        branches: 90,
-        functions: 95,
-        lines: 95,
-        statements: 95,
+        branches: 97,
+        functions: 99,
+        lines: 98,
+        statements: 98,
       },
     },
     globals: true,
-    include: ['src/**/*.spec.ts'],
+    include: ['src/**/*.spec.ts', 'test/**/*.spec.ts'],
+    // Safe here: every spec constructs its own strategy with `new` and shares no state.
+    isolate: false,
   },
 });
