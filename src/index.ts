@@ -10,6 +10,7 @@
  */
 
 // Query builder configuration
+export type { QubeeErrorCode } from './types/qubee-error-code.type';
 export type { Config } from './types/config.type';
 export type { DriverDefinition } from './types/driver-definition.type';
 export type { Driver } from './types/driver.type';
@@ -127,6 +128,8 @@ export { STRAPI_DRIVER } from './drivers/strapi.driver';
 export { WORDPRESS_DRIVER } from './drivers/wordpress.driver';
 
 // Errors
+export { QubeeError } from './errors/qubee.error';
+export { UnsupportedCapabilityError } from './errors/unsupported-capability.error';
 export { InvalidFilterOperatorValueError } from './errors/invalid-filter-operator-value.error';
 export { InvalidLimitError } from './errors/invalid-limit.error';
 export { InvalidPageNumberError } from './errors/invalid-page-number.error';
