@@ -11,9 +11,9 @@ export default defineConfig({
       // ng-qubee's own figure was 95.47% statements.
       thresholds: {
         branches: 97,
-        functions: 97,
-        lines: 97,
-        statements: 97,
+        functions: 99,
+        lines: 98,
+        statements: 98,
       },
     },
     globals: true,
