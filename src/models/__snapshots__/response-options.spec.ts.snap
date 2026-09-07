@@ -1,0 +1,239 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ResponseOptions > resolved defaults per driver > ApiPlatform 1`] = `
+{
+  "currentPage": "",
+  "data": "hydra:member",
+  "firstPageUrl": "hydra:view.hydra:first",
+  "from": "",
+  "lastPage": "",
+  "lastPageUrl": "hydra:view.hydra:last",
+  "nextPageUrl": "hydra:view.hydra:next",
+  "path": "hydra:view.@id",
+  "perPage": "",
+  "prevPageUrl": "hydra:view.hydra:previous",
+  "to": "",
+  "total": "hydra:totalItems",
+}
+`;
+
+exports[`ResponseOptions > resolved defaults per driver > Directus 1`] = `
+{
+  "currentPage": "",
+  "data": "data",
+  "firstPageUrl": "",
+  "from": "",
+  "lastPage": "",
+  "lastPageUrl": "",
+  "nextPageUrl": "",
+  "path": "",
+  "perPage": "",
+  "prevPageUrl": "",
+  "to": "",
+  "total": "meta.filter_count",
+}
+`;
+
+exports[`ResponseOptions > resolved defaults per driver > Drf 1`] = `
+{
+  "currentPage": "",
+  "data": "results",
+  "firstPageUrl": "",
+  "from": "",
+  "lastPage": "",
+  "lastPageUrl": "",
+  "nextPageUrl": "next",
+  "path": "",
+  "perPage": "",
+  "prevPageUrl": "previous",
+  "to": "",
+  "total": "count",
+}
+`;
+
+exports[`ResponseOptions > resolved defaults per driver > Feathers 1`] = `
+{
+  "currentPage": "",
+  "data": "data",
+  "firstPageUrl": "",
+  "from": "",
+  "lastPage": "",
+  "lastPageUrl": "",
+  "nextPageUrl": "",
+  "path": "",
+  "perPage": "limit",
+  "prevPageUrl": "",
+  "to": "",
+  "total": "total",
+}
+`;
+
+exports[`ResponseOptions > resolved defaults per driver > JsonApi 1`] = `
+{
+  "currentPage": "meta.current-page",
+  "data": "data",
+  "firstPageUrl": "links.first",
+  "from": "meta.from",
+  "lastPage": "meta.page-count",
+  "lastPageUrl": "links.last",
+  "nextPageUrl": "links.next",
+  "path": "path",
+  "perPage": "meta.per-page",
+  "prevPageUrl": "links.prev",
+  "to": "meta.to",
+  "total": "meta.total",
+}
+`;
+
+exports[`ResponseOptions > resolved defaults per driver > JsonServer 1`] = `
+{
+  "currentPage": "",
+  "data": "data",
+  "firstPageUrl": "",
+  "from": "",
+  "lastPage": "pages",
+  "lastPageUrl": "",
+  "nextPageUrl": "",
+  "path": "",
+  "perPage": "",
+  "prevPageUrl": "",
+  "to": "",
+  "total": "items",
+}
+`;
+
+exports[`ResponseOptions > resolved defaults per driver > Nestjs 1`] = `
+{
+  "currentPage": "meta.currentPage",
+  "data": "data",
+  "firstPageUrl": "links.first",
+  "from": "meta.from",
+  "lastPage": "meta.totalPages",
+  "lastPageUrl": "links.last",
+  "nextPageUrl": "links.next",
+  "path": "path",
+  "perPage": "meta.itemsPerPage",
+  "prevPageUrl": "links.previous",
+  "to": "meta.to",
+  "total": "meta.totalItems",
+}
+`;
+
+exports[`ResponseOptions > resolved defaults per driver > NestjsxCrud 1`] = `
+{
+  "currentPage": "page",
+  "data": "data",
+  "firstPageUrl": "",
+  "from": "",
+  "lastPage": "pageCount",
+  "lastPageUrl": "",
+  "nextPageUrl": "",
+  "path": "",
+  "perPage": "count",
+  "prevPageUrl": "",
+  "to": "",
+  "total": "total",
+}
+`;
+
+exports[`ResponseOptions > resolved defaults per driver > Odata 1`] = `
+{
+  "currentPage": "",
+  "data": "value",
+  "firstPageUrl": "",
+  "from": "",
+  "lastPage": "",
+  "lastPageUrl": "",
+  "nextPageUrl": "@odata.nextLink",
+  "path": "",
+  "perPage": "",
+  "prevPageUrl": "",
+  "to": "",
+  "total": "@odata.count",
+}
+`;
+
+exports[`ResponseOptions > resolved defaults per driver > Payload 1`] = `
+{
+  "currentPage": "page",
+  "data": "docs",
+  "firstPageUrl": "",
+  "from": "pagingCounter",
+  "lastPage": "totalPages",
+  "lastPageUrl": "",
+  "nextPageUrl": "",
+  "path": "",
+  "perPage": "limit",
+  "prevPageUrl": "",
+  "to": "",
+  "total": "totalDocs",
+}
+`;
+
+exports[`ResponseOptions > resolved defaults per driver > Pocketbase 1`] = `
+{
+  "currentPage": "page",
+  "data": "items",
+  "firstPageUrl": "",
+  "from": "",
+  "lastPage": "totalPages",
+  "lastPageUrl": "",
+  "nextPageUrl": "",
+  "path": "",
+  "perPage": "perPage",
+  "prevPageUrl": "",
+  "to": "",
+  "total": "totalItems",
+}
+`;
+
+exports[`ResponseOptions > resolved defaults per driver > Sieve 1`] = `
+{
+  "currentPage": "page",
+  "data": "data",
+  "firstPageUrl": "",
+  "from": "",
+  "lastPage": "totalPages",
+  "lastPageUrl": "",
+  "nextPageUrl": "",
+  "path": "",
+  "perPage": "pageSize",
+  "prevPageUrl": "",
+  "to": "",
+  "total": "total",
+}
+`;
+
+exports[`ResponseOptions > resolved defaults per driver > Spring 1`] = `
+{
+  "currentPage": "page.number",
+  "data": "_embedded",
+  "firstPageUrl": "_links.first.href",
+  "from": "",
+  "lastPage": "page.totalPages",
+  "lastPageUrl": "_links.last.href",
+  "nextPageUrl": "_links.next.href",
+  "path": "",
+  "perPage": "page.size",
+  "prevPageUrl": "_links.prev.href",
+  "to": "",
+  "total": "page.totalElements",
+}
+`;
+
+exports[`ResponseOptions > resolved defaults per driver > Strapi 1`] = `
+{
+  "currentPage": "meta.pagination.page",
+  "data": "data",
+  "firstPageUrl": "links.first",
+  "from": "meta.pagination.from",
+  "lastPage": "meta.pagination.pageCount",
+  "lastPageUrl": "links.last",
+  "nextPageUrl": "links.next",
+  "path": "path",
+  "perPage": "meta.pagination.pageSize",
+  "prevPageUrl": "links.prev",
+  "to": "meta.pagination.to",
+  "total": "meta.pagination.total",
+}
+`;

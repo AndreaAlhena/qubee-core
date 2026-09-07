@@ -133,6 +133,7 @@ export class ApiPlatformResponseStrategy extends AbstractDotPathResponseStrategy
     }
 
     if (nextPageUrl !== undefined) {
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- `0` must read as undefined; `??` would keep it
       return data?.length || undefined;
     }
 
@@ -174,7 +175,7 @@ export class ApiPlatformResponseStrategy extends AbstractDotPathResponseStrategy
       const parsed = new URL(url, 'http://relative.invalid');
       const value = parsed.searchParams.get(name);
 
-      return value === null ? undefined : value;
+      return value ?? undefined;
     } catch {
       return undefined;
     }

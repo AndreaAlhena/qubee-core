@@ -98,6 +98,7 @@ export class JsonServerResponseStrategy implements IResponseStrategy {
       return undefined;
     }
 
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- `0` must read as undefined; `??` would keep it
     return data?.length || undefined;
   }
 

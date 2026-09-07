@@ -41,6 +41,7 @@ export class PaginatedCollection<T extends PaginatedObject> {
         } else if (value.hasOwnProperty('id')) {
           ids.push(value['id']);
         } else {
+          // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- '' means "no key given"
           throw new KeyNotFoundError(id || 'id');
         }
 
