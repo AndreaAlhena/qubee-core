@@ -70,7 +70,10 @@ jobs:
       - name: Verify a single driver tree-shakes
         run: |
           mkdir -p .probe
-          printf \"import { STRAPI_DRIVER } from '../src/index';\nexport const x = STRAPI_DRIVER;\n\" > .probe/one.ts
+          cat > .probe/one.ts <<'PROBE'
+          import { STRAPI_DRIVER } from '../src/index';
+          export const x = STRAPI_DRIVER;
+          PROBE
           npx esbuild .probe/one.ts --bundle --minify --format=esm --target=es2022 --outfile=.probe/one.js --log-level=error
           SIZE=$(wc -c < .probe/one.js)
           echo "single-driver bundle: ${SIZE} bytes"
