@@ -11,6 +11,7 @@
 
 // Query builder configuration
 export type { RawResponse } from './types/raw-response.type';
+export type { QueryValue } from './types/query-value.type';
 export type { QubeeErrorCode } from './types/qubee-error-code.type';
 export type { Config } from './types/config.type';
 export type { DriverDefinition } from './types/driver-definition.type';
@@ -150,3 +151,4 @@ export { UnsupportedSortError } from './errors/unsupported-sort.error';
 // Utilities
 export { readHeader } from './utils/read-header';
 export { readNumber, readPath, readRows, readString } from './utils/read-path';
+export { stringify } from './utils/stringify';

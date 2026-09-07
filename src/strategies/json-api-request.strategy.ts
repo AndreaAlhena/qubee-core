@@ -1,11 +1,10 @@
-import * as qs from 'qs';
-
 import type { QueryBuilderOptions } from '../models/query-builder-options';
 import type { QueryBuilderState } from '../types/query-builder-state.type';
 import type { StrategyCapabilities } from '../types/strategy-capabilities.type';
 
 import { SortEnum } from '../enums/sort.enum';
 import { UnselectableModelError } from '../errors/unselectable-model.error';
+import { stringify } from '../utils/stringify';
 import { AbstractRequestStrategy } from './abstract-request.strategy';
 
 /**
@@ -72,7 +71,7 @@ export class JsonApiRequestStrategy extends AbstractRequestStrategy {
       grouped[`${options.fields}[${type}]`] = state.fields[type].join(',');
     }
 
-    out.push(qs.stringify(grouped, { encode: false }));
+    out.push(stringify(grouped));
   }
 
   /**
@@ -99,7 +98,7 @@ export class JsonApiRequestStrategy extends AbstractRequestStrategy {
       }, {}),
     };
 
-    out.push(qs.stringify(wrapper, { encode: false }));
+    out.push(stringify(wrapper));
   }
 
   /**
@@ -124,7 +123,7 @@ export class JsonApiRequestStrategy extends AbstractRequestStrategy {
   /**
    * Append JSON:API bracket pagination as `page[number]=1&page[size]=15`
    *
-   * `qs.stringify` already returns the two segments joined with `&`, so we
+   * `stringify()` already returns the two segments joined with `&`, so we
    * push the whole string as one accumulator entry — `_join` will glue
    * it onto the rest with the same separator.
    *
@@ -137,10 +136,7 @@ export class JsonApiRequestStrategy extends AbstractRequestStrategy {
     options: QueryBuilderOptions,
     out: string[]
   ): void {
-    const pagination = qs.stringify(
-      { [options.page]: { number: state.page, size: state.limit } },
-      { encode: false }
-    );
+    const pagination = stringify({ [options.page]: { number: state.page, size: state.limit } });
 
     out.push(pagination);
   }

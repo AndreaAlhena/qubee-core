@@ -1,5 +1,3 @@
-import * as qs from 'qs';
-
 import type { QueryBuilderOptions } from '../models/query-builder-options';
 import type { OperatorFilter } from '../types/operator-filter.type';
 import type { QueryBuilderState } from '../types/query-builder-state.type';
@@ -9,6 +7,7 @@ import { FilterOperatorEnum } from '../enums/filter-operator.enum';
 import { SortEnum } from '../enums/sort.enum';
 import { InvalidFilterOperatorValueError } from '../errors/invalid-filter-operator-value.error';
 import { UnsupportedFilterOperatorError } from '../errors/unsupported-filter-operator.error';
+import { stringify } from '../utils/stringify';
 import { AbstractRequestStrategy } from './abstract-request.strategy';
 
 /**
@@ -134,7 +133,7 @@ export class DirectusRequestStrategy extends AbstractRequestStrategy {
    * and operator filters
    *
    * Both kinds emit into the same nested object under the filter key so
-   * qs produces a single deeply-bracketed block per request. Simple
+   * `stringify()` produces a single deeply-bracketed block per request. Simple
    * single-value filters fold to `_eq`; simple multi-value filters fold
    * to `_in` (CSV). Operator filters then merge into the same per-field
    * map, potentially co-existing with a simple filter on the same field.
@@ -181,7 +180,7 @@ export class DirectusRequestStrategy extends AbstractRequestStrategy {
       return;
     }
 
-    out.push(qs.stringify({ [options.filters]: filter }, { encode: false }));
+    out.push(stringify({ [options.filters]: filter }));
   }
 
   /**
@@ -352,7 +351,7 @@ export class DirectusRequestStrategy extends AbstractRequestStrategy {
    * filter (merged) → sort → fields → search → meta → limit → page
    *
    * Simple filters and operator filters share a single `filter` wrapper
-   * so qs emits one ordered, deeply-nested bracket structure rather than
+   * so `stringify()` emits one ordered, deeply-nested bracket structure rather than
    * two duplicate top-level `filter[...]` blocks.
    *
    * @param state - The current query builder state
