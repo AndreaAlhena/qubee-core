@@ -29,18 +29,18 @@ export class ResponseOptions {
   public readonly total: string;
 
   constructor(options: PaginationConfig) {
-    this.currentPage = options.currentPage || 'current_page';
-    this.data = options.data || 'data';
-    this.firstPageUrl = options.firstPageUrl || 'first_page_url';
-    this.from = options.from || 'from';
-    this.lastPage = options.lastPage || 'last_page';
-    this.lastPageUrl = options.lastPageUrl || 'last_page_url';
-    this.nextPageUrl = options.nextPageUrl || 'next_page_url';
-    this.path = options.path || 'path';
-    this.perPage = options.perPage || 'per_page';
-    this.prevPageUrl = options.prevPageUrl || 'prev_page_url';
-    this.to = options.to || 'to';
-    this.total = options.total || 'total';
+    this.currentPage = options.currentPage ?? 'current_page';
+    this.data = options.data ?? 'data';
+    this.firstPageUrl = options.firstPageUrl ?? 'first_page_url';
+    this.from = options.from ?? 'from';
+    this.lastPage = options.lastPage ?? 'last_page';
+    this.lastPageUrl = options.lastPageUrl ?? 'last_page_url';
+    this.nextPageUrl = options.nextPageUrl ?? 'next_page_url';
+    this.path = options.path ?? 'path';
+    this.perPage = options.perPage ?? 'per_page';
+    this.prevPageUrl = options.prevPageUrl ?? 'prev_page_url';
+    this.to = options.to ?? 'to';
+    this.total = options.total ?? 'total';
   }
 }
 
@@ -57,18 +57,18 @@ export class ResponseOptions {
 export class ApiPlatformResponseOptions extends ResponseOptions {
   constructor(options: PaginationConfig) {
     super({
-      currentPage: options.currentPage || '',
-      data: options.data || 'hydra:member',
-      firstPageUrl: options.firstPageUrl || 'hydra:view.hydra:first',
-      from: options.from || '',
-      lastPage: options.lastPage || '',
-      lastPageUrl: options.lastPageUrl || 'hydra:view.hydra:last',
-      nextPageUrl: options.nextPageUrl || 'hydra:view.hydra:next',
-      path: options.path || 'hydra:view.@id',
-      perPage: options.perPage || '',
-      prevPageUrl: options.prevPageUrl || 'hydra:view.hydra:previous',
-      to: options.to || '',
-      total: options.total || 'hydra:totalItems',
+      currentPage: options.currentPage ?? '',
+      data: options.data ?? 'hydra:member',
+      firstPageUrl: options.firstPageUrl ?? 'hydra:view.hydra:first',
+      from: options.from ?? '',
+      lastPage: options.lastPage ?? '',
+      lastPageUrl: options.lastPageUrl ?? 'hydra:view.hydra:last',
+      nextPageUrl: options.nextPageUrl ?? 'hydra:view.hydra:next',
+      path: options.path ?? 'hydra:view.@id',
+      perPage: options.perPage ?? '',
+      prevPageUrl: options.prevPageUrl ?? 'hydra:view.hydra:previous',
+      to: options.to ?? '',
+      total: options.total ?? 'hydra:totalItems',
     });
   }
 }
@@ -90,18 +90,18 @@ export class ApiPlatformResponseOptions extends ResponseOptions {
 export class DirectusResponseOptions extends ResponseOptions {
   constructor(options: PaginationConfig) {
     super({
-      currentPage: options.currentPage || '',
-      data: options.data || 'data',
-      firstPageUrl: options.firstPageUrl || '',
-      from: options.from || '',
-      lastPage: options.lastPage || '',
-      lastPageUrl: options.lastPageUrl || '',
-      nextPageUrl: options.nextPageUrl || '',
-      path: options.path || '',
-      perPage: options.perPage || '',
-      prevPageUrl: options.prevPageUrl || '',
-      to: options.to || '',
-      total: options.total || 'meta.filter_count',
+      currentPage: options.currentPage ?? '',
+      data: options.data ?? 'data',
+      firstPageUrl: options.firstPageUrl ?? '',
+      from: options.from ?? '',
+      lastPage: options.lastPage ?? '',
+      lastPageUrl: options.lastPageUrl ?? '',
+      nextPageUrl: options.nextPageUrl ?? '',
+      path: options.path ?? '',
+      perPage: options.perPage ?? '',
+      prevPageUrl: options.prevPageUrl ?? '',
+      to: options.to ?? '',
+      total: options.total ?? 'meta.filter_count',
     });
   }
 }
@@ -120,18 +120,18 @@ export class DirectusResponseOptions extends ResponseOptions {
 export class DrfResponseOptions extends ResponseOptions {
   constructor(options: PaginationConfig) {
     super({
-      currentPage: options.currentPage || '',
-      data: options.data || 'results',
-      firstPageUrl: options.firstPageUrl || '',
-      from: options.from || '',
-      lastPage: options.lastPage || '',
-      lastPageUrl: options.lastPageUrl || '',
-      nextPageUrl: options.nextPageUrl || 'next',
-      path: options.path || '',
-      perPage: options.perPage || '',
-      prevPageUrl: options.prevPageUrl || 'previous',
-      to: options.to || '',
-      total: options.total || 'count',
+      currentPage: options.currentPage ?? '',
+      data: options.data ?? 'results',
+      firstPageUrl: options.firstPageUrl ?? '',
+      from: options.from ?? '',
+      lastPage: options.lastPage ?? '',
+      lastPageUrl: options.lastPageUrl ?? '',
+      nextPageUrl: options.nextPageUrl ?? 'next',
+      path: options.path ?? '',
+      perPage: options.perPage ?? '',
+      prevPageUrl: options.prevPageUrl ?? 'previous',
+      to: options.to ?? '',
+      total: options.total ?? 'count',
     });
   }
 }
@@ -150,18 +150,18 @@ export class DrfResponseOptions extends ResponseOptions {
 export class FeathersResponseOptions extends ResponseOptions {
   constructor(options: PaginationConfig) {
     super({
-      currentPage: options.currentPage || '',
-      data: options.data || 'data',
-      firstPageUrl: options.firstPageUrl || '',
-      from: options.from || '',
-      lastPage: options.lastPage || '',
-      lastPageUrl: options.lastPageUrl || '',
-      nextPageUrl: options.nextPageUrl || '',
-      path: options.path || '',
-      perPage: options.perPage || 'limit',
-      prevPageUrl: options.prevPageUrl || '',
-      to: options.to || '',
-      total: options.total || 'total',
+      currentPage: options.currentPage ?? '',
+      data: options.data ?? 'data',
+      firstPageUrl: options.firstPageUrl ?? '',
+      from: options.from ?? '',
+      lastPage: options.lastPage ?? '',
+      lastPageUrl: options.lastPageUrl ?? '',
+      nextPageUrl: options.nextPageUrl ?? '',
+      path: options.path ?? '',
+      perPage: options.perPage ?? 'limit',
+      prevPageUrl: options.prevPageUrl ?? '',
+      to: options.to ?? '',
+      total: options.total ?? 'total',
     });
   }
 }
@@ -176,18 +176,18 @@ export class FeathersResponseOptions extends ResponseOptions {
 export class JsonApiResponseOptions extends ResponseOptions {
   constructor(options: PaginationConfig) {
     super({
-      currentPage: options.currentPage || 'meta.current-page',
-      data: options.data || 'data',
-      firstPageUrl: options.firstPageUrl || 'links.first',
-      from: options.from || 'meta.from',
-      lastPage: options.lastPage || 'meta.page-count',
-      lastPageUrl: options.lastPageUrl || 'links.last',
-      nextPageUrl: options.nextPageUrl || 'links.next',
-      path: options.path || 'path',
-      perPage: options.perPage || 'meta.per-page',
-      prevPageUrl: options.prevPageUrl || 'links.prev',
-      to: options.to || 'meta.to',
-      total: options.total || 'meta.total',
+      currentPage: options.currentPage ?? 'meta.current-page',
+      data: options.data ?? 'data',
+      firstPageUrl: options.firstPageUrl ?? 'links.first',
+      from: options.from ?? 'meta.from',
+      lastPage: options.lastPage ?? 'meta.page-count',
+      lastPageUrl: options.lastPageUrl ?? 'links.last',
+      nextPageUrl: options.nextPageUrl ?? 'links.next',
+      path: options.path ?? 'path',
+      perPage: options.perPage ?? 'meta.per-page',
+      prevPageUrl: options.prevPageUrl ?? 'links.prev',
+      to: options.to ?? 'meta.to',
+      total: options.total ?? 'meta.total',
     });
   }
 }
@@ -206,18 +206,18 @@ export class JsonApiResponseOptions extends ResponseOptions {
 export class JsonServerResponseOptions extends ResponseOptions {
   constructor(options: PaginationConfig) {
     super({
-      currentPage: options.currentPage || '',
-      data: options.data || 'data',
-      firstPageUrl: options.firstPageUrl || '',
-      from: options.from || '',
-      lastPage: options.lastPage || 'pages',
-      lastPageUrl: options.lastPageUrl || '',
-      nextPageUrl: options.nextPageUrl || '',
-      path: options.path || '',
-      perPage: options.perPage || '',
-      prevPageUrl: options.prevPageUrl || '',
-      to: options.to || '',
-      total: options.total || 'items',
+      currentPage: options.currentPage ?? '',
+      data: options.data ?? 'data',
+      firstPageUrl: options.firstPageUrl ?? '',
+      from: options.from ?? '',
+      lastPage: options.lastPage ?? 'pages',
+      lastPageUrl: options.lastPageUrl ?? '',
+      nextPageUrl: options.nextPageUrl ?? '',
+      path: options.path ?? '',
+      perPage: options.perPage ?? '',
+      prevPageUrl: options.prevPageUrl ?? '',
+      to: options.to ?? '',
+      total: options.total ?? 'items',
     });
   }
 }
@@ -230,18 +230,18 @@ export class JsonServerResponseOptions extends ResponseOptions {
 export class NestjsResponseOptions extends ResponseOptions {
   constructor(options: PaginationConfig) {
     super({
-      currentPage: options.currentPage || 'meta.currentPage',
-      data: options.data || 'data',
-      firstPageUrl: options.firstPageUrl || 'links.first',
-      from: options.from || 'meta.from',
-      lastPage: options.lastPage || 'meta.totalPages',
-      lastPageUrl: options.lastPageUrl || 'links.last',
-      nextPageUrl: options.nextPageUrl || 'links.next',
-      path: options.path || 'path',
-      perPage: options.perPage || 'meta.itemsPerPage',
-      prevPageUrl: options.prevPageUrl || 'links.previous',
-      to: options.to || 'meta.to',
-      total: options.total || 'meta.totalItems',
+      currentPage: options.currentPage ?? 'meta.currentPage',
+      data: options.data ?? 'data',
+      firstPageUrl: options.firstPageUrl ?? 'links.first',
+      from: options.from ?? 'meta.from',
+      lastPage: options.lastPage ?? 'meta.totalPages',
+      lastPageUrl: options.lastPageUrl ?? 'links.last',
+      nextPageUrl: options.nextPageUrl ?? 'links.next',
+      path: options.path ?? 'path',
+      perPage: options.perPage ?? 'meta.itemsPerPage',
+      prevPageUrl: options.prevPageUrl ?? 'links.previous',
+      to: options.to ?? 'meta.to',
+      total: options.total ?? 'meta.totalItems',
     });
   }
 }
@@ -260,18 +260,18 @@ export class NestjsResponseOptions extends ResponseOptions {
 export class NestjsxCrudResponseOptions extends ResponseOptions {
   constructor(options: PaginationConfig) {
     super({
-      currentPage: options.currentPage || 'page',
-      data: options.data || 'data',
-      firstPageUrl: options.firstPageUrl || '',
-      from: options.from || '',
-      lastPage: options.lastPage || 'pageCount',
-      lastPageUrl: options.lastPageUrl || '',
-      nextPageUrl: options.nextPageUrl || '',
-      path: options.path || '',
-      perPage: options.perPage || 'count',
-      prevPageUrl: options.prevPageUrl || '',
-      to: options.to || '',
-      total: options.total || 'total',
+      currentPage: options.currentPage ?? 'page',
+      data: options.data ?? 'data',
+      firstPageUrl: options.firstPageUrl ?? '',
+      from: options.from ?? '',
+      lastPage: options.lastPage ?? 'pageCount',
+      lastPageUrl: options.lastPageUrl ?? '',
+      nextPageUrl: options.nextPageUrl ?? '',
+      path: options.path ?? '',
+      perPage: options.perPage ?? 'count',
+      prevPageUrl: options.prevPageUrl ?? '',
+      to: options.to ?? '',
+      total: options.total ?? 'total',
     });
   }
 }
@@ -290,18 +290,18 @@ export class NestjsxCrudResponseOptions extends ResponseOptions {
 export class OdataResponseOptions extends ResponseOptions {
   constructor(options: PaginationConfig) {
     super({
-      currentPage: options.currentPage || '',
-      data: options.data || 'value',
-      firstPageUrl: options.firstPageUrl || '',
-      from: options.from || '',
-      lastPage: options.lastPage || '',
-      lastPageUrl: options.lastPageUrl || '',
-      nextPageUrl: options.nextPageUrl || '@odata.nextLink',
-      path: options.path || '',
-      perPage: options.perPage || '',
-      prevPageUrl: options.prevPageUrl || '',
-      to: options.to || '',
-      total: options.total || '@odata.count',
+      currentPage: options.currentPage ?? '',
+      data: options.data ?? 'value',
+      firstPageUrl: options.firstPageUrl ?? '',
+      from: options.from ?? '',
+      lastPage: options.lastPage ?? '',
+      lastPageUrl: options.lastPageUrl ?? '',
+      nextPageUrl: options.nextPageUrl ?? '@odata.nextLink',
+      path: options.path ?? '',
+      perPage: options.perPage ?? '',
+      prevPageUrl: options.prevPageUrl ?? '',
+      to: options.to ?? '',
+      total: options.total ?? '@odata.count',
     });
   }
 }
@@ -321,18 +321,18 @@ export class OdataResponseOptions extends ResponseOptions {
 export class PayloadResponseOptions extends ResponseOptions {
   constructor(options: PaginationConfig) {
     super({
-      currentPage: options.currentPage || 'page',
-      data: options.data || 'docs',
-      firstPageUrl: options.firstPageUrl || '',
-      from: options.from || 'pagingCounter',
-      lastPage: options.lastPage || 'totalPages',
-      lastPageUrl: options.lastPageUrl || '',
-      nextPageUrl: options.nextPageUrl || '',
-      path: options.path || '',
-      perPage: options.perPage || 'limit',
-      prevPageUrl: options.prevPageUrl || '',
-      to: options.to || '',
-      total: options.total || 'totalDocs',
+      currentPage: options.currentPage ?? 'page',
+      data: options.data ?? 'docs',
+      firstPageUrl: options.firstPageUrl ?? '',
+      from: options.from ?? 'pagingCounter',
+      lastPage: options.lastPage ?? 'totalPages',
+      lastPageUrl: options.lastPageUrl ?? '',
+      nextPageUrl: options.nextPageUrl ?? '',
+      path: options.path ?? '',
+      perPage: options.perPage ?? 'limit',
+      prevPageUrl: options.prevPageUrl ?? '',
+      to: options.to ?? '',
+      total: options.total ?? 'totalDocs',
     });
   }
 }
@@ -350,18 +350,18 @@ export class PayloadResponseOptions extends ResponseOptions {
 export class PocketbaseResponseOptions extends ResponseOptions {
   constructor(options: PaginationConfig) {
     super({
-      currentPage: options.currentPage || 'page',
-      data: options.data || 'items',
-      firstPageUrl: options.firstPageUrl || '',
-      from: options.from || '',
-      lastPage: options.lastPage || 'totalPages',
-      lastPageUrl: options.lastPageUrl || '',
-      nextPageUrl: options.nextPageUrl || '',
-      path: options.path || '',
-      perPage: options.perPage || 'perPage',
-      prevPageUrl: options.prevPageUrl || '',
-      to: options.to || '',
-      total: options.total || 'totalItems',
+      currentPage: options.currentPage ?? 'page',
+      data: options.data ?? 'items',
+      firstPageUrl: options.firstPageUrl ?? '',
+      from: options.from ?? '',
+      lastPage: options.lastPage ?? 'totalPages',
+      lastPageUrl: options.lastPageUrl ?? '',
+      nextPageUrl: options.nextPageUrl ?? '',
+      path: options.path ?? '',
+      perPage: options.perPage ?? 'perPage',
+      prevPageUrl: options.prevPageUrl ?? '',
+      to: options.to ?? '',
+      total: options.total ?? 'totalItems',
     });
   }
 }
@@ -381,18 +381,18 @@ export class PocketbaseResponseOptions extends ResponseOptions {
 export class SieveResponseOptions extends ResponseOptions {
   constructor(options: PaginationConfig) {
     super({
-      currentPage: options.currentPage || 'page',
-      data: options.data || 'data',
-      firstPageUrl: options.firstPageUrl || '',
-      from: options.from || '',
-      lastPage: options.lastPage || 'totalPages',
-      lastPageUrl: options.lastPageUrl || '',
-      nextPageUrl: options.nextPageUrl || '',
-      path: options.path || '',
-      perPage: options.perPage || 'pageSize',
-      prevPageUrl: options.prevPageUrl || '',
-      to: options.to || '',
-      total: options.total || 'total',
+      currentPage: options.currentPage ?? 'page',
+      data: options.data ?? 'data',
+      firstPageUrl: options.firstPageUrl ?? '',
+      from: options.from ?? '',
+      lastPage: options.lastPage ?? 'totalPages',
+      lastPageUrl: options.lastPageUrl ?? '',
+      nextPageUrl: options.nextPageUrl ?? '',
+      path: options.path ?? '',
+      perPage: options.perPage ?? 'pageSize',
+      prevPageUrl: options.prevPageUrl ?? '',
+      to: options.to ?? '',
+      total: options.total ?? 'total',
     });
   }
 }
@@ -412,18 +412,18 @@ export class SieveResponseOptions extends ResponseOptions {
 export class SpringResponseOptions extends ResponseOptions {
   constructor(options: PaginationConfig) {
     super({
-      currentPage: options.currentPage || 'page.number',
-      data: options.data || '_embedded',
-      firstPageUrl: options.firstPageUrl || '_links.first.href',
-      from: options.from || '',
-      lastPage: options.lastPage || 'page.totalPages',
-      lastPageUrl: options.lastPageUrl || '_links.last.href',
-      nextPageUrl: options.nextPageUrl || '_links.next.href',
-      path: options.path || '',
-      perPage: options.perPage || 'page.size',
-      prevPageUrl: options.prevPageUrl || '_links.prev.href',
-      to: options.to || '',
-      total: options.total || 'page.totalElements',
+      currentPage: options.currentPage ?? 'page.number',
+      data: options.data ?? '_embedded',
+      firstPageUrl: options.firstPageUrl ?? '_links.first.href',
+      from: options.from ?? '',
+      lastPage: options.lastPage ?? 'page.totalPages',
+      lastPageUrl: options.lastPageUrl ?? '_links.last.href',
+      nextPageUrl: options.nextPageUrl ?? '_links.next.href',
+      path: options.path ?? '',
+      perPage: options.perPage ?? 'page.size',
+      prevPageUrl: options.prevPageUrl ?? '_links.prev.href',
+      to: options.to ?? '',
+      total: options.total ?? 'page.totalElements',
     });
   }
 }
@@ -439,18 +439,18 @@ export class SpringResponseOptions extends ResponseOptions {
 export class StrapiResponseOptions extends ResponseOptions {
   constructor(options: PaginationConfig) {
     super({
-      currentPage: options.currentPage || 'meta.pagination.page',
-      data: options.data || 'data',
-      firstPageUrl: options.firstPageUrl || 'links.first',
-      from: options.from || 'meta.pagination.from',
-      lastPage: options.lastPage || 'meta.pagination.pageCount',
-      lastPageUrl: options.lastPageUrl || 'links.last',
-      nextPageUrl: options.nextPageUrl || 'links.next',
-      path: options.path || 'path',
-      perPage: options.perPage || 'meta.pagination.pageSize',
-      prevPageUrl: options.prevPageUrl || 'links.prev',
-      to: options.to || 'meta.pagination.to',
-      total: options.total || 'meta.pagination.total',
+      currentPage: options.currentPage ?? 'meta.pagination.page',
+      data: options.data ?? 'data',
+      firstPageUrl: options.firstPageUrl ?? 'links.first',
+      from: options.from ?? 'meta.pagination.from',
+      lastPage: options.lastPage ?? 'meta.pagination.pageCount',
+      lastPageUrl: options.lastPageUrl ?? 'links.last',
+      nextPageUrl: options.nextPageUrl ?? 'links.next',
+      path: options.path ?? 'path',
+      perPage: options.perPage ?? 'meta.pagination.pageSize',
+      prevPageUrl: options.prevPageUrl ?? 'links.prev',
+      to: options.to ?? 'meta.pagination.to',
+      total: options.total ?? 'meta.pagination.total',
     });
   }
 }
