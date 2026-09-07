@@ -102,6 +102,39 @@ describe('ResponseOptions', () => {
     });
   });
 
+  // Regression for #9. The base used `||`, so a subclass passing '' to mean
+  // "this driver derives the field" had its intent silently replaced by the
+  // Laravel default. '' is a meaningful value here and must survive.
+  describe('empty-string intent (#9)', () => {
+    it('keeps an explicitly empty key empty', () => {
+      expect(new ResponseOptions({ currentPage: '' }).currentPage).toBe('');
+    });
+
+    it('still falls back when a key is absent', () => {
+      expect(new ResponseOptions({}).currentPage).toBe('current_page');
+    });
+
+    it('still falls back when a key is explicitly undefined', () => {
+      expect(new ResponseOptions({ currentPage: undefined }).currentPage).toBe('current_page');
+    });
+
+    it('honours a subclass that derives fields from URLs rather than the body', () => {
+      const options = new ApiPlatformResponseOptions({});
+
+      // Documented behaviour: these have no body field and are derived from
+      // the Hydra view URLs instead.
+      expect(options.currentPage).toBe('');
+      expect(options.lastPage).toBe('');
+      expect(options.perPage).toBe('');
+    });
+
+    it('lets a caller override a derived field on a subclass', () => {
+      expect(new ApiPlatformResponseOptions({ currentPage: 'meta.page' }).currentPage).toBe(
+        'meta.page'
+      );
+    });
+  });
+
   // Characterisation: the exact resolved defaults, per driver, before the
   // `||` -> `??` fix. Any change here is a wire-format change and must be
   // deliberate — see #9.
