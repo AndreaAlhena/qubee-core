@@ -19,15 +19,15 @@ export class QueryBuilderOptions {
   public readonly sortBy: string;
 
   constructor(options: QueryBuilderConfig) {
-    this.appends = options.appends || 'append';
-    this.fields = options.fields || 'fields';
-    this.filters = options.filters || 'filter';
-    this.includes = options.includes || 'include';
-    this.limit = options.limit || 'limit';
-    this.page = options.page || 'page';
-    this.search = options.search || 'search';
-    this.select = options.select || 'select';
-    this.sort = options.sort || 'sort';
-    this.sortBy = options.sortBy || 'sortBy';
+    this.appends = options.appends ?? 'append';
+    this.fields = options.fields ?? 'fields';
+    this.filters = options.filters ?? 'filter';
+    this.includes = options.includes ?? 'include';
+    this.limit = options.limit ?? 'limit';
+    this.page = options.page ?? 'page';
+    this.search = options.search ?? 'search';
+    this.select = options.select ?? 'select';
+    this.sort = options.sort ?? 'sort';
+    this.sortBy = options.sortBy ?? 'sortBy';
   }
 }

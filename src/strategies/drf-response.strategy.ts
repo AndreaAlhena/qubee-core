@@ -193,7 +193,7 @@ export class DrfResponseStrategy implements IResponseStrategy {
       const parsed = new URL(url);
       const value = parsed.searchParams.get(name);
 
-      return value === null ? undefined : value;
+      return value ?? undefined;
     } catch {
       return undefined;
     }
