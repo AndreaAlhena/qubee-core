@@ -1,8 +1,10 @@
 import type { IResponseStrategy } from '../interfaces/response-strategy.interface';
 import type { ResponseOptions } from '../models/response-options';
 import type { PaginatedObject } from '../types/paginated-object.type';
+import type { RawResponse } from '../types/raw-response.type';
 
 import { PaginatedCollection } from '../models/paginated-collection';
+import { readNumber, readRows, readString } from '../utils/read-path';
 
 /**
  * Response strategy for the Django REST Framework (DRF) driver
@@ -208,13 +210,13 @@ export class DrfResponseStrategy implements IResponseStrategy {
    */
 
   public paginate<T extends PaginatedObject>(
-    response: Record<string, any>,
+    response: RawResponse,
     options: ResponseOptions
   ): PaginatedCollection<T> {
-    const data = response[options.data] as T[];
-    const total = response[options.total] as number | undefined;
-    const prevPageUrl = (response[options.prevPageUrl] ?? null) as string | null;
-    const nextPageUrl = (response[options.nextPageUrl] ?? null) as string | null;
+    const data = readRows<T>(response, options.data);
+    const total = readNumber(response, options.total);
+    const prevPageUrl = readString(response, options.prevPageUrl) ?? null;
+    const nextPageUrl = readString(response, options.nextPageUrl) ?? null;
 
     const currentPage = this._deriveCurrentPage(prevPageUrl);
     const perPage = this._derivePerPage(nextPageUrl, prevPageUrl);

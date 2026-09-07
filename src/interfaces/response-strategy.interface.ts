@@ -2,6 +2,7 @@ import type { PaginatedCollection } from '../models/paginated-collection';
 import type { ResponseOptions } from '../models/response-options';
 import type { HeaderBag } from '../types/header-bag.type';
 import type { PaginatedObject } from '../types/paginated-object.type';
+import type { RawResponse } from '../types/raw-response.type';
 
 /**
  * Strategy interface for parsing paginated API responses
@@ -23,7 +24,7 @@ export interface IResponseStrategy {
    * @returns A typed PaginatedCollection instance
    */
   paginate<T extends PaginatedObject>(
-    response: Record<string, unknown>,
+    response: RawResponse,
     options: ResponseOptions,
     headers?: HeaderBag
   ): PaginatedCollection<T>;

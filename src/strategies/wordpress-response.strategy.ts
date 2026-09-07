@@ -2,9 +2,11 @@ import type { IResponseStrategy } from '../interfaces/response-strategy.interfac
 import type { ResponseOptions } from '../models/response-options';
 import type { HeaderBag } from '../types/header-bag.type';
 import type { PaginatedObject } from '../types/paginated-object.type';
+import type { RawResponse } from '../types/raw-response.type';
 
 import { PaginatedCollection } from '../models/paginated-collection';
 import { readHeader } from '../utils/read-header';
+import { readPath } from '../utils/read-path';
 
 /**
  * Internal shape holding the navigation URLs parsed out of a `Link`
@@ -41,7 +43,7 @@ type LinkRelations = {
  *   (`from = total - data.length + 1`, `to = total`).
  *
  * This strategy expects the consumer to pass the array body as
- * `response` (or a plain object with `response[options.data]` pointing
+ * `response` (or a plain object with `readPath(response, options.data)` pointing
  * at the array) and the response headers via the optional `headers`
  * bag — the same call-site shape as the PostgREST driver. Omitted
  * headers are tolerated and yield a collection with `undefined`
@@ -208,7 +210,7 @@ export class WordpressResponseStrategy implements IResponseStrategy {
    * Parse a WordPress REST response into a typed PaginatedCollection
    *
    * @param response - The raw response. Either the array body directly, or
-   * an object with the array at `response[options.data]`.
+   * an object with the array at `readPath(response, options.data)`.
    * @param options - The response key configuration (only `options.data` is
    * consulted; all pagination metadata comes from headers).
    * @param headers - Optional HTTP response headers. `X-WP-Total` /
@@ -217,12 +219,12 @@ export class WordpressResponseStrategy implements IResponseStrategy {
    * @returns A typed PaginatedCollection instance
    */
   public paginate<T extends PaginatedObject>(
-    response: Record<string, unknown>,
+    response: RawResponse,
     options: ResponseOptions,
     headers?: HeaderBag
   ): PaginatedCollection<T> {
     // Body may be a bare array or an envelope with the array at options.data
-    const data = (Array.isArray(response) ? response : response[options.data]) as T[];
+    const data = (Array.isArray(response) ? response : readPath(response, options.data)) as T[];
 
     // Header-driven pagination metadata
     const total = this._parseCount(readHeader(headers, WordpressResponseStrategy._totalHeader));

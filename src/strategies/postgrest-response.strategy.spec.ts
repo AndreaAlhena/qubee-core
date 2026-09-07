@@ -13,8 +13,7 @@ describe('PostgrestResponseStrategy', () => {
   // Body shape — PostgREST returns a bare array
   describe('body shape', () => {
     it('should accept a bare array as the response body', () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const collection = strategy.paginate([{ id: 1 }, { id: 2 }] as any, options);
+      const collection = strategy.paginate([{ id: 1 }, { id: 2 }], options);
 
       expect(collection.data).toHaveLength(2);
     });
@@ -30,8 +29,7 @@ describe('PostgrestResponseStrategy', () => {
   describe('Content-Range parsing', () => {
     it('should derive from/to/total/perPage/page/lastPage from 0-9/50', () => {
       const collection = strategy.paginate(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        [{ id: 1 }] as any,
+        [{ id: 1 }],
         options,
 
         { 'Content-Range': '0-9/50' }
@@ -48,8 +46,7 @@ describe('PostgrestResponseStrategy', () => {
 
     it('should derive page 3 from 20-29/50', () => {
       const collection = strategy.paginate(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        [{ id: 1 }] as any,
+        [{ id: 1 }],
         options,
 
         { 'Content-Range': '20-29/50' }
@@ -61,8 +58,7 @@ describe('PostgrestResponseStrategy', () => {
 
     it('should leave total and lastPage undefined when total is "*"', () => {
       const collection = strategy.paginate(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        [{ id: 1 }] as any,
+        [{ id: 1 }],
         options,
 
         { 'Content-Range': '0-9/*' }
@@ -75,8 +71,7 @@ describe('PostgrestResponseStrategy', () => {
     });
 
     it('should tolerate a missing Content-Range header', () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const collection = strategy.paginate([{ id: 1 }] as any, options);
+      const collection = strategy.paginate([{ id: 1 }], options);
 
       expect(collection.from).toBeUndefined();
       expect(collection.to).toBeUndefined();
@@ -88,8 +83,7 @@ describe('PostgrestResponseStrategy', () => {
 
     it('should tolerate a malformed Content-Range header', () => {
       const collection = strategy.paginate(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        [{ id: 1 }] as any,
+        [{ id: 1 }],
         options,
 
         { 'Content-Range': 'garbage' }
@@ -106,8 +100,7 @@ describe('PostgrestResponseStrategy', () => {
         },
       };
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const collection = strategy.paginate([{ id: 1 }] as any, options, headers);
+      const collection = strategy.paginate([{ id: 1 }], options, headers);
 
       expect(collection.perPage).toBe(5);
       expect(collection.total).toBe(25);
@@ -116,8 +109,7 @@ describe('PostgrestResponseStrategy', () => {
 
     it('should convert PostgREST 0-indexed bounds to 1-indexed from/to', () => {
       const collection = strategy.paginate(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        [{ id: 1 }] as any,
+        [{ id: 1 }],
         options,
 
         { 'Content-Range': '10-19/100' }
@@ -135,8 +127,7 @@ describe('PostgrestResponseStrategy', () => {
   describe('page URLs', () => {
     it('should leave prevPageUrl / nextPageUrl / firstPageUrl / lastPageUrl undefined', () => {
       const collection = strategy.paginate(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        [{ id: 1 }] as any,
+        [{ id: 1 }],
         options,
 
         { 'Content-Range': '0-9/50' }

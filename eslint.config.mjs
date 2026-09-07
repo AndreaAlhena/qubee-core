@@ -49,10 +49,9 @@ export default tseslint.config(
         { format: ['PascalCase'], selector: 'typeLike' },
         { format: ['UPPER_CASE'], selector: 'enumMember' },
       ],
-      // Inherited debt, tracked by #7 (RawResponse). Flip to 'error' there.
-      '@typescript-eslint/no-explicit-any': 'warn',
-      '@typescript-eslint/no-unsafe-argument': 'warn',
-      '@typescript-eslint/no-unsafe-return': 'warn',
+      '@typescript-eslint/no-explicit-any': 'error',
+      '@typescript-eslint/no-unsafe-argument': 'error',
+      '@typescript-eslint/no-unsafe-return': 'error',
       '@typescript-eslint/no-unused-vars': [
         'error',
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
@@ -61,8 +60,7 @@ export default tseslint.config(
       /* --- Modern syntax --- */
       '@typescript-eslint/prefer-optional-chain': 'error',
       '@typescript-eslint/prefer-readonly': 'error',
-      // Inherited debt, tracked by #13. Flip to 'error' there.
-      '@typescript-eslint/restrict-template-expressions': 'warn',
+      '@typescript-eslint/restrict-template-expressions': 'error',
       '@typescript-eslint/switch-exhaustiveness-check': 'error',
       /* --- Documentation --- */
       // Re-enable after #7 removes the eslint-disable comments that detach
@@ -80,7 +78,7 @@ export default tseslint.config(
         },
       ],
       'no-console': ['error', { allow: ['warn', 'error'] }],
-      'no-prototype-builtins': 'warn',
+      'no-prototype-builtins': 'error',
       'no-var': 'error',
       /* --- Ordering: alphabetical everywhere, auto-fixed --- */
       'perfectionist/sort-classes': [

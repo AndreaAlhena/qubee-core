@@ -1,8 +1,10 @@
 import type { IResponseStrategy } from '../interfaces/response-strategy.interface';
 import type { ResponseOptions } from '../models/response-options';
 import type { PaginatedObject } from '../types/paginated-object.type';
+import type { RawResponse } from '../types/raw-response.type';
 
 import { PaginatedCollection } from '../models/paginated-collection';
+import { readNumber, readRows } from '../utils/read-path';
 
 /**
  * Response strategy for the json-server driver
@@ -142,14 +144,14 @@ export class JsonServerResponseStrategy implements IResponseStrategy {
    */
 
   public paginate<T extends PaginatedObject>(
-    response: Record<string, any>,
+    response: RawResponse,
     options: ResponseOptions
   ): PaginatedCollection<T> {
-    const data = response[options.data] as T[];
-    const total = response[options.total] as number | undefined;
-    const lastPage = response[options.lastPage] as number | undefined;
-    const prev = (response[JsonServerResponseStrategy._prevKey] ?? null) as number | null;
-    const next = (response[JsonServerResponseStrategy._nextKey] ?? null) as number | null;
+    const data = readRows<T>(response, options.data);
+    const total = readNumber(response, options.total);
+    const lastPage = readNumber(response, options.lastPage);
+    const prev = readNumber(response, JsonServerResponseStrategy._prevKey) ?? null;
+    const next = readNumber(response, JsonServerResponseStrategy._nextKey) ?? null;
 
     const currentPage = prev === null ? 1 : prev + 1;
     const perPage = this._derivePerPage(next, data);
