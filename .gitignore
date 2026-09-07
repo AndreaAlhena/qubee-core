@@ -7,3 +7,7 @@ coverage/
 .vscode/*
 !.vscode/extensions.json
 npm-debug.log*
+
+# scratch files from local experiments
+.*.orig.ts
+.probe/
