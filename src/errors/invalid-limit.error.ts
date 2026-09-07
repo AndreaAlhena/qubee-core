@@ -1,3 +1,5 @@
+import { QubeeError } from './qubee.error';
+
 /**
  * Thrown when a limit value does not satisfy the active driver's constraints
  *
@@ -6,7 +8,12 @@
  * (as documented by nestjs-paginate). The message is tailored accordingly so
  * the caller understands which values are permitted.
  */
-export class InvalidLimitError extends Error {
+export class InvalidLimitError extends QubeeError {
+  /**
+   * The rejected limit.
+   */
+  public readonly limit: number;
+
   /**
    * @param limit - The rejected limit value
    * @param allowFetchAll - Whether the active driver accepts `-1` (fetch all)
@@ -16,7 +23,10 @@ export class InvalidLimitError extends Error {
       ? 'a positive integer greater than 0, or -1 to fetch all items'
       : 'a positive integer greater than 0';
 
-    super(`Invalid limit value: Limit must be ${allowed}. Received: ${limit}`);
-    this.name = 'InvalidLimitError';
+    super('INVALID_LIMIT', `Invalid limit value: Limit must be ${allowed}. Received: ${limit}`, {
+      context: { allowFetchAll, limit },
+    });
+
+    this.limit = limit;
   }
 }
