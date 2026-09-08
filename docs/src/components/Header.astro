@@ -1,0 +1,94 @@
+---
+/**
+ * Header override — the one component the design requires that Starlight's
+ * defaults cannot express: top-level section links and a version chip.
+ *
+ * Everything else on a doc page (sidebar, table of contents, pagination) is
+ * left stock and themed with CSS custom properties, because those are the
+ * overrides that break on Starlight upgrades.
+ */
+import Default from '@astrojs/starlight/components/Header.astro';
+
+import pkg from '../../../package.json';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const path = Astro.url.pathname;
+
+const SECTIONS = [
+  { href: '/guide/introduction/', label: 'Guide', match: '/guide/' },
+  { href: '/api/services/query-builder/', label: 'API', match: '/api/' },
+  { href: '/drivers/', label: 'Drivers', match: '/drivers' },
+  { href: '/changelog/', label: 'Changelog', match: '/changelog' },
+];
+---
+
+<div class="qb-header">
+  <Default><slot /></Default>
+
+  <nav class="qb-nav" aria-label="Sections">
+    <span class="qb-version">{pkg.version}</span>
+    {
+      SECTIONS.map((section) => (
+        <a
+          aria-current={path.includes(section.match) ? 'page' : undefined}
+          href={`${base}${section.href}`}
+        >
+          {section.label}
+        </a>
+      ))
+    }
+  </nav>
+</div>
+
+<style>
+  .qb-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    height: 100%;
+  }
+
+  .qb-header > :global(.header) {
+    flex: 1;
+  }
+
+  .qb-nav {
+    align-items: center;
+    display: none;
+    gap: 0.25rem;
+  }
+
+  .qb-version {
+    border: 1px solid var(--sl-color-hairline);
+    border-radius: 20px;
+    color: var(--sl-color-gray-3);
+    font-family: var(--qb-font-mono);
+    font-size: 0.7rem;
+    margin-right: 0.5rem;
+    padding: 0.15rem 0.5rem;
+  }
+
+  .qb-nav a {
+    border-radius: 7px;
+    color: var(--sl-color-gray-3);
+    font-size: 0.875rem;
+    padding: 0.45rem 0.7rem;
+    text-decoration: none;
+  }
+
+  .qb-nav a:hover {
+    background: var(--qb-hover, rgba(255, 255, 255, 0.05));
+    color: var(--sl-color-white);
+  }
+
+  .qb-nav a[aria-current='page'] {
+    color: var(--sl-color-text-accent);
+  }
+
+  /* The mobile menu already exposes these sections; showing both would duplicate. */
+  @media (min-width: 72rem) {
+    .qb-nav {
+      display: flex;
+    }
+  }
+</style>

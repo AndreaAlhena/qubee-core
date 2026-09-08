@@ -1,0 +1,113 @@
+---
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>404 — no such resource</title>
+    <link rel="icon" href={`${base}/mark.png`} />
+  </head>
+  <body>
+    <main>
+      <img src={`${base}/bee.png`} alt="" width="120" height="130" />
+      <p class="code">404 — NO SUCH RESOURCE</p>
+      <h1>This one didn't paginate</h1>
+      <p class="lede">
+        The bee flew past the last page. <code>hasNextPage()</code> would have said no.
+      </p>
+      <div class="cta">
+        <a class="btn primary" href={`${base}/`}>Back to firstPage()</a>
+        <a class="btn" href={`${base}/guide/introduction/`}>Read the guide</a>
+      </div>
+    </main>
+
+    <style is:global>
+      @import '@fontsource-variable/space-grotesk';
+      @import '@fontsource-variable/inter';
+      @import '@fontsource-variable/jetbrains-mono';
+
+      :root {
+        --honey: #ffb020;
+        --honey-hi: #ffc24d;
+        --bg: #16181c;
+        --border: #2b3038;
+        --text: #e9eaee;
+        --muted: #98a0ac;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        align-items: center;
+        background: var(--bg);
+        color: var(--text);
+        display: flex;
+        font-family: 'Inter Variable', system-ui, sans-serif;
+        justify-content: center;
+        margin: 0;
+        min-height: 100vh;
+        padding: 40px 22px;
+        text-align: center;
+      }
+
+      main { max-width: 520px; }
+
+      img {
+        filter: drop-shadow(0 18px 34px rgba(255, 176, 32, 0.2));
+        margin-bottom: 26px;
+      }
+
+      .code {
+        color: var(--honey-hi);
+        font-family: 'JetBrains Mono Variable', ui-monospace, monospace;
+        font-size: 12.5px;
+        letter-spacing: 0.1em;
+        margin: 0 0 14px;
+      }
+
+      h1 {
+        font-family: 'Space Grotesk Variable', system-ui, sans-serif;
+        font-size: clamp(30px, 6vw, 42px);
+        letter-spacing: -0.02em;
+        margin: 0 0 14px;
+      }
+
+      .lede {
+        color: var(--muted);
+        font-size: 16.5px;
+        line-height: 1.65;
+        margin: 0 0 30px;
+      }
+
+      .lede code {
+        color: var(--text);
+        font-family: 'JetBrains Mono Variable', ui-monospace, monospace;
+        font-size: 15px;
+      }
+
+      .cta { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+
+      .btn {
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        color: inherit;
+        font-size: 15px;
+        font-weight: 600;
+        padding: 11px 20px;
+        text-decoration: none;
+      }
+
+      .btn:hover { background: rgba(255, 255, 255, 0.05); }
+
+      .btn.primary {
+        background: var(--honey);
+        border-color: var(--honey);
+        color: #1b1e23;
+      }
+
+      .btn.primary:hover { background: var(--honey-hi); }
+    </style>
+  </body>
+</html>

@@ -6,6 +6,10 @@ const REPO = 'https://github.com/AndreaAlhena/qubee-core';
 export default defineConfig({
   integrations: [
     starlight({
+      components: {
+        // The only override on the site. Doc-page chrome is left stock.
+        Header: './src/components/Header.astro',
+      },
       credits: false,
       customCss: ['./src/styles/qubee.css'],
       description:

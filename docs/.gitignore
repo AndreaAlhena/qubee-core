@@ -7,3 +7,6 @@ node_modules/
 src/content/docs/api/
 src/content/docs/drivers/capabilities.mdx
 src/content/docs/drivers/reference/
+
+# Generated from CHANGELOG.md
+src/content/docs/changelog.mdx

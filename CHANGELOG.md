@@ -7,6 +7,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Documentation site now matches the provided design: a custom 404, a changelog page generated
+  from `CHANGELOG.md`, top-level section navigation with a version chip, and the bee mark inside
+  "Bee aware" callouts (#19)
+
 ## [1.0.0] - 2026-09-08
 
 First release. `@qubeejs/core` is the framework-agnostic engine extracted from
