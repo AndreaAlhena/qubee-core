@@ -4,7 +4,6 @@ import { defineConfig } from 'astro/config';
 const REPO = 'https://github.com/AndreaAlhena/qubee-core';
 
 export default defineConfig({
-  base: '/qubee-core',
   integrations: [
     starlight({
       credits: false,
@@ -63,5 +62,5 @@ export default defineConfig({
       title: 'qubee',
     }),
   ],
-  site: 'https://andreaalhena.github.io',
+  site: 'https://qubeejs.andreatantimonaco.me',
 });
