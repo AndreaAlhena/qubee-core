@@ -14,7 +14,7 @@ import { QueryBuilder } from './query-builder';
  * builder where it is:
  *
  * ```ts
- * import { createQubee, STRAPI_DRIVER } from '@qubee/core';
+ * import { createQubee, STRAPI_DRIVER } from '@qubeejs/core';
  *
  * const { builder, paginator } = createQubee({ driver: STRAPI_DRIVER });
  *

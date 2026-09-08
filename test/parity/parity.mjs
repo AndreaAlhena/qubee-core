@@ -6,7 +6,7 @@
  * request strategy changes.
  *
  * Prove the extraction is faithful: for every driver, build the same query with
- * ng-qubee@3.8.0 and with @qubee/core, and compare the emitted URI byte for byte.
+ * ng-qubee@3.8.0 and with @qubeejs/core, and compare the emitted URI byte for byte.
  *
  * ng-qubee's request strategies are pure and framework-free, so they can be
  * driven directly without Angular DI.

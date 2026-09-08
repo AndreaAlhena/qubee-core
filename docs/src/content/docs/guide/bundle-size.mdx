@@ -5,7 +5,7 @@ sidebar:
   order: 8
 ---
 
-`@qubee/core` has **zero runtime dependencies**. What you ship depends on one decision: whether you
+`@qubeejs/core` has **zero runtime dependencies**. What you ship depends on one decision: whether you
 import a driver or the registry.
 
 | Import | Minified | Gzipped |
@@ -20,7 +20,7 @@ Measured with esbuild, minified, ES2022, and asserted in CI so it cannot regress
 Each driver is its own module, exported by name:
 
 ```ts
-import { STRAPI_DRIVER, QubeeStore, QueryBuilder } from '@qubee/core';
+import { STRAPI_DRIVER, QubeeStore, QueryBuilder } from '@qubeejs/core';
 ```
 
 Bundlers tree-shake the other seventeen away, along with their response strategies and options.
@@ -31,7 +31,7 @@ Bundlers tree-shake the other seventeen away, along with their response strategi
 construction, so reserve it for when the backend genuinely is not known until runtime:
 
 ```ts
-import { DRIVERS } from '@qubee/core';
+import { DRIVERS } from '@qubeejs/core';
 
 const driver = DRIVERS[config.driver]; // pulls in all eighteen
 ```

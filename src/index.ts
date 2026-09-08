@@ -1,5 +1,5 @@
 /**
- * Public API of `@qubee/core`.
+ * Public API of `@qubeejs/core`.
  *
  * Named re-exports only — never `export *`. A barrel that re-exports blindly
  * cannot be reviewed, and an omission is invisible until someone reports it.
