@@ -16,16 +16,14 @@ ships both ESM and CommonJS.
 
 ## Build a query
 
-Three objects: a **store** holding the query state, a **builder** that mutates it, and a
-**paginator** that reads responses back.
+`createQubee()` wires up the three objects you need and returns them sharing one store.
 
 ```ts title="articles.ts"
-import { QubeeStore, QueryBuilder, Paginator, STRAPI_DRIVER, SortEnum } from '@qubee/core';
+import { createQubee, STRAPI_DRIVER, SortEnum } from '@qubee/core';
 
-const store = new QubeeStore();
-const qb = new QueryBuilder(store, STRAPI_DRIVER.createRequestStrategy('query'));
+const { builder, paginator, store } = createQubee({ driver: STRAPI_DRIVER });
 
-const uri = qb
+const uri = builder
   .setResource('articles')
   .addFilter('status', 'published')
   .addSort('createdAt', SortEnum.DESC)
@@ -49,16 +47,10 @@ const body = await fetch(`https://example.com/api${uri}`).then((r) => r.json());
 
 ## Read the page back
 
-Hand the body to a `Paginator`. It parses the envelope **and** syncs the page metadata into the
-store, so navigation helpers know where they are.
+Hand the body to the `paginator`. It parses the envelope **and** syncs the page metadata into the
+shared store, so navigation helpers know where they are.
 
 ```ts
-const paginator = new Paginator(
-  store,
-  STRAPI_DRIVER.createResponseStrategy(),
-  STRAPI_DRIVER.createResponseOptions({}),
-);
-
 const page = paginator.paginate(body);
 
 page.data;     // rows
@@ -72,22 +64,39 @@ throw `PaginationNotSyncedError`. `Paginator.paginate()` syncs that for you — 
 by hand instead, call `store.syncLastPage()` yourself.
 :::
 
+## Constructing by hand
+
+`createQubee()` is a convenience, not a requirement. Construct the three yourself when they should
+not share a store, or when you are wiring them into a framework's DI container:
+
+```ts
+import { QubeeStore, QueryBuilder, Paginator, STRAPI_DRIVER } from '@qubee/core';
+
+const store = new QubeeStore();
+const builder = new QueryBuilder(store, STRAPI_DRIVER.createRequestStrategy('query'));
+const paginator = new Paginator(
+  store,
+  STRAPI_DRIVER.createResponseStrategy(),
+  STRAPI_DRIVER.createResponseOptions({}),
+);
+```
+
 ## Choosing a driver
 
 Import the one you need. The other seventeen tree-shake away, which is the difference between
 2.5 kB and 9.5 kB gzipped.
 
 ```ts
-import { STRAPI_DRIVER } from '@qubee/core';    // 2.5 kB gzipped
-import { DRIVERS } from '@qubee/core';          // 9.5 kB — all eighteen
+import { STRAPI_DRIVER } from '@qubee/core';  // just this driver
+import { DRIVERS } from '@qubee/core';        // all eighteen
 ```
 
-Reach for `DRIVERS` only when the backend is chosen at runtime:
+`createQubee()` deliberately takes a **definition**, not an id, so it never reaches into the
+registry on your behalf. Choosing at runtime is still one line — you just opt into the cost
+explicitly, at your own import site:
 
 ```ts
-import { DRIVERS, DriverEnum } from '@qubee/core';
+import { createQubee, DRIVERS } from '@qubee/core';
 
-const driver = DRIVERS[DriverEnum.STRAPI];
+const { builder } = createQubee({ driver: DRIVERS[config.driver] });
 ```
-
-Both `DriverEnum.STRAPI` and the plain string `'strapi'` typecheck wherever a driver id is accepted.

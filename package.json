@@ -77,6 +77,7 @@
     "lint:fix": "eslint . --fix",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
+    "test:parity": "cd test/parity && npm install --no-save --silent ng-qubee@3.8.0 @angular/core@22 @angular/compiler@22 rxjs@7 && node parity.mjs",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit"
   },

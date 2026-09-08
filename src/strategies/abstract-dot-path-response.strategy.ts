@@ -116,7 +116,9 @@ export abstract class AbstractDotPathResponseStrategy implements IResponseStrate
     options: ResponseOptions
   ): PaginatedCollection<T> {
     const data = this.resolve(response, options.data) as T[];
-    const currentPage = this.resolve(response, options.currentPage) as number;
+    // Default to 1 to match AbstractFlatResponseStrategy: `PaginatedCollection.page`
+    // is declared `number`, and a response with no page field is page one.
+    const currentPage = (this.resolve(response, options.currentPage) as number | undefined) ?? 1;
     const total = this.resolve(response, options.total) as number | undefined;
     const perPage = this.resolve(response, options.perPage) as number | undefined;
     const lastPage = this.resolve(response, options.lastPage) as number | undefined;

@@ -9,6 +9,7 @@ import { NestjsResponseStrategy } from '../strategies/nestjs-response.strategy';
  * `-1` as a fetch-all sentinel for the limit.
  */
 export const NESTJS_DRIVER: DriverDefinition = {
+  id: 'nestjs',
   createRequestStrategy: () => new NestjsRequestStrategy(),
   createResponseStrategy: () => new NestjsResponseStrategy(),
   createResponseOptions: (config) => new NestjsResponseOptions(config),

@@ -14,6 +14,16 @@ describe('DRIVERS registry', () => {
     expect(Object.keys(DRIVERS).sort()).toEqual(Object.values(DriverEnum).sort());
   });
 
+  it('gives every definition an id matching its registry key', () => {
+    // createQubee() reads `driver.id` to name the driver in capability errors,
+    // so a mismatch would produce a confidently wrong message.
+    const mismatched = Object.entries(DRIVERS)
+      .filter(([key, definition]) => key !== definition.id)
+      .map(([key, definition]) => `${key} declares id '${definition.id}'`);
+
+    expect(mismatched).toEqual([]);
+  });
+
   it('has no orphaned driver file', () => {
     // The one hazard the per-file split introduces: a *.driver.ts nothing imports.
     const onDisk = globSync('*.driver.ts', { cwd: driversDir }).length;

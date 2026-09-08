@@ -10,6 +10,7 @@ import { LaravelResponseStrategy } from '../strategies/laravel-response.strategy
  * `ResponseOptions` defaults apply unchanged — no subclass is needed.
  */
 export const LARAVEL_DRIVER: DriverDefinition = {
+  id: 'laravel',
   createRequestStrategy: () => new LaravelRequestStrategy(),
   createResponseStrategy: () => new LaravelResponseStrategy(),
   createResponseOptions: (config) => new ResponseOptions(config),

@@ -9,6 +9,7 @@ import { SpringResponseStrategy } from '../strategies/spring-response.strategy';
  * `_links` block, so page indices are zero-based on the wire.
  */
 export const SPRING_DRIVER: DriverDefinition = {
+  id: 'spring',
   createRequestStrategy: () => new SpringRequestStrategy(),
   createResponseStrategy: () => new SpringResponseStrategy(),
   createResponseOptions: (config) => new SpringResponseOptions(config),

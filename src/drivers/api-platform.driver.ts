@@ -9,6 +9,7 @@ import { ApiPlatformResponseStrategy } from '../strategies/api-platform-response
  * `hydra:view` block rather than read from named fields.
  */
 export const API_PLATFORM_DRIVER: DriverDefinition = {
+  id: 'api-platform',
   createRequestStrategy: () => new ApiPlatformRequestStrategy(),
   createResponseStrategy: () => new ApiPlatformResponseStrategy(),
   createResponseOptions: (config) => new ApiPlatformResponseOptions(config),

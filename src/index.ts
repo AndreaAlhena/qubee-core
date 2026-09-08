@@ -13,6 +13,8 @@
 export type { RawResponse } from './types/raw-response.type';
 export type { QueryValue } from './types/query-value.type';
 export type { QubeeErrorCode } from './types/qubee-error-code.type';
+export type { Qubee } from './types/qubee.type';
+export type { QubeeConfig } from './types/qubee-config.type';
 export type { Config } from './types/config.type';
 export type { DriverDefinition } from './types/driver-definition.type';
 export type { Driver } from './types/driver.type';
@@ -106,6 +108,7 @@ export { WordpressResponseStrategy } from './strategies/wordpress-response.strat
 
 // Services
 export { QueryBuilder } from './services/query-builder';
+export { createQubee } from './services/create-qubee';
 export { Paginator } from './services/paginator';
 export { QubeeStore } from './services/qubee-store';
 

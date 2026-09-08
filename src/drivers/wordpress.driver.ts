@@ -10,6 +10,7 @@ import { WordpressResponseStrategy } from '../strategies/wordpress-response.stra
  * is used and nothing is read from the body envelope.
  */
 export const WORDPRESS_DRIVER: DriverDefinition = {
+  id: 'wordpress',
   createRequestStrategy: () => new WordpressRequestStrategy(),
   createResponseStrategy: () => new WordpressResponseStrategy(),
   createResponseOptions: (config) => new ResponseOptions(config),
