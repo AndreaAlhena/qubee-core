@@ -106,6 +106,7 @@ export { WordpressResponseStrategy } from './strategies/wordpress-response.strat
 
 // Services
 export { QueryBuilder } from './services/query-builder';
+export { Paginator } from './services/paginator';
 export { QubeeStore } from './services/qubee-store';
 
 // Drivers
