@@ -1,0 +1,7 @@
+coverage/
+dist/
+node_modules/
+
+# The docs site is a separate workspace with its own toolchain, and most of its
+# content is generated from source — see docs/scripts/.
+docs/
