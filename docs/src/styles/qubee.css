@@ -1,0 +1,174 @@
+/*
+ * Qubee design tokens.
+ *
+ * Unlayered on purpose: Starlight puts its own rules inside
+ * `@layer starlight.*`, and unlayered declarations beat layered ones no matter
+ * the order — so this file wins without a single `!important`, and without
+ * overriding a single component.
+ */
+
+@import '@fontsource-variable/space-grotesk';
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/jetbrains-mono';
+
+:root {
+  /* Brand */
+  --qb-honey: #ffb020;
+  --qb-honey-hi: #ffc24d;
+  --qb-honey-soft: rgba(255, 176, 32, 0.14);
+  --qb-honey-line: rgba(255, 176, 32, 0.35);
+
+  /* Surfaces */
+  --qb-bg: #16181c;
+  --qb-alt: #101216;
+  --qb-surface: #1c1f24;
+  --qb-code-bg: #0c0e12;
+  --qb-border: #2b3038;
+  --qb-hover: rgba(255, 255, 255, 0.05);
+
+  /* Ink */
+  --qb-text: #e9eaee;
+  --qb-muted: #98a0ac;
+
+  /* Type */
+  --qb-font-display: 'Space Grotesk Variable', system-ui, sans-serif;
+  --qb-font-body: 'Inter Variable', system-ui, sans-serif;
+  --qb-font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
+
+  --sl-font: var(--qb-font-body);
+  --sl-font-mono: var(--qb-font-mono);
+}
+
+/* Dark is the design's native mode. */
+:root,
+:root[data-theme='dark'] {
+  --sl-color-accent: var(--qb-honey);
+  --sl-color-accent-high: var(--qb-honey-hi);
+  --sl-color-accent-low: rgba(255, 176, 32, 0.2);
+
+  --sl-color-white: #ffffff;
+  --sl-color-gray-1: var(--qb-text);
+  --sl-color-gray-2: #c7ccd4;
+  --sl-color-gray-3: var(--qb-muted);
+  --sl-color-gray-4: #6b7280;
+  --sl-color-gray-5: var(--qb-border);
+  --sl-color-gray-6: var(--qb-surface);
+  --sl-color-gray-7: #23262b;
+  --sl-color-black: var(--qb-bg);
+
+  --sl-color-bg: var(--qb-bg);
+  --sl-color-bg-nav: rgba(22, 24, 28, 0.86);
+  --sl-color-bg-sidebar: var(--qb-bg);
+  --sl-color-bg-inline-code: var(--qb-surface);
+  --sl-color-hairline: var(--qb-border);
+  --sl-color-hairline-light: var(--qb-border);
+  --sl-color-hairline-shade: var(--qb-border);
+  --sl-color-text: var(--qb-text);
+  --sl-color-text-accent: var(--qb-honey-hi);
+  --sl-color-text-invert: #1b1e23;
+}
+
+/* A light mode derived from the same hues, so the toggle is not a downgrade. */
+:root[data-theme='light'] {
+  --sl-color-accent: #b06f00;
+  --sl-color-accent-high: #6d4400;
+  --sl-color-accent-low: rgba(255, 176, 32, 0.18);
+
+  --sl-color-white: #16181c;
+  --sl-color-gray-1: #16181c;
+  --sl-color-gray-2: #2b3038;
+  --sl-color-gray-3: #5c6472;
+  --sl-color-gray-4: #8a93a1;
+  --sl-color-gray-5: #d8dce3;
+  --sl-color-gray-6: #eef0f4;
+  --sl-color-gray-7: #f6f7f9;
+  --sl-color-black: #ffffff;
+
+  --sl-color-bg: #ffffff;
+  --sl-color-bg-nav: rgba(255, 255, 255, 0.88);
+  --sl-color-bg-sidebar: #fbfbfc;
+  --sl-color-hairline: #e4e7ec;
+  --sl-color-text: #2b3038;
+  --sl-color-text-accent: #a86800;
+  --sl-color-text-invert: #ffffff;
+}
+
+/* Headings carry the display face. */
+.sl-markdown-content :is(h1, h2, h3, h4),
+.site-title,
+h1 {
+  font-family: var(--qb-font-display);
+  letter-spacing: -0.01em;
+}
+
+/* Site title: the wordmark sits beside the bee. */
+.site-title {
+  font-weight: 700;
+}
+
+/* Code blocks inherit the design's deeper background. */
+:root {
+  --ec-frm-edBg: var(--qb-code-bg);
+  --ec-frm-trmBg: var(--qb-code-bg);
+  --ec-brdCol: var(--qb-border);
+  --ec-codeFontFml: var(--qb-font-mono);
+}
+
+/* --- Components the design specifies ---------------------------------- */
+
+/* "Bee aware" — the branded admonition, mapped onto Starlight's caution aside
+   so it works from plain markdown with no component override. */
+.starlight-aside--caution {
+  background: var(--qb-honey-soft);
+  border-inline-start-color: var(--qb-honey);
+}
+
+.starlight-aside--caution .starlight-aside__title {
+  color: var(--qb-honey-hi);
+  font-family: var(--qb-font-display);
+}
+
+/* Meta chips on API pages: file path, method count, kind. */
+.qb-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0 0 1.75rem;
+}
+
+.qb-chip {
+  border: 1px solid var(--sl-color-hairline);
+  border-radius: 6px;
+  color: var(--sl-color-gray-3);
+  font-family: var(--qb-font-mono);
+  font-size: 0.75rem;
+  padding: 0.3rem 0.6rem;
+}
+
+.qb-chip:first-child {
+  background: var(--qb-honey);
+  border-color: var(--qb-honey);
+  color: #1b1e23;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Capability and comparison tables. */
+.sl-markdown-content table {
+  border-collapse: collapse;
+  display: block;
+  overflow-x: auto;
+  width: 100%;
+}
+
+.sl-markdown-content :is(th, td) {
+  border-color: var(--sl-color-hairline);
+}
+
+.sl-markdown-content th {
+  font-family: var(--qb-font-display);
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}

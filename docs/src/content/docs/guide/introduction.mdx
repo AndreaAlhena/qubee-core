@@ -1,0 +1,57 @@
+---
+title: Introduction
+description: What @qubee/core is, what it deliberately is not, and when to reach for it.
+sidebar:
+  order: 1
+---
+
+`@qubee/core` builds query URIs and parses paginated responses. That is the whole remit.
+
+**It performs no I/O.** There is no HTTP client, no transport layer, no interceptors and no cache.
+You fetch however you like — `fetch`, `axios`, `HttpClient`, a server action — and hand the
+response body back.
+
+That constraint is what makes it framework-agnostic. There is no Angular, no React, no RxJS and no
+Signals anywhere in the package, and no runtime dependencies at all.
+
+## The problem it solves
+
+Every backend invented its own query dialect. Filtering published articles, newest first, twenty-five
+to a page looks like this:
+
+```
+Strapi      /articles?filters[status][$eq]=published&sort[0]=createdAt:desc&pagination[pageSize]=25
+PostgREST   /articles?status=eq.published&order=createdAt.desc&limit=25
+OData       /articles?$filter=status eq 'published'&$orderby=createdAt desc&$top=25
+JSON:API    /articles?filter[status]=published&sort=-createdAt&page[size]=25
+```
+
+Same query, four wire formats. Swapping backends, or supporting more than one, means rewriting
+every call site.
+
+qubee moves that knowledge into a driver. The chain you write stays identical:
+
+```ts
+qb.setResource('articles').addFilter('status', 'published').addSort('createdAt', SortEnum.DESC).setLimit(25);
+```
+
+## What you get
+
+- **18 drivers**, each knowing both halves — how to write the request and how to read the response
+- **Capability checking**, so an unsupported feature throws at the call site instead of producing a
+  URI the server quietly ignores
+- **A typed `PaginatedCollection`** — rows plus the page metadata the backend actually reported
+- **A store** exposing the `useSyncExternalStore` contract, so any framework can bind to it
+
+## What it is not
+
+- Not an HTTP client
+- Not an ORM or a schema validator — it does not know your models
+- Not a cache or a state manager for server data. Pair it with TanStack Query or similar
+- Not a SQL builder. It speaks HTTP query strings
+
+## Where it came from
+
+qubee was extracted from [ng-qubee](https://github.com/AndreaAlhena/ng-qubee), an Angular library
+that had grown a framework-agnostic core inside it. `ng-qubee` remains supported; this package is
+the same engine with the Angular removed, so React and vanilla consumers can use it too.

@@ -1,0 +1,74 @@
+---
+title: Errors
+description: The error hierarchy, machine-readable codes, and what each one means.
+sidebar:
+  order: 7
+---
+
+Every error extends `QubeeError`, which adds three things a bare `Error` does not:
+
+```ts
+import { QubeeError } from '@qubee/core';
+
+try {
+  qb.addFilter('status', 'published');
+} catch (error) {
+  if (error instanceof QubeeError) {
+    error.code;    // 'UNSUPPORTED_CAPABILITY' — branch on this, not the message
+    error.context; // { capability: 'filters', driver: 'laravel' }
+    error.cause;   // the underlying error, when one is wrapped
+  }
+}
+```
+
+Branch on `code`. Messages are for humans and may be reworded.
+
+## Codes
+
+| Code | Thrown when |
+| --- | --- |
+| `UNSUPPORTED_CAPABILITY` | The active driver cannot express the requested feature |
+| `INVALID_LIMIT` | A limit is not a positive integer (or `-1`, where the driver allows it) |
+| `INVALID_PAGE_NUMBER` | A page is not a positive integer, or exceeds a known last page |
+| `INVALID_RESOURCE_NAME` | The resource is empty, blank or not a string |
+| `INVALID_FILTER_OPERATOR_VALUE` | An operator got the wrong number or type of values |
+| `PAGINATION_NOT_SYNCED` | Page metadata was read before any response was parsed |
+| `UNSELECTABLE_MODEL` | `addFields()` named a model that is not the resource or an include |
+| `KEY_NOT_FOUND` | `normalize()` could not find an identifier on a row |
+
+## Capability errors
+
+The eight capability errors share the `UNSUPPORTED_CAPABILITY` code but keep distinct classes, so
+you can catch broadly or narrowly:
+
+```ts
+catch (error) {
+  if (error instanceof UnsupportedFilterError) { /* just filters */ }
+  if (error instanceof UnsupportedCapabilityError) { /* any of the eight */ }
+}
+```
+
+They also carry structured fields:
+
+```ts
+error.capability; // 'filters'
+error.driver;     // 'laravel'
+```
+
+Messages are generated from those, never hardcoded — so they cannot go stale as drivers gain
+features.
+
+## Typed fields
+
+Errors expose what went wrong as data rather than requiring you to parse prose:
+
+```ts
+new InvalidLimitError(0).limit;        // 0
+new InvalidPageNumberError(-3).page;   // -3
+new KeyNotFoundError('slug').key;      // 'slug'
+```
+
+:::caution[Bee aware]
+`instanceof` works across the package boundary, and `Object.setPrototypeOf` hardening keeps it
+working even if a consumer's toolchain downlevels the package below ES2015.
+:::
