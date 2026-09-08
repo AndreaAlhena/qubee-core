@@ -16,6 +16,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   pill badge, hexagon feature icons, framed code sample and the driver grid (#20)
 - Doc-page chrome matched to the design — sidebar rails, table of contents, previous/next cards,
   heading scale, honey-tinted inline code, and a breadcrumb above each title (#21)
+- Repository renamed from `qubee-core` to `qubeejs-core`, matching the `@qubeejs/core` package
+  name. All repository links — the CI badge, the docs edit and GitHub links, and the changelog
+  comparison links — now point at the new URL; GitHub redirects the old one
 
 ## [1.0.0] - 2026-09-08
 
@@ -50,7 +53,7 @@ eighteen drivers before release — see `test/parity/` and `npm run test:parity`
   `StrategyCapabilities` and the registry, so third parties can author a driver (#11)
 - One file per driver under `src/drivers/`, which is what makes a single-driver import
   tree-shakeable (#15)
-- A [documentation site](https://andreaalhena.github.io/qubee-core/): 145 pages, with the API
+- A [documentation site](https://qubeejs.andreatantimonaco.me): 145 pages, with the API
   reference, all 18 driver pages and the capability matrix generated from source (#17)
 
 ### Fixed
@@ -94,5 +97,5 @@ Carried over from `ng-qubee`, where these are still present:
 - CI verifies both entry points resolve, that there are no runtime dependencies, and that a
   single-driver import still tree-shakes (#12)
 
-[unreleased]: https://github.com/AndreaAlhena/qubee-core/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/AndreaAlhena/qubee-core/releases/tag/v1.0.0
+[unreleased]: https://github.com/AndreaAlhena/qubeejs-core/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/AndreaAlhena/qubeejs-core/releases/tag/v1.0.0
