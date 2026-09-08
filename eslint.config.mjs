@@ -5,7 +5,8 @@ import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
   {
-    ignores: ['coverage/**', 'dist/**', 'node_modules/**'],
+    // The docs site is its own workspace with its own toolchain.
+    ignores: ['coverage/**', 'dist/**', 'docs/**', 'node_modules/**'],
   },
 
   js.configs.recommended,
