@@ -1,0 +1,38 @@
+---
+/**
+ * PageTitle override — adds the breadcrumb the design shows above each title.
+ *
+ * Starlight has no breadcrumb of its own, so this is the one thing on a doc
+ * page that CSS alone cannot produce. Everything else — sidebar, table of
+ * contents, pagination, content — is styled through public class names, so it
+ * survives Starlight upgrades untouched.
+ */
+import Default from '@astrojs/starlight/components/PageTitle.astro';
+
+import type { SidebarEntry } from '@astrojs/starlight/schema';
+
+const { entry, sidebar } = Astro.locals.starlightRoute;
+
+/** Every href reachable from a sidebar entry, flattened. */
+function hrefs(item: SidebarEntry): string[] {
+  return item.type === 'group' ? item.entries.flatMap(hrefs) : [item.href];
+}
+
+const here = Astro.url.pathname.replace(/\/$/, '');
+
+const section = sidebar.find(
+  (item) => item.type === 'group' && hrefs(item).some((h) => h.replace(/\/$/, '') === here)
+)?.label;
+---
+
+{
+  section && (
+    <div class="qb-crumb">
+      <span>{section}</span>
+      <span class="sep">/</span>
+      <span class="current">{entry.data.title}</span>
+    </div>
+  )
+}
+
+<Default><slot /></Default>

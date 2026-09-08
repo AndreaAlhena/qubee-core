@@ -9,6 +9,7 @@ export default defineConfig({
       components: {
         // The only override on the site. Doc-page chrome is left stock.
         Header: './src/components/Header.astro',
+        PageTitle: './src/components/PageTitle.astro',
       },
       credits: false,
       customCss: ['./src/styles/qubee.css'],
