@@ -9,6 +9,7 @@ import { JsonApiResponseStrategy } from '../strategies/json-api-response.strateg
  * `meta` and `links` blocks.
  */
 export const JSON_API_DRIVER: DriverDefinition = {
+  id: 'json-api',
   createRequestStrategy: () => new JsonApiRequestStrategy(),
   createResponseStrategy: () => new JsonApiResponseStrategy(),
   createResponseOptions: (config) => new JsonApiResponseOptions(config),

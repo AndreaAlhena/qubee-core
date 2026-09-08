@@ -10,6 +10,7 @@ import { SpatieResponseStrategy } from '../strategies/spatie-response.strategy';
  * `fields[model]` support.
  */
 export const SPATIE_DRIVER: DriverDefinition = {
+  id: 'spatie',
   createRequestStrategy: () => new SpatieRequestStrategy(),
   createResponseStrategy: () => new SpatieResponseStrategy(),
   createResponseOptions: (config) => new ResponseOptions(config),

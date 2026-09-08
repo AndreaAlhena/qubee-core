@@ -9,6 +9,7 @@ import { PayloadResponseStrategy } from '../strategies/payload-response.strategy
  * `{ docs, totalDocs, page, totalPages, … }`.
  */
 export const PAYLOAD_DRIVER: DriverDefinition = {
+  id: 'payload',
   createRequestStrategy: () => new PayloadRequestStrategy(),
   createResponseStrategy: () => new PayloadResponseStrategy(),
   createResponseOptions: (config) => new PayloadResponseOptions(config),

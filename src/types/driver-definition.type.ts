@@ -2,6 +2,7 @@ import type { PaginationModeEnum } from '../enums/pagination-mode.enum';
 import type { IRequestStrategy } from '../interfaces/request-strategy.interface';
 import type { IResponseStrategy } from '../interfaces/response-strategy.interface';
 import type { ResponseOptions } from '../models/response-options';
+import type { Driver } from './driver.type';
 import type { PaginationConfig } from './pagination-config.type';
 
 /**
@@ -13,6 +14,16 @@ import type { PaginationConfig } from './pagination-config.type';
  * builder.
  */
 export type DriverDefinition = {
+  /**
+   * The driver's identifier.
+   *
+   * Duplicates its key in `DRIVERS`, which `test/drivers.spec.ts` asserts stays
+   * true. Carrying it on the definition lets a driver be passed around on its
+   * own — `createQubee({ driver: STRAPI_DRIVER })` — while still naming the
+   * driver in capability errors.
+   */
+  id: Driver;
+
   /**
    * Build the request strategy for this driver
    *

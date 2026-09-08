@@ -9,6 +9,7 @@ import { SieveResponseStrategy } from '../strategies/sieve-response.strategy';
  * `IQueryable` the developer wraps — so the response paths are conventional.
  */
 export const SIEVE_DRIVER: DriverDefinition = {
+  id: 'sieve',
   createRequestStrategy: () => new SieveRequestStrategy(),
   createResponseStrategy: () => new SieveResponseStrategy(),
   createResponseOptions: (config) => new SieveResponseOptions(config),

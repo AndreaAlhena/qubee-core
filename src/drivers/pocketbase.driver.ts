@@ -9,6 +9,7 @@ import { PocketbaseResponseStrategy } from '../strategies/pocketbase-response.st
  * `{ page, perPage, totalItems, totalPages, items }`.
  */
 export const POCKETBASE_DRIVER: DriverDefinition = {
+  id: 'pocketbase',
   createRequestStrategy: () => new PocketbaseRequestStrategy(),
   createResponseStrategy: () => new PocketbaseResponseStrategy(),
   createResponseOptions: (config) => new PocketbaseResponseOptions(config),
