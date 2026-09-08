@@ -14,6 +14,7 @@ before writing code. Highlights that are easy to get wrong:
 - Ordering is auto-fixed by `eslint-plugin-perfectionist` — run `npm run lint:fix`, don't reorder
   by hand.
 - No `any`. No AI credits in commit messages.
+- **Every issue ships code + changelog entry + stated SemVer impact + docs.** Not code alone.
 
 ## Commands
 
