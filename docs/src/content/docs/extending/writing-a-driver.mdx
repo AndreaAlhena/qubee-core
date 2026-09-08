@@ -24,7 +24,7 @@ Extend `AbstractRequestStrategy` and override one hook. `buildUri()` handles res
 joining; `parts()` returns the query-string segments.
 
 ```ts title="src/strategies/my-backend-request.strategy.ts"
-import { AbstractRequestStrategy } from '@qubee/core';
+import { AbstractRequestStrategy } from '@qubeejs/core';
 
 export class MyBackendRequestStrategy extends AbstractRequestStrategy {
   public readonly capabilities: StrategyCapabilities = {
@@ -90,7 +90,7 @@ Use the bundled `stringify()` rather than `URLSearchParams`, which percent-encod
 opt-out:
 
 ```ts
-import { stringify } from '@qubee/core';
+import { stringify } from '@qubeejs/core';
 
 stringify({ filters: { status: { $eq: 'published' } } });
 // filters[status][$eq]=published

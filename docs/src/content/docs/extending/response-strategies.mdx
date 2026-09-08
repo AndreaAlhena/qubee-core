@@ -68,7 +68,7 @@ Read headers through `readHeader()`, which accepts anything with a `.get()` acce
 object, without importing a framework:
 
 ```ts
-import { readHeader } from '@qubee/core';
+import { readHeader } from '@qubeejs/core';
 
 const range = readHeader(headers, 'Content-Range'); // '0-24/57'
 ```
@@ -78,7 +78,7 @@ const range = readHeader(headers, 'Content-Range'); // '0-24/57'
 `readPath()` and its typed variants handle both body shapes and missing keys:
 
 ```ts
-import { readNumber, readRows, readString } from '@qubee/core';
+import { readNumber, readRows, readString } from '@qubeejs/core';
 
 readRows<T>(response, options.data);
 readNumber(response, options.total);

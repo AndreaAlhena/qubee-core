@@ -1,7 +1,7 @@
 # Parity harness
 
 Proves the extraction is faithful: for every driver, the same query is built with
-`ng-qubee@3.8.0` and with `@qubee/core`, and the emitted URIs are compared byte for byte.
+`ng-qubee@3.8.0` and with `@qubeejs/core`, and the emitted URIs are compared byte for byte.
 
 ```sh
 npm run build

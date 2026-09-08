@@ -68,7 +68,7 @@
   "license": "MIT",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
-  "name": "@qubee/core",
+  "name": "@qubeejs/core",
   "scripts": {
     "build": "tsup",
     "format": "prettier --write .",

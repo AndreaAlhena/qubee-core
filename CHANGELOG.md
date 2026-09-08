@@ -9,7 +9,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [1.0.0] - 2026-09-08
 
-First release. `@qubee/core` is the framework-agnostic engine extracted from
+First release. `@qubeejs/core` is the framework-agnostic engine extracted from
 [ng-qubee](https://github.com/AndreaAlhena/ng-qubee), which remains supported and unaffected.
 
 Every URI this library builds was verified byte-for-byte against `ng-qubee@3.8.0` across all

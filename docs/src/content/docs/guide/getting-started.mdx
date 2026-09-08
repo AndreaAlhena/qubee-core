@@ -1,6 +1,6 @@
 ---
 title: Getting started
-description: Install @qubee/core and build your first query.
+description: Install @qubeejs/core and build your first query.
 sidebar:
   order: 2
 ---
@@ -8,7 +8,7 @@ sidebar:
 ## Install
 
 ```sh
-npm i @qubee/core
+npm i @qubeejs/core
 ```
 
 Requires Node `^22.12 || ^24 || >=26` for development. The published package targets ES2022 and
@@ -19,7 +19,7 @@ ships both ESM and CommonJS.
 `createQubee()` wires up the three objects you need and returns them sharing one store.
 
 ```ts title="articles.ts"
-import { createQubee, STRAPI_DRIVER, SortEnum } from '@qubee/core';
+import { createQubee, STRAPI_DRIVER, SortEnum } from '@qubeejs/core';
 
 const { builder, paginator, store } = createQubee({ driver: STRAPI_DRIVER });
 
@@ -70,7 +70,7 @@ by hand instead, call `store.syncLastPage()` yourself.
 not share a store, or when you are wiring them into a framework's DI container:
 
 ```ts
-import { QubeeStore, QueryBuilder, Paginator, STRAPI_DRIVER } from '@qubee/core';
+import { QubeeStore, QueryBuilder, Paginator, STRAPI_DRIVER } from '@qubeejs/core';
 
 const store = new QubeeStore();
 const builder = new QueryBuilder(store, STRAPI_DRIVER.createRequestStrategy('query'));
@@ -87,8 +87,8 @@ Import the one you need. The other seventeen tree-shake away, which is the diffe
 2.5 kB and 9.5 kB gzipped.
 
 ```ts
-import { STRAPI_DRIVER } from '@qubee/core';  // just this driver
-import { DRIVERS } from '@qubee/core';        // all eighteen
+import { STRAPI_DRIVER } from '@qubeejs/core';  // just this driver
+import { DRIVERS } from '@qubeejs/core';        // all eighteen
 ```
 
 `createQubee()` deliberately takes a **definition**, not an id, so it never reaches into the
@@ -96,7 +96,7 @@ registry on your behalf. Choosing at runtime is still one line — you just opt 
 explicitly, at your own import site:
 
 ```ts
-import { createQubee, DRIVERS } from '@qubee/core';
+import { createQubee, DRIVERS } from '@qubeejs/core';
 
 const { builder } = createQubee({ driver: DRIVERS[config.driver] });
 ```
