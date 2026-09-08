@@ -14,6 +14,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   "Bee aware" callouts (#19)
 - Landing page rebuilt against the design markup: two-column hero with the bee mark, radial glow,
   pill badge, hexagon feature icons, framed code sample and the driver grid (#20)
+- Doc-page chrome matched to the design — sidebar rails, table of contents, previous/next cards,
+  heading scale, honey-tinted inline code, and a breadcrumb above each title (#21)
 
 ## [1.0.0] - 2026-09-08
 
