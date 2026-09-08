@@ -73,7 +73,7 @@ const header = `| Driver | ${CAPABILITIES.map(([, label]) => label).join(' | ')}
 const rule = `| --- | ${CAPABILITIES.map(() => ':---:').join(' | ')} |`;
 const rows = ids.map((id) => {
   const c = caps.get(id);
-  return `| [${LABELS[id]}](/qubee-core/drivers/reference/${id}/) | ${CAPABILITIES.map(
+  return `| [${LABELS[id]}](/drivers/reference/${id}/) | ${CAPABILITIES.map(
     ([key]) => (c[key] ? '✅' : '—')
   ).join(' | ')} |`;
 });

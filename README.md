@@ -10,6 +10,8 @@ standards.
 [![CI](https://github.com/AndreaAlhena/qubee-core/actions/workflows/ci.yml/badge.svg)](https://github.com/AndreaAlhena/qubee-core/actions/workflows/ci.yml)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 
+**[Documentation](https://qubeejs.andreatantimonaco.me)**
+
 ## What it does
 
 Builds query URIs and parses paginated responses. **It performs no I/O** — there is no HTTP client
