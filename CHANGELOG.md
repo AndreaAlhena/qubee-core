@@ -12,6 +12,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Documentation site now matches the provided design: a custom 404, a changelog page generated
   from `CHANGELOG.md`, top-level section navigation with a version chip, and the bee mark inside
   "Bee aware" callouts (#19)
+- Landing page rebuilt against the design markup: two-column hero with the bee mark, radial glow,
+  pill badge, hexagon feature icons, framed code sample and the driver grid (#20)
 
 ## [1.0.0] - 2026-09-08
 
