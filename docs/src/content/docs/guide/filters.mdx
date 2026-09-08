@@ -1,0 +1,80 @@
+---
+title: Filters and operators
+description: Simple filters, explicit operators, and how each driver renders them.
+sidebar:
+  order: 4
+---
+
+## Simple filters
+
+`addFilter()` takes a field and one or more values.
+
+```ts
+qb.addFilter('status', 'published');
+qb.addFilter('id', 1, 2, 3);         // multiple values
+qb.deleteFilters('status');
+```
+
+How that renders is the driver's business:
+
+```
+Strapi      filters[status][$eq]=published
+PostgREST   status=eq.published
+OData       $filter=status eq 'published'
+Spatie      filter[status]=published
+```
+
+## Explicit operators
+
+`addFilterOperator()` takes a `FilterOperatorEnum`.
+
+```ts
+import { FilterOperatorEnum } from '@qubee/core';
+
+qb.addFilterOperator('price', FilterOperatorEnum.GTE, 10);
+qb.addFilterOperator('price', FilterOperatorEnum.BTW, 10, 100);
+qb.addFilterOperator('deletedAt', FilterOperatorEnum.NULL, true);
+```
+
+## Available operators
+
+| Operator | Meaning | Notes |
+| --- | --- | --- |
+| `EQ` | equals | |
+| `NOT` | not equal | |
+| `GT` / `GTE` | greater than / or equal | |
+| `LT` / `LTE` | less than / or equal | |
+| `IN` | matches any value | takes several values |
+| `BTW` | between | requires **exactly two** values |
+| `NULL` | is / is not null | requires **exactly one boolean** |
+| `CONTAINS` | substring | |
+| `ILIKE` | case-insensitive match | |
+| `SW` | starts with | |
+| `FTS` / `PHFTS` / `PLFTS` / `WFTS` | full-text search variants | PostgREST |
+
+## Arity is enforced
+
+`BTW` and `NULL` have shape rules the library checks, so misuse fails loudly rather than producing
+an invalid request:
+
+```ts
+qb.addFilterOperator('price', FilterOperatorEnum.BTW, 10);
+// InvalidFilterOperatorValueError: BTW requires exactly 2 values (min, max)
+```
+
+:::caution[Bee aware]
+Enum values use the NestJS wire form (`$eq`, `$btw`). Each request strategy translates them into its
+own notation — PostgREST renders `col=eq.val`, not `$eq`. You never write the backend's spelling
+yourself.
+:::
+
+## Operator support varies
+
+Thirteen of the eighteen drivers support explicit operators. The rest accept simple filters only:
+
+```ts
+qb.addFilterOperator('price', FilterOperatorEnum.GTE, 10);
+// UnsupportedFilterOperatorError: The 'json-api' driver does not support filter operators.
+```
+
+Check the [capability matrix](/qubee-core/drivers/capabilities/) before reaching for one.

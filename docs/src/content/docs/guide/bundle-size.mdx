@@ -1,0 +1,47 @@
+---
+title: Bundle size
+description: What you actually ship, and how to keep it small.
+sidebar:
+  order: 8
+---
+
+`@qubee/core` has **zero runtime dependencies**. What you ship depends on one decision: whether you
+import a driver or the registry.
+
+| Import | Minified | Gzipped |
+| --- | --- | --- |
+| `STRAPI_DRIVER` (one driver) | 6.5 kB | **2.5 kB** |
+| `DRIVERS` (all eighteen) | 49 kB | 9.5 kB |
+
+Measured with esbuild, minified, ES2022, and asserted in CI so it cannot regress.
+
+## Import one driver
+
+Each driver is its own module, exported by name:
+
+```ts
+import { STRAPI_DRIVER, QubeeStore, QueryBuilder } from '@qubee/core';
+```
+
+Bundlers tree-shake the other seventeen away, along with their response strategies and options.
+
+## When to use the registry
+
+`DRIVERS` is a closed `Record<DriverEnum, DriverDefinition>`. Touching it reaches every driver by
+construction, so reserve it for when the backend genuinely is not known until runtime:
+
+```ts
+import { DRIVERS } from '@qubee/core';
+
+const driver = DRIVERS[config.driver]; // pulls in all eighteen
+```
+
+## Why there are no dependencies
+
+The only one there ever was is `qs`, used solely to serialise nested bracket notation. It was
+replaced by a 40-line internal serialiser, verified case-by-case against `qs` itself — worth about
+13 kB gzipped, which is why a single-driver import fell from 15.7 kB to 2.5 kB.
+
+`URLSearchParams` cannot substitute for either: it percent-encodes with no opt-out, so
+`filters[status][$eq]` becomes `filters%5Bstatus%5D%5B%24eq%5D`, and it flattens nested objects to
+`[object Object]`.

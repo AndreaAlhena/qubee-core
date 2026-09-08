@@ -1,0 +1,91 @@
+---
+title: Response strategies
+description: The three ways to parse a backend envelope.
+sidebar:
+  order: 2
+---
+
+A response strategy turns a raw body into a `PaginatedCollection`. There are three starting points,
+and picking the right one is usually the whole job.
+
+## Flat envelopes
+
+Everything at the top level, named:
+
+```json
+{ "data": [], "current_page": 2, "last_page": 6, "total": 57 }
+```
+
+Extend `AbstractFlatResponseStrategy` with an empty body. The base reads each field by the name in
+`ResponseOptions`.
+
+Used by Laravel and Spatie.
+
+## Nested envelopes
+
+Metadata inside a sub-object:
+
+```json
+{ "data": [], "meta": { "pagination": { "page": 2, "pageCount": 6 } } }
+```
+
+Extend `AbstractDotPathResponseStrategy`. Paths in `ResponseOptions` become dotted:
+`meta.pagination.page`.
+
+It also derives `from` and `to` arithmetically when the backend omits them.
+
+Used by Strapi, JSON:API, Payload, PocketBase, Sieve and others.
+
+## Everything else
+
+Implement `IResponseStrategy` directly when the shape is not a lookup — cursor URLs to parse,
+headers to read, or a bare array body.
+
+```ts
+export class MyResponseStrategy implements IResponseStrategy {
+  public paginate<T extends PaginatedObject>(
+    response: RawResponse,
+    options: ResponseOptions,
+    headers?: HeaderBag,
+  ): PaginatedCollection<T> {
+    // …
+  }
+}
+```
+
+Used by DRF (cursor URLs), OData (`@odata.nextLink`), PostgREST and WordPress (headers).
+
+## Bare-array bodies
+
+PostgREST and the WordPress REST API return rows directly, with metadata in headers. `RawResponse`
+models both shapes:
+
+```ts
+type RawResponse = Record<string, unknown> | readonly unknown[];
+```
+
+Read headers through `readHeader()`, which accepts anything with a `.get()` accessor or a plain
+object, without importing a framework:
+
+```ts
+import { readHeader } from '@qubee/core';
+
+const range = readHeader(headers, 'Content-Range'); // '0-24/57'
+```
+
+## Reading paths safely
+
+`readPath()` and its typed variants handle both body shapes and missing keys:
+
+```ts
+import { readNumber, readRows, readString } from '@qubee/core';
+
+readRows<T>(response, options.data);
+readNumber(response, options.total);
+readString(response, options.nextPageUrl);
+```
+
+:::caution[Bee aware]
+`readPath()` prefers an exact key match before splitting on dots — OData envelope keys contain
+literal dots (`@odata.count`), so naive path splitting silently finds nothing.
+:::
