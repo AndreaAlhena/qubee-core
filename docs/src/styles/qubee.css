@@ -128,6 +128,18 @@ h1 {
   font-family: var(--qb-font-display);
 }
 
+/* The design puts the bee mark in the callout. Swapping the icon for a
+   background image keeps that without overriding the Aside component. */
+.starlight-aside--caution .starlight-aside__icon {
+  background: url('/mark.png') center / contain no-repeat;
+  height: 1.8em;
+  width: 1.8em;
+}
+
+.starlight-aside--caution .starlight-aside__icon > * {
+  display: none;
+}
+
 /* Meta chips on API pages: file path, method count, kind. */
 .qb-chips {
   display: flex;
