@@ -7,7 +7,7 @@ standards.
 > supported and unaffected. Every URI is verified byte-for-byte against `ng-qubee@3.8.0` across all
 > eighteen drivers — see `npm run test:parity`.
 
-[![CI](https://github.com/AndreaAlhena/qubee-core/actions/workflows/ci.yml/badge.svg)](https://github.com/AndreaAlhena/qubee-core/actions/workflows/ci.yml)
+[![CI](https://github.com/AndreaAlhena/qubeejs-core/actions/workflows/ci.yml/badge.svg)](https://github.com/AndreaAlhena/qubeejs-core/actions/workflows/ci.yml)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 
 **[Documentation](https://qubeejs.andreatantimonaco.me)**
