@@ -1,6 +1,8 @@
 ---
 import { DRIVERS, DriverEnum } from '../../../dist/index.js';
 
+import pkg from '../../../package.json';
+
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 const LABELS: Record<string, string> = {
@@ -12,7 +14,7 @@ const LABELS: Record<string, string> = {
   strapi: 'Strapi', wordpress: 'WordPress',
 };
 
-const drivers = Object.values(DriverEnum).sort() as string[];
+const drivers = (Object.values(DriverEnum) as string[]).sort();
 
 const features = [
   { title: 'Agnostic by construction',
@@ -34,41 +36,52 @@ const features = [
     <meta name="description" content="Framework-agnostic query builder and paginator with pluggable drivers for 18 backend querying standards." />
     <link rel="icon" href={`${base}/mark.png`} />
   </head>
+
   <body>
     <header class="nav">
       <a class="brand" href={`${base}/`}>
-        <img src={`${base}/mark.png`} alt="" width="30" height="30" />
+        <img src={`${base}/mark.png`} alt="" width="28" height="28" />
         <span>qubee</span>
-        <em>1.0.0</em>
       </a>
+      <span class="chip">{pkg.version}</span>
       <nav>
         <a href={`${base}/guide/introduction/`}>Guide</a>
         <a href={`${base}/api/services/query-builder/`}>API</a>
         <a href={`${base}/drivers/`}>Drivers</a>
-        <a href="https://github.com/AndreaAlhena/qubee-core">GitHub</a>
+        <a href={`${base}/changelog/`}>Changelog</a>
       </nav>
+      <a class="gh" href="https://github.com/AndreaAlhena/qubee-core" aria-label="GitHub">GH</a>
     </header>
 
     <main>
       <section class="hero">
-        <p class="eyebrow">v1.0.0 · zero dependencies</p>
-        <h1>Build the query.<br /><span>Not the plumbing.</span></h1>
-        <p class="lede">
-          <code>@qubeejs/core</code> turns a fluent, typed chain into whatever query string your
-          backend speaks — across eighteen of them — and parses the page that comes back.
-          It performs no I/O.
-        </p>
-        <div class="cta">
-          <a class="btn primary" href={`${base}/guide/getting-started/`}>Get started</a>
-          <a class="btn" href={`${base}/api/services/query-builder/`}>API reference</a>
+        <div class="glow"></div>
+        <div class="hero-inner">
+          <div class="hero-copy">
+            <div class="pill"><span class="dot"></span>v{pkg.version} · zero dependencies</div>
+            <h1>Build the query.<br /><span>Not the plumbing.</span></h1>
+            <p class="lede">
+              <strong>@qubeejs/core</strong> is a framework-agnostic query builder and paginator
+              with pluggable drivers for 18 backend querying standards. It performs no I/O — you
+              fetch however you like and hand the body back.
+            </p>
+            <div class="cta">
+              <a class="btn primary" href={`${base}/guide/getting-started/`}>Get started</a>
+              <a class="btn" href={`${base}/api/services/query-builder/`}>API reference</a>
+              <code class="install"><span class="prompt">$</span> npm i @qubeejs/core</code>
+            </div>
+          </div>
+          <div class="hero-mark">
+            <img src={`${base}/mark.png`} alt="qubee" width="320" height="230" />
+          </div>
         </div>
-        <pre class="install"><span>$</span> npm i @qubeejs/core</pre>
       </section>
 
       <section class="features">
         {features.map((f) => (
           <article>
-            <h2>{f.title}</h2>
+            <span class="hex"></span>
+            <h3>{f.title}</h3>
             <p>{f.body}</p>
           </article>
         ))}
@@ -89,37 +102,42 @@ const features = [
             </tbody>
           </table>
         </div>
-        <pre class="code"><code>{`import { createQubee, STRAPI_DRIVER, SortEnum } from '@qubeejs/core';
+        <div class="code-frame">
+          <div class="code-bar"><span></span><span></span><span></span><em>articles.ts</em></div>
+          <pre class="code"><code><span class="k">import</span> {'{'} createQubee, STRAPI_DRIVER, SortEnum {'}'} <span class="k">from</span> <span class="s">'@qubeejs/core'</span>;
 
-const { builder, paginator } = createQubee({ driver: STRAPI_DRIVER });
+<span class="k">const</span> {'{'} builder {'}'} = <span class="f">createQubee</span>({'{'} driver: STRAPI_DRIVER {'}'});
 
-const uri = builder
-  .setResource('articles')
-  .addFilter('status', 'published')
-  .addSort('createdAt', SortEnum.DESC)
-  .setLimit(25)
-  .generateUri();
+<span class="k">const</span> uri = builder
+  .<span class="f">setResource</span>(<span class="s">'articles'</span>)
+  .<span class="f">addFilter</span>(<span class="s">'status'</span>, <span class="s">'published'</span>)
+  .<span class="f">addSort</span>(<span class="s">'createdAt'</span>, SortEnum.DESC)
+  .<span class="f">setLimit</span>(<span class="n">25</span>)
+  .<span class="f">generateUri</span>();
 
-// → /articles?filters[status][$eq]=published
-//   &sort[0]=createdAt:desc
-//   &pagination[page]=1&pagination[pageSize]=25`}</code></pre>
+<span class="c">{'// → /articles?filters[status][$eq]=published'}</span>
+<span class="c">{'//   &sort[0]=createdAt:desc'}</span>
+<span class="c">{'//   &pagination[page]=1&pagination[pageSize]=25'}</span></code></pre>
+        </div>
       </section>
 
       <section class="drivers">
-        <h2>Eighteen backends, one builder</h2>
-        <p>Request and response strategies, capability-checked.</p>
-        <ul>
+        <div class="drivers-head">
+          <h2>Eighteen backends, one builder</h2>
+          <span>Request + response strategies, capability-checked.</span>
+        </div>
+        <div class="grid">
           {drivers.map((d) => (
-            <li><a href={`${base}/drivers/reference/${d}/`}>{LABELS[d] ?? d}</a></li>
+            <a href={`${base}/drivers/reference/${d}/`}>
+              <span class="hex sm"></span>
+              <span class="name">{LABELS[d] ?? d}</span>
+            </a>
           ))}
-        </ul>
+        </div>
       </section>
     </main>
 
-    <footer>
-      <img src={`${base}/bee.png`} alt="" width="34" height="34" />
-      <p>Released under the MIT License · Copyright © 2026 Andrea Tantimonaco</p>
-    </footer>
+    <footer>Released under the MIT License · Copyright © 2026 Andrea Tantimonaco</footer>
 
     <style is:global>
       @import '@fontsource-variable/space-grotesk';
@@ -127,113 +145,313 @@ const uri = builder
       @import '@fontsource-variable/jetbrains-mono';
 
       :root {
-        --honey: #ffb020; --honey-hi: #ffc24d;
-        --honey-soft: rgba(255, 176, 32, 0.14); --honey-line: rgba(255, 176, 32, 0.35);
-        --bg: #16181c; --alt: #101216; --surface: #1c1f24; --code-bg: #0c0e12;
-        --border: #2b3038; --hover: rgba(255, 255, 255, 0.05);
-        --text: #e9eaee; --muted: #98a0ac;
+        --honey: #ffb020;
+        --honey-hi: #ffc24d;
+        --honey-soft: rgba(255, 176, 32, 0.14);
+        --honey-line: rgba(255, 176, 32, 0.35);
+        --bg: #16181c;
+        --alt: #101216;
+        --surface: #1c1f24;
+        --code-bg: #0c0e12;
+        --border: #2b3038;
+        --hover: rgba(255, 255, 255, 0.05);
+        --text: #e9eaee;
+        --muted: #98a0ac;
         --display: 'Space Grotesk Variable', system-ui, sans-serif;
         --body: 'Inter Variable', system-ui, sans-serif;
         --mono: 'JetBrains Mono Variable', ui-monospace, monospace;
+        --hexagon: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
       }
 
       * { box-sizing: border-box; }
-      body { background: var(--bg); color: var(--text); font-family: var(--body); margin: 0; }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--body);
+        margin: 0;
+      }
+
       a { color: inherit; text-decoration: none; }
       code { font-family: var(--mono); }
 
+      /* --- header --- */
       .nav {
-        align-items: center; backdrop-filter: blur(12px);
-        background: rgba(22, 24, 28, 0.86); border-bottom: 1px solid var(--border);
-        display: flex; gap: 20px; height: 62px; padding: 0 22px;
-        position: sticky; top: 0; z-index: 20;
+        align-items: center;
+        backdrop-filter: blur(12px);
+        background: rgba(22, 24, 28, 0.86);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        gap: 20px;
+        height: 62px;
+        padding: 0 22px;
+        position: sticky;
+        top: 0;
+        z-index: 20;
       }
-      .brand { align-items: center; display: flex; font-family: var(--display); font-weight: 700; gap: 9px; }
-      .brand em {
-        border: 1px solid var(--border); border-radius: 20px; color: var(--muted);
-        font-family: var(--mono); font-size: 11px; font-style: normal; padding: 2px 8px;
+      .brand {
+        align-items: center;
+        display: flex;
+        font-family: var(--display);
+        font-size: 17px;
+        font-weight: 700;
+        gap: 9px;
+      }
+      .chip {
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 11px;
+        padding: 3px 9px;
       }
       .nav nav { display: flex; gap: 4px; margin-left: auto; }
       .nav nav a { border-radius: 7px; color: var(--muted); font-size: 14px; padding: 7px 11px; }
       .nav nav a:hover { background: var(--hover); color: var(--text); }
+      .gh {
+        align-items: center;
+        border: 1px solid var(--honey);
+        border-radius: 8px;
+        color: var(--honey-hi);
+        display: flex;
+        font-family: var(--mono);
+        font-size: 12px;
+        height: 32px;
+        justify-content: center;
+        width: 38px;
+      }
+      .gh:hover { background: var(--honey-soft); }
 
+      /* --- hero --- */
       .hero {
-        background: var(--alt); border-bottom: 1px solid var(--border);
-        padding: 84px 22px 72px; text-align: center;
+        background: var(--alt);
+        border-bottom: 1px solid var(--border);
+        overflow: hidden;
+        padding: 84px 22px 72px;
+        position: relative;
       }
-      .eyebrow {
-        color: var(--honey-hi); font-family: var(--mono); font-size: 12px;
-        letter-spacing: 0.08em; margin: 0 0 18px; text-transform: uppercase;
+      .glow {
+        background-image:
+          radial-gradient(circle at 18% 12%, rgba(255, 176, 32, 0.16), transparent 42%),
+          radial-gradient(circle at 78% 78%, rgba(255, 176, 32, 0.09), transparent 46%);
+        inset: 0;
+        opacity: 0.55;
+        pointer-events: none;
+        position: absolute;
       }
+      .hero-inner {
+        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 48px;
+        margin: 0 auto;
+        max-width: 1080px;
+        position: relative;
+      }
+      .hero-copy { flex: 1 1 420px; min-width: 0; }
+      .hero-mark { display: flex; flex: 1 1 220px; justify-content: center; }
+      .hero-mark img {
+        animation: qb-bob 6s ease-in-out infinite;
+        filter: drop-shadow(0 24px 44px rgba(255, 176, 32, 0.22));
+        height: auto;
+        max-width: 320px;
+        width: 100%;
+      }
+      @keyframes qb-bob {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-12px); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .hero-mark img { animation: none; }
+      }
+      .pill {
+        align-items: center;
+        background: var(--honey-soft);
+        border: 1px solid var(--honey-line);
+        border-radius: 999px;
+        color: var(--honey-hi);
+        display: inline-flex;
+        font-family: var(--mono);
+        font-size: 11.5px;
+        gap: 8px;
+        letter-spacing: 0.04em;
+        margin-bottom: 22px;
+        padding: 5px 11px;
+        text-transform: uppercase;
+      }
+      .dot { background: var(--honey); border-radius: 50%; height: 6px; width: 6px; }
       .hero h1 {
-        font-family: var(--display); font-size: clamp(38px, 7vw, 64px); font-weight: 700;
-        letter-spacing: -0.03em; line-height: 1.04; margin: 0 0 20px;
+        font-family: var(--display);
+        font-size: clamp(38px, 5.4vw, 64px);
+        font-weight: 700;
+        letter-spacing: -0.035em;
+        line-height: 1.02;
+        margin: 0 0 20px;
       }
-      .hero h1 span { color: var(--honey); }
+      .hero h1 span { color: var(--honey-hi); }
       .lede {
-        color: var(--muted); font-size: 18px; line-height: 1.65;
-        margin: 0 auto 30px; max-width: 620px;
+        color: var(--muted);
+        font-size: 18.5px;
+        line-height: 1.6;
+        margin: 0 0 30px;
+        max-width: 30em;
+        text-wrap: pretty;
       }
-      .lede code { color: var(--text); }
-      .cta { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-bottom: 30px; }
+      .lede strong { color: var(--text); font-weight: 600; }
+      .cta { align-items: center; display: flex; flex-wrap: wrap; gap: 12px; }
       .btn {
-        border: 1px solid var(--border); border-radius: 9px; font-size: 15px;
-        font-weight: 600; padding: 11px 20px;
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        font-size: 15px;
+        font-weight: 600;
+        padding: 12px 22px;
       }
       .btn:hover { background: var(--hover); }
       .btn.primary { background: var(--honey); border-color: var(--honey); color: #1b1e23; }
       .btn.primary:hover { background: var(--honey-hi); }
       .install {
-        background: var(--code-bg); border: 1px solid var(--border); border-radius: 9px;
-        color: var(--text); display: inline-block; font-family: var(--mono);
-        font-size: 14px; margin: 0; padding: 12px 18px;
+        background: var(--code-bg);
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        color: #c9cfd8;
+        font-size: 13px;
+        padding: 11px 15px;
       }
-      .install span { color: var(--honey); margin-right: 8px; }
+      .prompt { color: #6b7280; margin-right: 6px; }
 
+      /* --- hexagons --- */
+      .hex {
+        background: var(--honey);
+        clip-path: var(--hexagon);
+        display: block;
+        height: 38px;
+        margin-bottom: 16px;
+        width: 34px;
+      }
+      .hex.sm { flex: none; height: 15px; margin: 0; width: 13px; }
+
+      /* --- features --- */
       .features {
-        display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-        margin: 0 auto; max-width: 1080px; padding: 64px 22px;
+        display: grid;
+        gap: 18px;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        margin: 0 auto;
+        max-width: 1080px;
+        padding: 64px 22px;
       }
       .features article {
-        background: var(--surface); border: 1px solid var(--border);
-        border-radius: 12px; padding: 22px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 24px;
+        transition: border-color 0.15s;
       }
-      .features h2 { font-family: var(--display); font-size: 16px; margin: 0 0 8px; }
+      .features article:hover { border-color: var(--honey-line); }
+      .features h3 {
+        font-family: var(--display);
+        font-size: 17px;
+        letter-spacing: -0.01em;
+        margin: 0 0 8px;
+      }
       .features p { color: var(--muted); font-size: 14.5px; line-height: 1.6; margin: 0; }
 
+      /* --- sample --- */
       .sample { margin: 0 auto; max-width: 1080px; padding: 0 22px 72px; }
-      .sample-head h2 { font-family: var(--display); font-size: 26px; margin: 0 0 10px; }
-      .sample-head > p { color: var(--muted); line-height: 1.65; margin: 0 0 20px; max-width: 620px; }
+      .sample-head h2 {
+        font-family: var(--display);
+        font-size: 27px;
+        letter-spacing: -0.025em;
+        margin: 0 0 10px;
+      }
+      .sample-head > p { color: var(--muted); line-height: 1.65; margin: 0 0 20px; max-width: 40em; }
       .sample table { border-collapse: collapse; font-size: 13.5px; margin-bottom: 22px; }
-      .sample th, .sample td {
-        border-bottom: 1px solid var(--border); padding: 7px 20px 7px 0; text-align: left;
+      .sample th, .sample td { border-bottom: 1px solid var(--border); padding: 7px 22px 7px 0; text-align: left; }
+      .sample th {
+        color: var(--muted);
+        font-family: var(--display);
+        font-size: 11px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
       }
-      .sample th { color: var(--muted); font-family: var(--display); font-size: 11px;
-        letter-spacing: 0.06em; text-transform: uppercase; }
       .sample strong { color: var(--honey-hi); }
-      .code {
-        background: var(--code-bg); border: 1px solid var(--border); border-radius: 12px;
-        font-size: 13.5px; line-height: 1.7; margin: 0; overflow-x: auto; padding: 22px;
+      .code-frame {
+        background: var(--code-bg);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
       }
+      .code-bar {
+        align-items: center;
+        background: rgba(255, 255, 255, 0.02);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        gap: 7px;
+        padding: 10px 14px;
+      }
+      .code-bar span { background: #2b3038; border-radius: 50%; height: 10px; width: 10px; }
+      .code-bar em {
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 12px;
+        font-style: normal;
+        margin-left: 8px;
+      }
+      .code { font-size: 13.5px; line-height: 1.7; margin: 0; overflow-x: auto; padding: 22px; }
+      .code .k { color: #c792ea; }
+      .code .s { color: #b8e08a; }
+      .code .f { color: #7fd7e8; }
+      .code .n { color: #ffd79a; }
+      .code .c { color: #6b7280; }
 
+      /* --- drivers --- */
       .drivers { margin: 0 auto; max-width: 1080px; padding: 0 22px 90px; }
-      .drivers h2 { font-family: var(--display); font-size: 26px; margin: 0 0 8px; }
-      .drivers > p { color: var(--muted); margin: 0 0 22px; }
-      .drivers ul {
-        display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
-        list-style: none; margin: 0; padding: 0;
+      .drivers-head {
+        align-items: baseline;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        justify-content: space-between;
+        margin-bottom: 22px;
       }
-      .drivers a {
-        background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
-        display: block; font-size: 14px; padding: 13px 15px; transition: border-color 0.15s;
+      .drivers-head h2 {
+        font-family: var(--display);
+        font-size: 27px;
+        letter-spacing: -0.025em;
+        margin: 0;
       }
-      .drivers a:hover { border-color: var(--honey-line); color: var(--honey-hi); }
+      .drivers-head span { color: var(--muted); font-size: 14px; }
+      .grid {
+        display: grid;
+        gap: 10px;
+        grid-template-columns: repeat(auto-fill, minmax(158px, 1fr));
+      }
+      .grid a {
+        align-items: center;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        display: flex;
+        gap: 10px;
+        padding: 13px 14px;
+        transition: border-color 0.15s, transform 0.15s;
+      }
+      .grid a:hover { border-color: var(--honey); transform: translateY(-2px); }
+      .grid .name {
+        font-size: 13.5px;
+        font-weight: 500;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
 
       footer {
-        align-items: center; border-top: 1px solid var(--border); color: var(--muted);
-        display: flex; font-size: 13.5px; gap: 12px; justify-content: center; padding: 30px 22px;
+        background: var(--alt);
+        border-top: 1px solid var(--border);
+        color: var(--muted);
+        font-size: 13.5px;
+        padding: 34px 22px;
+        text-align: center;
       }
-      footer p { margin: 0; }
     </style>
   </body>
 </html>
