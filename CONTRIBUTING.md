@@ -50,6 +50,20 @@ Four steps — the compiler will tell you if you miss one, because `DRIVERS` is 
 Copy any existing `*.driver.ts` as a template. Both strategies need specs; `test/drivers.spec.ts`
 will fail if a driver file is added without registering it.
 
+## Definition of done
+
+An issue is not finished when the code works. Every issue also updates:
+
+1. **`CHANGELOG.md`** — an entry under `## [Unreleased]`, in the right section
+   (`Added` / `Changed` / `Fixed`), referencing the issue number.
+2. **The SemVer impact** — stated explicitly. Breaking is a major, additive is a minor, a fix is a
+   patch. Say which, even when no release is being cut.
+3. **The docs** — whatever the change invalidates. The API reference regenerates itself from JSDoc;
+   hand-written guides, the README and the landing page do not.
+
+Code-only closures leave the changelog and docs to be reconstructed from git history later, which
+is how documentation drifts away from behaviour.
+
 ## Commits
 
 [Conventional Commits](https://www.conventionalcommits.org/), lowercase, imperative, scoped, one

@@ -184,6 +184,11 @@ docs(readme): document the react adapter (#22)
 Keep commits **atomic** — one logical change each. A formatting pass and a behaviour change never
 share a commit.
 
+### Definition of done
+
+Code, **plus** a `CHANGELOG.md` entry, an explicit SemVer impact, and any docs the change
+invalidates. See [CONTRIBUTING.md](./CONTRIBUTING.md#definition-of-done).
+
 ### Branching
 
 ```
