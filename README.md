@@ -17,12 +17,11 @@ and no transport layer. You fetch however you like and hand the response body ba
 That is what makes it framework-agnostic: no Angular, no React, no RxJS, no Signals.
 
 ```ts
-import { QubeeStore, QueryBuilder, STRAPI_DRIVER, SortEnum } from '@qubee/core';
+import { createQubee, STRAPI_DRIVER, SortEnum } from '@qubee/core';
 
-const store = new QubeeStore();
-const qb = new QueryBuilder(store, STRAPI_DRIVER.createRequestStrategy('query'));
+const { builder, paginator } = createQubee({ driver: STRAPI_DRIVER });
 
-const uri = qb
+const uri = builder
   .setResource('articles')
   .addFilter('status', 'published')
   .addSort('createdAt', SortEnum.DESC)
