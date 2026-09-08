@@ -131,7 +131,7 @@ for (const [i, id] of ids.entries()) {
     join(outDir, 'reference', `${id}.mdx`),
     `---
 title: ${JSON.stringify(LABELS[id])}
-description: Using the ${LABELS[id]} driver with @qubee/core.
+description: Using the ${LABELS[id]} driver with @qubeejs/core.
 sidebar:
   order: ${i + 1}
 ---
@@ -149,7 +149,7 @@ sidebar:
 Import the driver directly so the other seventeen tree-shake away.
 
 \`\`\`ts title="${id}.ts"
-import { ${constName}, QubeeStore, QueryBuilder, Paginator } from '@qubee/core';
+import { ${constName}, QubeeStore, QueryBuilder, Paginator } from '@qubeejs/core';
 
 const store = new QubeeStore();
 const qb = new QueryBuilder(store, ${constName}.createRequestStrategy('query'));

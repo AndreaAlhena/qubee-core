@@ -1065,7 +1065,7 @@ describe('QubeeStore', () => {
     });
   });
 
-  // The reactive contract — new in @qubee/core, no ng-qubee equivalent.
+  // The reactive contract — new in @qubeejs/core, no ng-qubee equivalent.
   describe('getSnapshot / subscribe', () => {
     it('returns a stable identity between writes', () => {
       // useSyncExternalStore re-renders whenever the reference changes, so a

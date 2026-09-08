@@ -29,7 +29,7 @@ import { WORDPRESS_DRIVER } from './wordpress.driver';
  *
  * Reading this map reaches every driver, so a consumer that knows its backend
  * at build time should import the driver constant directly
- * (`import { STRAPI_DRIVER } from '@qubee/core'`) and let the rest tree-shake.
+ * (`import { STRAPI_DRIVER } from '@qubeejs/core'`) and let the rest tree-shake.
  */
 export const DRIVERS: Record<DriverEnum, DriverDefinition> = {
   [DriverEnum.API_PLATFORM]: API_PLATFORM_DRIVER,

@@ -8,7 +8,7 @@ sidebar:
 `createQubee()` builds the three objects the library needs and returns them sharing one store.
 
 ```ts
-import { createQubee, STRAPI_DRIVER } from '@qubee/core';
+import { createQubee, STRAPI_DRIVER } from '@qubeejs/core';
 
 const { builder, paginator, store } = createQubee({ driver: STRAPI_DRIVER });
 ```
@@ -58,7 +58,7 @@ Taking a definition costs **108 bytes** over wiring by hand and keeps the regist
 bundle. Runtime selection is still one line — you just opt into the cost yourself:
 
 ```ts
-import { createQubee, DRIVERS } from '@qubee/core';
+import { createQubee, DRIVERS } from '@qubeejs/core';
 
 const { builder } = createQubee({ driver: DRIVERS[config.driver] });
 ```

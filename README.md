@@ -1,4 +1,4 @@
-# @qubee/core
+# @qubeejs/core
 
 Framework-agnostic query builder and paginator with pluggable drivers for 18 backend querying
 standards.
@@ -18,7 +18,7 @@ and no transport layer. You fetch however you like and hand the response body ba
 That is what makes it framework-agnostic: no Angular, no React, no RxJS, no Signals.
 
 ```ts
-import { createQubee, STRAPI_DRIVER, SortEnum } from '@qubee/core';
+import { createQubee, STRAPI_DRIVER, SortEnum } from '@qubeejs/core';
 
 const { builder, paginator } = createQubee({ driver: STRAPI_DRIVER });
 
@@ -77,7 +77,7 @@ REST · Strapi · WordPress REST
 
 | Package                                                | Framework            |
 | ------------------------------------------------------ | -------------------- |
-| `@qubee/core`                                          | none — vanilla TS/JS |
+| `@qubeejs/core`                                        | none — vanilla TS/JS |
 | [`ng-qubee`](https://github.com/AndreaAlhena/ng-qubee) | Angular              |
 | `@qubee/react`                                         | React _(planned)_    |
 

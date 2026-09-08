@@ -53,7 +53,7 @@ deliberately closed, so the compiler tells you what's missing. Copy any existing
 the template.
 
 **Bundle note:** `DRIVERS` reaches every driver by construction (~49 kB minified). A consumer that
-knows its backend at build time should `import { STRAPI_DRIVER } from '@qubee/core'` instead
+knows its backend at build time should `import { STRAPI_DRIVER } from '@qubeejs/core'` instead
 (~6.5 kB minified / 2.5 kB gzipped).
 
 **Reactivity:** `QubeeStore` exposes `getSnapshot()` + `subscribe()` — deliberately the

@@ -13,7 +13,7 @@ A driver is the knowledge of one backend's query dialect, in two halves:
 Plus a **response options** object naming where pagination metadata lives in the body.
 
 ```ts
-import { STRAPI_DRIVER } from '@qubee/core';
+import { STRAPI_DRIVER } from '@qubeejs/core';
 
 STRAPI_DRIVER.createRequestStrategy('query');
 STRAPI_DRIVER.createResponseStrategy();
@@ -38,7 +38,7 @@ The [capability matrix](/qubee-core/drivers/capabilities/) lists all eighteen si
 If you know your backend, import its constant and let the rest tree-shake:
 
 ```ts
-import { POSTGREST_DRIVER } from '@qubee/core';
+import { POSTGREST_DRIVER } from '@qubeejs/core';
 ```
 
 ## Choosing at runtime
@@ -46,7 +46,7 @@ import { POSTGREST_DRIVER } from '@qubee/core';
 If you do not, the registry maps every id to its definition:
 
 ```ts
-import { DRIVERS, DriverEnum } from '@qubee/core';
+import { DRIVERS, DriverEnum } from '@qubeejs/core';
 
 const driver = DRIVERS[DriverEnum.POSTGREST];
 const fromString = DRIVERS['postgrest']; // also fine
