@@ -9,6 +9,7 @@ import { FeathersResponseStrategy } from '../strategies/feathers-response.strate
  * envelope is `{ total, limit, skip, data }`.
  */
 export const FEATHERS_DRIVER: DriverDefinition = {
+  id: 'feathers',
   createRequestStrategy: () => new FeathersRequestStrategy(),
   createResponseStrategy: () => new FeathersResponseStrategy(),
   createResponseOptions: (config) => new FeathersResponseOptions(config),

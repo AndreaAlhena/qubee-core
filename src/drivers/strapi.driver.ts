@@ -10,6 +10,7 @@ import { StrapiResponseStrategy } from '../strategies/strapi-response.strategy';
  * `meta.pagination.*`. Strapi emits no link block.
  */
 export const STRAPI_DRIVER: DriverDefinition = {
+  id: 'strapi',
   createRequestStrategy: () => new StrapiRequestStrategy(),
   createResponseStrategy: () => new StrapiResponseStrategy(),
   createResponseOptions: (config) => new StrapiResponseOptions(config),

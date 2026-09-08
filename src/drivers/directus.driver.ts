@@ -9,6 +9,7 @@ import { DirectusResponseStrategy } from '../strategies/directus-response.strate
  * `meta.filter_count`.
  */
 export const DIRECTUS_DRIVER: DriverDefinition = {
+  id: 'directus',
   createRequestStrategy: () => new DirectusRequestStrategy(),
   createResponseStrategy: () => new DirectusResponseStrategy(),
   createResponseOptions: (config) => new DirectusResponseOptions(config),

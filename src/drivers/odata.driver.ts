@@ -9,6 +9,7 @@ import { OdataResponseStrategy } from '../strategies/odata-response.strategy';
  * `and`; the envelope uses `@odata.count` and `@odata.nextLink`.
  */
 export const ODATA_DRIVER: DriverDefinition = {
+  id: 'odata',
   createRequestStrategy: () => new OdataRequestStrategy(),
   createResponseStrategy: () => new OdataResponseStrategy(),
   createResponseOptions: (config) => new OdataResponseOptions(config),

@@ -11,3 +11,7 @@ npm-debug.log*
 # scratch files from local experiments
 .*.orig.ts
 .probe/
+
+# Parity harness installs its own deps on demand
+test/parity/node_modules/
+test/parity/package-lock.json

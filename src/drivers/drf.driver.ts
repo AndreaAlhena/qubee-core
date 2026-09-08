@@ -9,6 +9,7 @@ import { DrfResponseStrategy } from '../strategies/drf-response.strategy';
  * so navigation is by URL rather than by page number.
  */
 export const DRF_DRIVER: DriverDefinition = {
+  id: 'drf',
   createRequestStrategy: () => new DrfRequestStrategy(),
   createResponseStrategy: () => new DrfResponseStrategy(),
   createResponseOptions: (config) => new DrfResponseOptions(config),

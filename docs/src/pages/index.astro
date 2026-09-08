@@ -89,12 +89,11 @@ const features = [
             </tbody>
           </table>
         </div>
-        <pre class="code"><code>{`import { QubeeStore, QueryBuilder, STRAPI_DRIVER, SortEnum } from '@qubee/core';
+        <pre class="code"><code>{`import { createQubee, STRAPI_DRIVER, SortEnum } from '@qubee/core';
 
-const store = new QubeeStore();
-const qb = new QueryBuilder(store, STRAPI_DRIVER.createRequestStrategy('query'));
+const { builder, paginator } = createQubee({ driver: STRAPI_DRIVER });
 
-const uri = qb
+const uri = builder
   .setResource('articles')
   .addFilter('status', 'published')
   .addSort('createdAt', SortEnum.DESC)

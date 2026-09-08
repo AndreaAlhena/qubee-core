@@ -8,6 +8,7 @@ import { NestjsxCrudResponseStrategy } from '../strategies/nestjsx-crud-response
  * Driver definition for @nestjsx/crud. Filters use the `field||$op||value` triple-pipe syntax.
  */
 export const NESTJSX_CRUD_DRIVER: DriverDefinition = {
+  id: 'nestjsx-crud',
   createRequestStrategy: () => new NestjsxCrudRequestStrategy(),
   createResponseStrategy: () => new NestjsxCrudResponseStrategy(),
   createResponseOptions: (config) => new NestjsxCrudResponseOptions(config),

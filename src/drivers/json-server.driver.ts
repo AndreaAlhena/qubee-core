@@ -9,6 +9,7 @@ import { JsonServerResponseStrategy } from '../strategies/json-server-response.s
  * and the total arrives in the `X-Total-Count` header.
  */
 export const JSON_SERVER_DRIVER: DriverDefinition = {
+  id: 'json-server',
   createRequestStrategy: () => new JsonServerRequestStrategy(),
   createResponseStrategy: () => new JsonServerResponseStrategy(),
   createResponseOptions: (config) => new JsonServerResponseOptions(config),

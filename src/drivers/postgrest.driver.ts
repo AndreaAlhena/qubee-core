@@ -11,6 +11,7 @@ import { PostgrestResponseStrategy } from '../strategies/postgrest-response.stra
  * every field is derived from that header, the base `ResponseOptions` is used.
  */
 export const POSTGREST_DRIVER: DriverDefinition = {
+  id: 'postgrest',
   createRequestStrategy: (mode) => new PostgrestRequestStrategy(mode),
   createResponseStrategy: () => new PostgrestResponseStrategy(),
   createResponseOptions: (config) => new ResponseOptions(config),
