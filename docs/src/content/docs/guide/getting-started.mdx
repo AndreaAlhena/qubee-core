@@ -1,0 +1,93 @@
+---
+title: Getting started
+description: Install @qubee/core and build your first query.
+sidebar:
+  order: 2
+---
+
+## Install
+
+```sh
+npm i @qubee/core
+```
+
+Requires Node `^22.12 || ^24 || >=26` for development. The published package targets ES2022 and
+ships both ESM and CommonJS.
+
+## Build a query
+
+Three objects: a **store** holding the query state, a **builder** that mutates it, and a
+**paginator** that reads responses back.
+
+```ts title="articles.ts"
+import { QubeeStore, QueryBuilder, Paginator, STRAPI_DRIVER, SortEnum } from '@qubee/core';
+
+const store = new QubeeStore();
+const qb = new QueryBuilder(store, STRAPI_DRIVER.createRequestStrategy('query'));
+
+const uri = qb
+  .setResource('articles')
+  .addFilter('status', 'published')
+  .addSort('createdAt', SortEnum.DESC)
+  .setLimit(25)
+  .generateUri();
+```
+
+`generateUri()` is synchronous and returns a string:
+
+```
+/articles?filters[status][$eq]=published&sort[0]=createdAt:desc&pagination[page]=1&pagination[pageSize]=25
+```
+
+## Fetch it yourself
+
+qubee does not make the request. Prefix the URI with your API base and use whatever client you like.
+
+```ts
+const body = await fetch(`https://example.com/api${uri}`).then((r) => r.json());
+```
+
+## Read the page back
+
+Hand the body to a `Paginator`. It parses the envelope **and** syncs the page metadata into the
+store, so navigation helpers know where they are.
+
+```ts
+const paginator = new Paginator(
+  store,
+  STRAPI_DRIVER.createResponseStrategy(),
+  STRAPI_DRIVER.createResponseOptions({}),
+);
+
+const page = paginator.paginate(body);
+
+page.data;     // rows
+page.total;    // 57
+page.lastPage; // 6
+```
+
+:::caution[Bee aware]
+Until a response has been paginated, the builder refuses to guess: `lastPage()` and `totalPages()`
+throw `PaginationNotSyncedError`. `Paginator.paginate()` syncs that for you — if you parse responses
+by hand instead, call `store.syncLastPage()` yourself.
+:::
+
+## Choosing a driver
+
+Import the one you need. The other seventeen tree-shake away, which is the difference between
+2.5 kB and 9.5 kB gzipped.
+
+```ts
+import { STRAPI_DRIVER } from '@qubee/core';    // 2.5 kB gzipped
+import { DRIVERS } from '@qubee/core';          // 9.5 kB — all eighteen
+```
+
+Reach for `DRIVERS` only when the backend is chosen at runtime:
+
+```ts
+import { DRIVERS, DriverEnum } from '@qubee/core';
+
+const driver = DRIVERS[DriverEnum.STRAPI];
+```
+
+Both `DriverEnum.STRAPI` and the plain string `'strapi'` typecheck wherever a driver id is accepted.

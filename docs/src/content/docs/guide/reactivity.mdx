@@ -1,0 +1,75 @@
+---
+title: Reactivity
+description: Binding QubeeStore to React, Angular, Vue or nothing at all.
+sidebar:
+  order: 6
+---
+
+The core ships no reactive primitive. `QubeeStore` exposes two methods, and every framework binds
+to them differently:
+
+```ts
+store.getSnapshot(); // the current state — stable identity between writes
+store.subscribe(fn); // returns an unsubscribe function
+```
+
+That is deliberately React's
+[`useSyncExternalStore`](https://react.dev/reference/react/useSyncExternalStore) contract, which
+also happens to be the smallest sensible one.
+
+## React
+
+```tsx
+import { useSyncExternalStore } from 'react';
+
+function usePage(store: QubeeStore) {
+  return useSyncExternalStore(store.subscribe, store.getSnapshot);
+}
+```
+
+`getSnapshot()` returns the **same object** until the next write, which is what stops
+`useSyncExternalStore` re-rendering forever.
+
+## Angular
+
+```ts
+private readonly _state = signal(this.store.getSnapshot());
+
+constructor() {
+  this.store.subscribe(() => this._state.set(this.store.getSnapshot()));
+}
+
+readonly currentPage = computed(() => this._state().page);
+```
+
+## Vue
+
+```ts
+const state = shallowRef(store.getSnapshot());
+store.subscribe(() => (state.value = store.getSnapshot()));
+```
+
+## No framework
+
+```ts
+const stop = store.subscribe(() => console.log(qb.generateUri()));
+stop();
+```
+
+## Snapshots are frozen
+
+The returned state is deeply frozen. Mutating it throws in strict mode rather than silently
+corrupting a later read:
+
+```ts
+store.getSnapshot().includes.push('author');
+// TypeError: Cannot add property 0, object is not extensible
+```
+
+Two guarantees have to hold at once — a stable identity between writes, and immunity from caller
+mutation. Freezing is what makes both true.
+
+:::caution[Bee aware]
+Do not hold a snapshot across a write and expect it to update. It is a snapshot: read it again
+after every change, which is exactly what `subscribe` is telling you to do.
+:::

@@ -1,0 +1,22 @@
+{
+  "name": "@qubee/docs",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "npm run generate && astro build",
+    "dev": "npm run generate && astro dev",
+    "generate": "node scripts/generate-api.mjs && node scripts/generate-drivers.mjs",
+    "preview": "astro preview",
+    "sync": "astro sync"
+  },
+  "devDependencies": {
+    "@astrojs/starlight": "^0.42.0",
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource-variable/jetbrains-mono": "^5.3.0",
+    "@fontsource-variable/space-grotesk": "^5.3.0",
+    "astro": "^7.3.1",
+    "sharp": "^0.34.0",
+    "typedoc": "^0.28.20"
+  }
+}

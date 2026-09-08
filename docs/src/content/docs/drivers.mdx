@@ -1,0 +1,56 @@
+---
+title: Drivers
+description: How drivers work, and how to choose one.
+sidebar:
+  order: 1
+---
+
+A driver is the knowledge of one backend's query dialect, in two halves:
+
+- a **request strategy** that turns builder state into a query string
+- a **response strategy** that turns that backend's envelope into a `PaginatedCollection`
+
+Plus a **response options** object naming where pagination metadata lives in the body.
+
+```ts
+import { STRAPI_DRIVER } from '@qubee/core';
+
+STRAPI_DRIVER.createRequestStrategy('query');
+STRAPI_DRIVER.createResponseStrategy();
+STRAPI_DRIVER.createResponseOptions({});
+```
+
+## Capabilities
+
+Each request strategy declares eight booleans describing what its backend can express. The builder
+consults them on every call, so unsupported features throw at the call site.
+
+```ts
+STRAPI_DRIVER.createRequestStrategy('query').capabilities;
+// { filters: true, operatorFilters: true, sort: true, select: true,
+//   fields: false, includes: true, search: false, embedded: false }
+```
+
+The [capability matrix](/qubee-core/drivers/capabilities/) lists all eighteen side by side.
+
+## Choosing at build time
+
+If you know your backend, import its constant and let the rest tree-shake:
+
+```ts
+import { POSTGREST_DRIVER } from '@qubee/core';
+```
+
+## Choosing at runtime
+
+If you do not, the registry maps every id to its definition:
+
+```ts
+import { DRIVERS, DriverEnum } from '@qubee/core';
+
+const driver = DRIVERS[DriverEnum.POSTGREST];
+const fromString = DRIVERS['postgrest']; // also fine
+```
+
+The registry is a closed `Record`, so adding a `DriverEnum` member without registering it is a
+compile error rather than a runtime surprise.

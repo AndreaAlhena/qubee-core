@@ -1,0 +1,87 @@
+---
+title: Pagination
+description: Reading a page, syncing state, and moving between pages.
+sidebar:
+  order: 5
+---
+
+## Reading a page
+
+Generate the URI, fetch it yourself, then hand the raw body to a `Paginator`. What comes back is a
+`PaginatedCollection` — rows plus the page metadata the backend reported.
+
+```ts
+const body = await fetch(`https://example.com/api${uri}`).then((r) => r.json());
+const page = paginator.paginate(body);
+
+page.data;     // rows
+page.total;    // 57
+page.lastPage; // 6
+page.from;     // 26
+page.to;       // 50
+```
+
+`Paginator` also writes that metadata back into the store, which is what lets the builder answer
+questions about where you are.
+
+## Header-based pagination
+
+Some backends page over headers rather than the body — PostgREST's `Content-Range`, WordPress's
+`X-WP-TotalPages`. Pass the headers as the second argument:
+
+```ts
+const response = await fetch(url);
+const page = paginator.paginate(await response.json(), response.headers);
+```
+
+Anything with a `.get()` accessor works — the DOM `Headers`, Angular's `HttpHeaders` — as does a
+plain object. The core imports none of them.
+
+Drivers that need to *send* pagination headers expose them through `paginationHeaders()`, which
+returns `null` when the active driver has nothing to add, so it is safe to spread unconditionally:
+
+```ts
+await fetch(url, { headers: { ...qb.paginationHeaders() } });
+```
+
+## Moving between pages
+
+Every navigator returns `this`, so a move and a regenerate is one chain:
+
+```ts
+const nextUri = qb.nextPage().generateUri();
+```
+
+Out-of-range moves are clamped, not thrown — `nextPage()` on the last page is a no-op.
+
+## Syncing
+
+Until a response has been parsed, the builder does not know how many pages exist. Rather than
+guess, it throws:
+
+```ts
+qb.totalPages();
+// PaginationNotSyncedError: Cannot read totalPages: no paginated response has been synced yet.
+```
+
+`Paginator.paginate()` fixes that for you. If you parse responses yourself, sync manually:
+
+```ts
+store.syncLastPage(page.lastPage);
+```
+
+:::caution[Bee aware]
+`hasNextPage()` is deliberately optimistic before syncing — it returns `true`, because an unknown
+last page might still be ahead. `lastPage()` and `totalPages()` are the ones that refuse to guess.
+:::
+
+## Normalising rows
+
+`PaginatedCollection.normalize()` reduces a page to identifiers, keyed by page number — useful when
+rows live in a normalised store:
+
+```ts
+page.normalize();                        // { 2: [7, 9] }
+page.normalize('slug');                  // { 2: ['first', 'second'] }
+page.normalize((row) => `row-${row.id}`); // { 2: ['row-7', 'row-9'] }
+```

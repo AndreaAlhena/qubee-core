@@ -1,0 +1,240 @@
+---
+import { DRIVERS, DriverEnum } from '../../../dist/index.js';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const LABELS: Record<string, string> = {
+  'api-platform': 'API Platform', directus: 'Directus', drf: 'Django REST',
+  feathers: 'FeathersJS', 'json-api': 'JSON:API', 'json-server': 'json-server',
+  laravel: 'Laravel', nestjs: 'nestjs-paginate', 'nestjsx-crud': '@nestjsx/crud',
+  odata: 'OData v4', payload: 'Payload CMS', pocketbase: 'PocketBase',
+  postgrest: 'PostgREST', sieve: 'Sieve', spatie: 'Spatie', spring: 'Spring Data',
+  strapi: 'Strapi', wordpress: 'WordPress',
+};
+
+const drivers = Object.values(DriverEnum).sort() as string[];
+
+const features = [
+  { title: 'Agnostic by construction',
+    body: 'No Angular, no React, no RxJS, no Signals. Plain TypeScript that returns a URI and parses a body.' },
+  { title: '2.5 kB gzipped',
+    body: 'Import one driver and the other seventeen tree-shake out. Zero runtime dependencies, ever.' },
+  { title: 'Fluent, chainable, typed',
+    body: 'Filters, operators, sorting, field selection, includes, embeds and pagination in one chain.' },
+  { title: 'Bring your own reactivity',
+    body: 'QubeeStore speaks the useSyncExternalStore contract — each adapter supplies its own.' },
+];
+---
+
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>qubee — build the query, not the plumbing</title>
+    <meta name="description" content="Framework-agnostic query builder and paginator with pluggable drivers for 18 backend querying standards." />
+    <link rel="icon" href={`${base}/mark.png`} />
+  </head>
+  <body>
+    <header class="nav">
+      <a class="brand" href={`${base}/`}>
+        <img src={`${base}/mark.png`} alt="" width="30" height="30" />
+        <span>qubee</span>
+        <em>0.1.0</em>
+      </a>
+      <nav>
+        <a href={`${base}/guide/introduction/`}>Guide</a>
+        <a href={`${base}/api/services/query-builder/`}>API</a>
+        <a href={`${base}/drivers/`}>Drivers</a>
+        <a href="https://github.com/AndreaAlhena/qubee-core">GitHub</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <p class="eyebrow">pre-release · zero dependencies</p>
+        <h1>Build the query.<br /><span>Not the plumbing.</span></h1>
+        <p class="lede">
+          <code>@qubee/core</code> turns a fluent, typed chain into whatever query string your
+          backend speaks — across eighteen of them — and parses the page that comes back.
+          It performs no I/O.
+        </p>
+        <div class="cta">
+          <a class="btn primary" href={`${base}/guide/getting-started/`}>Get started</a>
+          <a class="btn" href={`${base}/api/services/query-builder/`}>API reference</a>
+        </div>
+        <pre class="install"><span>$</span> npm i @qubee/core</pre>
+      </section>
+
+      <section class="features">
+        {features.map((f) => (
+          <article>
+            <h2>{f.title}</h2>
+            <p>{f.body}</p>
+          </article>
+        ))}
+      </section>
+
+      <section class="sample">
+        <div class="sample-head">
+          <h2>One chain in, a URI out</h2>
+          <p>
+            Pick a driver, describe the query, call <code>generateUri()</code>. Every driver speaks
+            its own dialect of filters, sorts and pagination — the builder API stays identical.
+          </p>
+          <table>
+            <thead><tr><th>import</th><th>min</th><th>gzip</th></tr></thead>
+            <tbody>
+              <tr><td><code>STRAPI_DRIVER</code></td><td>6.5 kB</td><td><strong>2.5 kB</strong></td></tr>
+              <tr><td><code>DRIVERS</code> (all 18)</td><td>49 kB</td><td>9.5 kB</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <pre class="code"><code>{`import { QubeeStore, QueryBuilder, STRAPI_DRIVER, SortEnum } from '@qubee/core';
+
+const store = new QubeeStore();
+const qb = new QueryBuilder(store, STRAPI_DRIVER.createRequestStrategy('query'));
+
+const uri = qb
+  .setResource('articles')
+  .addFilter('status', 'published')
+  .addSort('createdAt', SortEnum.DESC)
+  .setLimit(25)
+  .generateUri();
+
+// → /articles?filters[status][$eq]=published
+//   &sort[0]=createdAt:desc
+//   &pagination[page]=1&pagination[pageSize]=25`}</code></pre>
+      </section>
+
+      <section class="drivers">
+        <h2>Eighteen backends, one builder</h2>
+        <p>Request and response strategies, capability-checked.</p>
+        <ul>
+          {drivers.map((d) => (
+            <li><a href={`${base}/drivers/reference/${d}/`}>{LABELS[d] ?? d}</a></li>
+          ))}
+        </ul>
+      </section>
+    </main>
+
+    <footer>
+      <img src={`${base}/bee.png`} alt="" width="34" height="34" />
+      <p>Released under the MIT License · Copyright © 2026 Andrea Tantimonaco</p>
+    </footer>
+
+    <style is:global>
+      @import '@fontsource-variable/space-grotesk';
+      @import '@fontsource-variable/inter';
+      @import '@fontsource-variable/jetbrains-mono';
+
+      :root {
+        --honey: #ffb020; --honey-hi: #ffc24d;
+        --honey-soft: rgba(255, 176, 32, 0.14); --honey-line: rgba(255, 176, 32, 0.35);
+        --bg: #16181c; --alt: #101216; --surface: #1c1f24; --code-bg: #0c0e12;
+        --border: #2b3038; --hover: rgba(255, 255, 255, 0.05);
+        --text: #e9eaee; --muted: #98a0ac;
+        --display: 'Space Grotesk Variable', system-ui, sans-serif;
+        --body: 'Inter Variable', system-ui, sans-serif;
+        --mono: 'JetBrains Mono Variable', ui-monospace, monospace;
+      }
+
+      * { box-sizing: border-box; }
+      body { background: var(--bg); color: var(--text); font-family: var(--body); margin: 0; }
+      a { color: inherit; text-decoration: none; }
+      code { font-family: var(--mono); }
+
+      .nav {
+        align-items: center; backdrop-filter: blur(12px);
+        background: rgba(22, 24, 28, 0.86); border-bottom: 1px solid var(--border);
+        display: flex; gap: 20px; height: 62px; padding: 0 22px;
+        position: sticky; top: 0; z-index: 20;
+      }
+      .brand { align-items: center; display: flex; font-family: var(--display); font-weight: 700; gap: 9px; }
+      .brand em {
+        border: 1px solid var(--border); border-radius: 20px; color: var(--muted);
+        font-family: var(--mono); font-size: 11px; font-style: normal; padding: 2px 8px;
+      }
+      .nav nav { display: flex; gap: 4px; margin-left: auto; }
+      .nav nav a { border-radius: 7px; color: var(--muted); font-size: 14px; padding: 7px 11px; }
+      .nav nav a:hover { background: var(--hover); color: var(--text); }
+
+      .hero {
+        background: var(--alt); border-bottom: 1px solid var(--border);
+        padding: 84px 22px 72px; text-align: center;
+      }
+      .eyebrow {
+        color: var(--honey-hi); font-family: var(--mono); font-size: 12px;
+        letter-spacing: 0.08em; margin: 0 0 18px; text-transform: uppercase;
+      }
+      .hero h1 {
+        font-family: var(--display); font-size: clamp(38px, 7vw, 64px); font-weight: 700;
+        letter-spacing: -0.03em; line-height: 1.04; margin: 0 0 20px;
+      }
+      .hero h1 span { color: var(--honey); }
+      .lede {
+        color: var(--muted); font-size: 18px; line-height: 1.65;
+        margin: 0 auto 30px; max-width: 620px;
+      }
+      .lede code { color: var(--text); }
+      .cta { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-bottom: 30px; }
+      .btn {
+        border: 1px solid var(--border); border-radius: 9px; font-size: 15px;
+        font-weight: 600; padding: 11px 20px;
+      }
+      .btn:hover { background: var(--hover); }
+      .btn.primary { background: var(--honey); border-color: var(--honey); color: #1b1e23; }
+      .btn.primary:hover { background: var(--honey-hi); }
+      .install {
+        background: var(--code-bg); border: 1px solid var(--border); border-radius: 9px;
+        color: var(--text); display: inline-block; font-family: var(--mono);
+        font-size: 14px; margin: 0; padding: 12px 18px;
+      }
+      .install span { color: var(--honey); margin-right: 8px; }
+
+      .features {
+        display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        margin: 0 auto; max-width: 1080px; padding: 64px 22px;
+      }
+      .features article {
+        background: var(--surface); border: 1px solid var(--border);
+        border-radius: 12px; padding: 22px;
+      }
+      .features h2 { font-family: var(--display); font-size: 16px; margin: 0 0 8px; }
+      .features p { color: var(--muted); font-size: 14.5px; line-height: 1.6; margin: 0; }
+
+      .sample { margin: 0 auto; max-width: 1080px; padding: 0 22px 72px; }
+      .sample-head h2 { font-family: var(--display); font-size: 26px; margin: 0 0 10px; }
+      .sample-head > p { color: var(--muted); line-height: 1.65; margin: 0 0 20px; max-width: 620px; }
+      .sample table { border-collapse: collapse; font-size: 13.5px; margin-bottom: 22px; }
+      .sample th, .sample td {
+        border-bottom: 1px solid var(--border); padding: 7px 20px 7px 0; text-align: left;
+      }
+      .sample th { color: var(--muted); font-family: var(--display); font-size: 11px;
+        letter-spacing: 0.06em; text-transform: uppercase; }
+      .sample strong { color: var(--honey-hi); }
+      .code {
+        background: var(--code-bg); border: 1px solid var(--border); border-radius: 12px;
+        font-size: 13.5px; line-height: 1.7; margin: 0; overflow-x: auto; padding: 22px;
+      }
+
+      .drivers { margin: 0 auto; max-width: 1080px; padding: 0 22px 90px; }
+      .drivers h2 { font-family: var(--display); font-size: 26px; margin: 0 0 8px; }
+      .drivers > p { color: var(--muted); margin: 0 0 22px; }
+      .drivers ul {
+        display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+        list-style: none; margin: 0; padding: 0;
+      }
+      .drivers a {
+        background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+        display: block; font-size: 14px; padding: 13px 15px; transition: border-color 0.15s;
+      }
+      .drivers a:hover { border-color: var(--honey-line); color: var(--honey-hi); }
+
+      footer {
+        align-items: center; border-top: 1px solid var(--border); color: var(--muted);
+        display: flex; font-size: 13.5px; gap: 12px; justify-content: center; padding: 30px 22px;
+      }
+      footer p { margin: 0; }
+    </style>
+  </body>
+</html>
