@@ -1,0 +1,97 @@
+---
+title: createQubee
+description: The factory that wires a store, builder and paginator together.
+sidebar:
+  order: 3
+---
+
+`createQubee()` builds the three objects the library needs and returns them sharing one store.
+
+```ts
+import { createQubee, STRAPI_DRIVER } from '@qubee/core';
+
+const { builder, paginator, store } = createQubee({ driver: STRAPI_DRIVER });
+```
+
+Sharing a store is the point: a response parsed by the `paginator` teaches the `builder` where it
+is, so `totalPages()` and `lastPage()` start answering instead of throwing.
+
+```ts
+builder.setResource('articles');
+const page = paginator.paginate(body);
+
+builder.currentPage(); // 2 — set by the response
+builder.totalPages();  // 6
+```
+
+## Options
+
+```ts
+createQubee({
+  driver: POSTGREST_DRIVER,
+  pagination: PaginationModeEnum.RANGE, // wire-level mechanism; PostgREST only
+  request: { limit: 'perPage' },        // rename emitted query parameters
+  response: { data: 'rows' },           // where to read pagination metadata
+});
+```
+
+| Option | Type | Purpose |
+| --- | --- | --- |
+| `driver` | `DriverDefinition` | The driver to use — required |
+| `pagination` | `PaginationModeEnum` | Query string or `Range` header. Defaults to query |
+| `request` | `QueryBuilderConfig` | Override emitted parameter names |
+| `response` | `PaginationConfig` | Override where metadata is read from |
+
+## Why it takes a definition, not an id
+
+`createQubee({ driver: 'strapi' })` would read nicer, but the factory would then have to import
+`DRIVERS` — and a static import bundles **all eighteen drivers into every consumer**, whether they
+use one or not.
+
+| | minified | gzipped |
+| --- | --- | --- |
+| hand-wiring the three classes | 15,727 B | 4,659 B |
+| `createQubee` | 15,835 B | 4,711 B |
+| `createQubee({ driver: DRIVERS[id] })` | 59,099 B | 11,688 B |
+
+Taking a definition costs **108 bytes** over wiring by hand and keeps the registry out of your
+bundle. Runtime selection is still one line — you just opt into the cost yourself:
+
+```ts
+import { createQubee, DRIVERS } from '@qubee/core';
+
+const { builder } = createQubee({ driver: DRIVERS[config.driver] });
+```
+
+## Independent instances
+
+Each call gets its own store, so two builders never interfere:
+
+```ts
+const articles = createQubee({ driver: STRAPI_DRIVER });
+const authors = createQubee({ driver: STRAPI_DRIVER });
+
+articles.builder.setResource('articles').setPage(3);
+authors.store.getSnapshot().page; // 1 — untouched
+```
+
+## Constructing by hand
+
+The factory is a convenience, not a requirement. Build the three yourself when they should not
+share a store, or when a DI container owns their lifecycle:
+
+```ts
+const store = new QubeeStore();
+const builder = new QueryBuilder(store, STRAPI_DRIVER.createRequestStrategy('query'));
+const paginator = new Paginator(
+  store,
+  STRAPI_DRIVER.createResponseStrategy(),
+  STRAPI_DRIVER.createResponseOptions({}),
+);
+```
+
+:::caution[Bee aware]
+Passing `driver.id` as `QueryBuilder`'s fourth argument is what lets capability errors name the
+driver — *"The 'laravel' driver does not support filters"* rather than *"The active driver…"*.
+`createQubee()` does this for you.
+:::

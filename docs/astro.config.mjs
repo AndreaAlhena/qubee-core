@@ -22,6 +22,7 @@ export default defineConfig({
           items: [
             { label: 'Introduction', slug: 'guide/introduction' },
             { label: 'Getting started', slug: 'guide/getting-started' },
+            { label: 'createQubee', slug: 'guide/factory' },
             { label: 'Building a query', slug: 'guide/building-a-query' },
             { label: 'Filters and operators', slug: 'guide/filters' },
             { label: 'Pagination', slug: 'guide/pagination' },
